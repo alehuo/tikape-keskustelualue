@@ -115,7 +115,12 @@ public class Main {
             }
 
         });
-
+        //Uuden käyttäjän lisääminen
+        post("/register", (req, res) -> {
+            HashMap map = new HashMap<>();
+            //Tähän uuden käyttäjän lisääminen
+            return "";
+        });
         //Kirjautumissivu
         get("/login", (req, res) -> {
             HashMap map = new HashMap<>();
