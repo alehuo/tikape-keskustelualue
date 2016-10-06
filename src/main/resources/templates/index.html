@@ -26,7 +26,7 @@
                     <td th:text="${kategoria.name}" style="font-weight: bold;">Otsikko</td><td></td><td></td>
                 </tr>
                 <tr class="subCategory" th:each="alaKategoria : ${kategoria.subCategories}">
-                    <td style="font-weight: bold;"><a th:href="@{'http://localhost:4567/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td><td th:text="${alaKategoria.description}">Kuvaus</td><td>Viimeisin viesti: </td>
+                    <td style="font-weight: bold;"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td><td th:text="${alaKategoria.description}">Kuvaus</td><td>Viimeisin viesti: </td>
                 </tr>
             </table>
         </div>
