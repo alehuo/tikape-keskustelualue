@@ -12,9 +12,6 @@ import tikape.runko.database.MessageThreadDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
-import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
-import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
 public class Main {

@@ -24,6 +24,14 @@ public class TextUi {
     private final SubCategoryDao subCatDao;
     private final MessageThreadDao msgDao;
 
+    /**
+     * Tekstikäyttöliittymä
+     * @param sc Scanner
+     * @param userDao UserDao
+     * @param catDao CategoryDao
+     * @param subCatDao SubCategoryDao
+     * @param msgDao MessageThreadDao
+     */
     public TextUi(Scanner sc, UserDao userDao, CategoryDao catDao, SubCategoryDao subCatDao, MessageThreadDao msgDao) {
         this.sc = sc;
         this.userDao = userDao;
@@ -34,10 +42,12 @@ public class TextUi {
 
     /**
      * Näyttää tekstikäyttöliittymän
+     * @throws SQLException 
      */
     public void show() throws SQLException {
         OUTER:
         while (true) {
+            //Tulostetaan valikko
             System.out.println("1) Listaa kategoriat ja niiden alakategoriat");
             System.out.println("2) Listaa viestiketjut alakategoriasta");
             System.out.println("3) Lisää uusi kategoria");
@@ -49,7 +59,9 @@ public class TextUi {
             System.out.println("exit Poistu ja käynnistä Web-sovellus");
             System.out.println("");
             System.out.print("> ");
+            //Poimitaan käyttäjän syöte
             String komento = sc.nextLine();
+            //Tarkastetaan, löytyykö komennolle vastike
             switch (komento) {
                 case "exit":
                     break OUTER;
