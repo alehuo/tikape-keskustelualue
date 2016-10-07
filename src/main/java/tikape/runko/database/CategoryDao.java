@@ -13,15 +13,19 @@ public class CategoryDao implements Dao<Category, Integer> {
     private final Database database;
     private SubCategoryDao subCategoryDao;
 
+    /**
+     * Yläkategorian DAO
+     * @param db Database
+     */
     public CategoryDao(Database db) {
         this.database = db;
         subCategoryDao = new SubCategoryDao(db);
     }
 
     /**
-     * Hakee tietyn kategorian ID:n avulla
-     * @param key
-     * @return
+     * Palauttaa kategorian tietyn kategorian ID:n avulla
+     * @param key Kategorian ID
+     * @return Kategoria
      * @throws SQLException 
      */
     @Override
@@ -50,8 +54,8 @@ public class CategoryDao implements Dao<Category, Integer> {
     }
 
     /**
-     * Hakee jokaisen kategorian sekä hakee niiden alakategoriat
-     * @return
+     * Palauttaa jokaisen kategorian sekä hakee niiden alakategoriat
+     * @return Lista kategorioista sekä niiden alakategorioista
      * @throws SQLException 
      */
     @Override
@@ -78,7 +82,7 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Poista kategorian
-     * @param key
+     * @param key Kategorian ID
      * @throws SQLException 
      */
     @Override
@@ -88,8 +92,8 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Lisää kategorian
-     * @param c
-     * @return
+     * @param c Kategoria
+     * @return true / false
      * @throws SQLException 
      */
     public boolean add(Category c) throws SQLException {

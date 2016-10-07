@@ -9,10 +9,20 @@ public class Database {
 
     private String databaseAddress;
 
+    /**
+     * Tietokantaluokka
+     * @param databaseAddress Tietokannan osoitemerkkijono
+     * @throws ClassNotFoundException 
+     */
     public Database(String databaseAddress) throws ClassNotFoundException {
         this.databaseAddress = databaseAddress;
     }
 
+    /**
+     * Palauttaa tietokantayhteyden
+     * @return Tietokantayhteys
+     * @throws SQLException 
+     */
     public Connection getConnection() throws SQLException {
         if (this.databaseAddress.contains("postgres")) {
             try {
@@ -32,6 +42,9 @@ public class Database {
         return DriverManager.getConnection(databaseAddress);
     }
 
+    /**
+     * Suorittaa kyselyt sovelluksen käynnistymisen aikana
+     */
     public void init() {
         List<String> lauseet = sqliteLauseet();
         if (this.databaseAddress.contains("postgres")) {
@@ -54,10 +67,10 @@ public class Database {
     }
 
     /**
-     * SQL-kyselyt SQLite -tietokantaan, jotka suoritetaan palvelimen
+     * Palauttaa SQL-kyselyt SQLite -tietokantaan, jotka suoritetaan palvelimen
      * käynnistyessä
      *
-     * @return
+     * @return Lista SQL -kyselyistä
      */
     private List<String> sqliteLauseet() {
         ArrayList<String> lista = new ArrayList<>();
@@ -90,10 +103,10 @@ public class Database {
     }
 
     /**
-     * SQL-kyselyt PostgreSQL -tietokantaan, jotka suoritetaan palvelimen
+     * Palauttaa SQL-kyselyt PostgreSQL -tietokantaan, jotka suoritetaan palvelimen
      * käynnistyessä
      *
-     * @return
+     * @return Lista SQL -kyselyistä
      */
     private List<String> postgreLauseet() {
         ArrayList<String> lista = new ArrayList<>();

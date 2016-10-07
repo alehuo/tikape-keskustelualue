@@ -8,6 +8,15 @@ import java.util.Base64.Decoder;
 
 public class Auth {
 
+    /**
+     * Tarkistaa, täsmäävätkö salasanat
+     *
+     * @param password Salasana selkokielellä
+     * @param hashedPasswordBase64 Salasana tietokannasta, Base64 -enkoodattu
+     * @param saltBase64 Suola tietokannasta, Base64 -enkoodattu
+     * @return Täsmäävätkö salasanat vai ei
+     * @throws NoSuchAlgorithmException
+     */
     public static boolean passwordMatches(String password, String hashedPasswordBase64, String saltBase64) throws NoSuchAlgorithmException {
         Decoder en = java.util.Base64.getDecoder();
         try {
@@ -28,6 +37,13 @@ public class Auth {
         return false;
     }
 
+    /**
+     * Yhdistää kaksi ByteArraytä
+     *
+     * @param bytes1 Ensimmäinen ByteArray
+     * @param bytes2 Toinen ByteArray
+     * @return Yhdistetty ByteArray bytes1+bytes2
+     */
     public static byte[] combineTwoByteArrays(byte[] bytes1, byte[] bytes2) {
         byte[] byteArray = new byte[bytes1.length + bytes2.length];
         for (int i = 0; i < byteArray.length; ++i) {
