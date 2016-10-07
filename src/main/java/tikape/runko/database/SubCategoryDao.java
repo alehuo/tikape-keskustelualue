@@ -126,7 +126,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         int mainCatId = c.getCategoryId();
         String title = c.getName();
         String desc = c.getDescription();
-        PreparedStatement stmt = connection.prepareStatement("INSERT INTO subCategories (subCatId, catId, title , description) VALUES (NULL, ?, ?, ?)");
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO subCategories (catId, title , description) VALUES (?, ?, ?)");
         stmt.setInt(1, mainCatId);
         stmt.setString(2, title);
         stmt.setString(3, desc);

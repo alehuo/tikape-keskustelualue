@@ -125,11 +125,11 @@ public class Database {
         //Alakategoriat -taulu
         lista.add("CREATE TABLE subCategories (subCatId SERIAL PRIMARY KEY, catId integer , title varchar(255), description varchar(1024), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
         //Käyttäjät
-        lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(255), password varchar(255), salt varchar(255), userLevel integer);");
+        lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(255), password varchar(255), salt varchar(255), userLevel SERIAL);");
         //Viestiketjut
-        lista.add("CREATE TABLE threads (threadId SERIAL PRIMARY KEY, subCategoryId integer , userId integer, title varchar(255), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
+        lista.add("CREATE TABLE threads (threadId SERIAL PRIMARY KEY, subCategoryId SERIAL , userId SERIAL, title varchar(255), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
         //Viestiketjun postaukset
-        lista.add("CREATE TABLE posts (postId SERIAL PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
+        lista.add("CREATE TABLE posts (postId SERIAL PRIMARY KEY, threadId SERIAL , userId SERIAL , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
         
         //Kategoriat
 //        lista.add("INSERT INTO categories (title) VALUES ('Testikategoria 1');");

@@ -98,7 +98,7 @@ public class CategoryDao implements Dao<Category, Integer> {
      */
     public boolean add(Category c) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("INSERT INTO categories (categoryId, title) VALUES (NULL, ?)");
+        PreparedStatement stmt = connection.prepareStatement("INSERT INTO categories (title) VALUES (?)");
         stmt.setString(1, c.getName());
         return stmt.execute();
     }
