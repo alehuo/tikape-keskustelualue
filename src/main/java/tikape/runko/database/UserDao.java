@@ -122,7 +122,7 @@ public class UserDao implements Dao<User, Integer> {
             String hashedPasswordBase64 = en.encodeToString(hashedPassword);
 
             //Kysely, joka aiotaan suorittaa
-            String query = "INSERT INTO users (userId, username, password, salt, userLevel) VALUES(NULL, ?, ?, ?, 0)";
+            String query = "INSERT INTO users (username, password, salt, userLevel) VALUES(?, ?, ?, 0)";
             Connection con = database.getConnection();
             PreparedStatement stmt = con.prepareStatement(query);
             //Käyttäjätunnus
