@@ -11,8 +11,9 @@ public class Database {
 
     /**
      * Tietokantaluokka
+     *
      * @param databaseAddress Tietokannan osoitemerkkijono
-     * @throws ClassNotFoundException 
+     * @throws ClassNotFoundException
      */
     public Database(String databaseAddress) throws ClassNotFoundException {
         this.databaseAddress = databaseAddress;
@@ -20,8 +21,9 @@ public class Database {
 
     /**
      * Palauttaa tietokantayhteyden
+     *
      * @return Tietokantayhteys
-     * @throws SQLException 
+     * @throws SQLException
      */
     public Connection getConnection() throws SQLException {
         if (this.databaseAddress.contains("postgres")) {
@@ -103,8 +105,8 @@ public class Database {
     }
 
     /**
-     * Palauttaa SQL-kyselyt PostgreSQL -tietokantaan, jotka suoritetaan palvelimen
-     * käynnistyessä
+     * Palauttaa SQL-kyselyt PostgreSQL -tietokantaan, jotka suoritetaan
+     * palvelimen käynnistyessä
      *
      * @return Lista SQL -kyselyistä
      */
@@ -112,11 +114,11 @@ public class Database {
         ArrayList<String> lista = new ArrayList<>();
 
         // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä
-        lista.add("DROP TABLE categories;");
-        lista.add("DROP TABLE subCategories;");
-        lista.add("DROP TABLE threads;");
-        lista.add("DROP TABLE posts;");
-        lista.add("DROP TABLE users;");
+        lista.add("DROP TABLE IF EXISTS categories;");
+        lista.add("DROP TABLE IF EXISTS subCategories;");
+        lista.add("DROP TABLE IF EXISTS threads;");
+        lista.add("DROP TABLE IF EXISTS posts;");
+        lista.add("DROP TABLE IF EXISTS users;");
         //Kategoriat -taulu
         lista.add("CREATE TABLE categories (categoryId SERIAL PRIMARY KEY, title varchar(255));");
         //Alakategoriat -taulu
