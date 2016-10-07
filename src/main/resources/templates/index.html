@@ -14,9 +14,13 @@
                     <div class="navbar-header">
                         <a class="navbar-brand" href="#">Keskustelualue</a>
                     </div>
-                    <ul class="nav navbar-nav">
+                    <ul class="nav navbar-nav" th:if="${user == null}">
                         <li><a href="/login">Kirjaudu sisään</a></li>
                         <li><a href="/register">Rekisteröidy</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav" th:unless="${user == null}">
+                        <li class='navbar-text' th:text="'Hei, ' + ${user.username}">Hei, <b>käyttäjätunnus</b></li>
+                        <li><a href="/logout">Kirjaudu ulos</a></li>
                     </ul>
                 </div>
             </nav>

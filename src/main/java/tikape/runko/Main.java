@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 import spark.ModelAndView;
+import spark.Session;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
@@ -54,6 +55,8 @@ public class Main {
             //Haetaan kategoriat
             List<Category> categories = catDao.findAll();
             map.put("kategoriat", categories);
+            map.put("user", (User) req.session().attribute("user"));
+
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         //Näytä viestiketju
@@ -98,9 +101,8 @@ public class Main {
             //Jos käyttäjä löytyy tietokannasta
             if (u != null) {
                 if (Auth.passwordMatches(password, u.getPasswordHash(), u.getSalt())) {
-                    //Kirjaudu sisään. Asetetaan evästeet loggedIn = true ja userId = (USERID)
-                    res.cookie("loggedIn", 1 + "", 63600);
-                    res.cookie("userId", u.getId() + "", 3600);
+                    //Kirjaudu sisään. Aloitetaan uusi istunto
+                    req.session(true).attribute("user", u);
                     res.redirect("/");
                     return "Kirjauduttu sisään.";
                 } else {
@@ -119,6 +121,18 @@ public class Main {
         post("/register", (req, res) -> {
             HashMap map = new HashMap<>();
             //Tähän uuden käyttäjän lisääminen
+            //Käyttäjätunnus
+            String username = req.queryParams("username").trim();
+            //Salasana
+            String password = req.queryParams("password");
+            User userList = userDao.findByUsername(username);
+            //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
+            if (userList == null) {
+                System.out.println("Uusi käyttäjä lisätty: " + username);
+                userDao.add(username, password);
+            }
+            //Ohjaus etusivulle
+            res.redirect("/");
             return "";
         });
         //Kirjautumissivu
@@ -133,8 +147,9 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         //Uloskirjautuminen
         get("/logout", (req, res) -> {
-            res.cookie("loggedIn", "0", 0);
-            res.cookie("userId", "0", 0);
+            //Hylätään istunto
+            Session sess = req.session();
+            sess.invalidate();
             res.redirect("/");
             return "";
         });
