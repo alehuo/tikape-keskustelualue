@@ -22,22 +22,25 @@ public class MessageThread {
      * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
     public MessageThread(int subCatId, int threadId, int userId, String title, String creationDate) {
-        this.threadId = threadId;
         messages = new ArrayList<>();
+        this.threadId = threadId;
         this.subCatId = subCatId;
         this.userId = userId;
         this.title = title;
         this.creationDate = creationDate;
     }
-    
+
+    /**
+     * Viestiketjujen käsittelyyn tarkoitettu luokka
+     *
+     * @param subCatId Alakategoria ID
+     * @param userId Käyttäjätunnuksen ID
+     * @param title Viestiketjun otsikko
+     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     */
     public MessageThread(int subCatId, int userId, String title, String creationDate) {
+        this(subCatId, -1, userId, title, creationDate);
         messages = new ArrayList<>();
-        this.subCatId = subCatId;
-        this.userId = userId;
-        this.title = title;
-        this.creationDate = creationDate;
-        
-        
     }
 
     /**
@@ -124,16 +127,6 @@ public class MessageThread {
         return creationDate;
     }
 
-    /**
-     * Palauttaa viestiketjun otsikon ja aikaleiman
-     *
-     * @return Viestiketjun otsikko ja aikaleima muodossa otsikko (aikaleima)
-     */
-    @Override
-    public String toString() {
-        return title + " (" + creationDate + ")";
-    }
-
     public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
@@ -150,4 +143,13 @@ public class MessageThread {
         return threadId;
     }
 
+    /**
+     * Palauttaa viestiketjun otsikon ja aikaleiman
+     *
+     * @return Viestiketjun otsikko ja aikaleima muodossa otsikko (aikaleima)
+     */
+    @Override
+    public String toString() {
+        return title + " (" + creationDate + ")";
+    }
 }
