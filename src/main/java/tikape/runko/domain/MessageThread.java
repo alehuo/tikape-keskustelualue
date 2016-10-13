@@ -6,25 +6,38 @@ import java.util.List;
 public class MessageThread {
 
     private List<Message> messages;
-    private final int subCatId;
-    private final int userId;
-    private final String title;
-    private final String creationDate;
+    private int subCatId;
+    private int userId;
+    private String title;
+    private String creationDate;
+    private int threadId;
 
     /**
      * Viestiketjujen käsittelyyn tarkoitettu luokka
      *
      * @param subCatId Alakategoria ID
+     * @param threadId
      * @param userId Käyttäjätunnuksen ID
      * @param title Viestiketjun otsikko
      * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
+    public MessageThread(int subCatId, int threadId, int userId, String title, String creationDate) {
+        this.threadId = threadId;
+        messages = new ArrayList<>();
+        this.subCatId = subCatId;
+        this.userId = userId;
+        this.title = title;
+        this.creationDate = creationDate;
+    }
+    
     public MessageThread(int subCatId, int userId, String title, String creationDate) {
         messages = new ArrayList<>();
         this.subCatId = subCatId;
         this.userId = userId;
         this.title = title;
         this.creationDate = creationDate;
+        
+        
     }
 
     /**
@@ -119,6 +132,22 @@ public class MessageThread {
     @Override
     public String toString() {
         return title + " (" + creationDate + ")";
+    }
+
+    public void setMessages(List<Message> messages) {
+        this.messages = messages;
+    }
+
+    public int getSubCatId() {
+        return subCatId;
+    }
+
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    public int getThreadId() {
+        return threadId;
     }
 
 }
