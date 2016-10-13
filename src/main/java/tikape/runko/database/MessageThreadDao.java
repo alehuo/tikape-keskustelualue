@@ -37,11 +37,12 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         }
 
         Integer subCatId = rs.getInt("subCategoryId");
+        Integer threadId = rs.getInt("threadId");
         Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
         String description = rs.getString("description");
-        MessageThread msgThread = new MessageThread(subCatId, userId, title, creationDate);
+        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
         rs.close();
         stmt.close();
 
@@ -89,10 +90,11 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         List<MessageThread> msgThreads = new ArrayList<>();
         while (rs.next()) {
             Integer subCatId = rs.getInt("subCategoryId");
+            Integer threadId = rs.getInt("threadId");
             Integer userId = rs.getInt("userId");
             String title = rs.getString("title");
             String creationDate = rs.getString("creationDate");
-            msgThreads.add(new MessageThread(subCategoryId, userId, title, creationDate));
+            msgThreads.add(new MessageThread(subCategoryId, threadId, userId, title, creationDate));
         }
 
         rs.close();
