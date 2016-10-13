@@ -9,6 +9,7 @@ public class SubCategory {
 
     /**
      * Alakategoria -luokka
+     *
      * @param categoryId Yläkategorian ID
      * @param subCategoryId Alakategorian ID
      * @param name Alakategorian nimi
@@ -47,6 +48,15 @@ public class SubCategory {
     }
 
     /**
+     * Palauttaa alakategorian kuvauksen
+     *
+     * @return Alakategorian kuvaus
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
      * Asettaa alakategorian kuvauksen
      *
      * @param description Alakategorian kuvaus
@@ -57,13 +67,16 @@ public class SubCategory {
         return this;
     }
 
-    /**
-     * Palauttaa alakategorian kuvauksen
-     *
-     * @return Alakategorian kuvaus
-     */
-    public String getDescription() {
-        return description;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSubCategoryId(int subCategoryId) {
+        this.subCategoryId = subCategoryId;
     }
 
     /**
