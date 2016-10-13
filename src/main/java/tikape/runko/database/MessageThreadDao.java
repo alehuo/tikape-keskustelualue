@@ -14,6 +14,11 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
 
     private final Database database;
 
+    /**
+     * Viestiketju Dao
+     *
+     * @param database Tietokantaobjekti
+     */
     public MessageThreadDao(Database database) {
         this.database = database;
     }
@@ -21,8 +26,8 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
     /**
      * Hakee tietyn viestiketjun ID:n avulla
      *
-     * @param key
-     * @return
+     * @param key Viestiketjun ID
+     * @return Viestiketju
      * @throws SQLException
      */
     @Override
@@ -71,14 +76,15 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     @Override
     public List<MessageThread> findAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
+        return null;
     }
 
     /**
      * Hakee kaikki viestiketjut tietystä alakategoriasta
      *
-     * @param subCategoryId
-     * @return
+     * @param subCategoryId Alakategorian id
+     * @return Lista viestiketjuista
      * @throws SQLException
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
@@ -112,17 +118,14 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
     }
 
     /**
      * Uuden viestiketjun luonti. Samalla lisätään viestiketjuun aloituspostaus.
      *
-     * @param msgThread
-     * @param subCategoryId
-     * @param title
-     * @param desc
-     * @throws java.sql.SQLException
+     * @param msgThread Viestiketju-olio
+     * @throws SQLException
      */
     public void add(MessageThread msgThread) throws SQLException {
         Connection connection = database.getConnection();
