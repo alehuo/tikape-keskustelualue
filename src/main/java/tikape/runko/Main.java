@@ -9,6 +9,7 @@ import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
 import tikape.runko.database.Database;
+import tikape.runko.database.MessageDao;
 import tikape.runko.database.MessageThreadDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
@@ -31,13 +32,14 @@ public class Main {
         UserDao userDao = new UserDao(database);
         CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
-        MessageThreadDao msgDao = new MessageThreadDao(database);
+        MessageThreadDao msgThreadDao = new MessageThreadDao(database);
+        MessageDao msgDao = new MessageDao(database);
         Scanner sc = new Scanner(System.in);
 
         //Tekstikäyttöliittymän alustus
-        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgDao);
+        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgThreadDao);
         //Näytä tekstikäyttöliittymä
-//        textUi.show();
+        textUi.show();
 
         //Oletusportti
         int appPort = 4567;
@@ -61,10 +63,12 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         //Näytä viestiketju
         get("/thread/:threadId", (req, res) -> {
+            HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("threadId"));
+            map.put("viestit", msgDao.findAllFromTopic(id));
             //Tähän näkymä, jossa näytetään viestiketju
-            return "Viestiketjun id: " + id;
-        });
+            return new ModelAndView(map, "messages");
+        }, new ThymeleafTemplateEngine());
         //Lähetä viestiketjuun uusi vastaus
         post("/thread/:threadId", (req, res) -> {
             int id = Integer.parseInt(req.params("threadId"));
@@ -73,10 +77,12 @@ public class Main {
         });
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
+            HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("subCategoryId"));
+            map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
             //Tähän näkymä, jossa näytetään alakategorian viestit
-            return "Alakategorian id: " + id;
-        });
+            return new ModelAndView(map, "topics");
+        }, new ThymeleafTemplateEngine());
         //Uuden viestiketjun lähettäminen:
         post("/subcategory/:subCategoryId", (req, res) -> {
             int id = Integer.parseInt(req.params("subCategoryId"));
