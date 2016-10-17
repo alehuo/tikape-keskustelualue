@@ -12,7 +12,7 @@
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Keskustelualue</a>
+                        <a class="navbar-brand" th:href="@{~/}">Keskustelualue</a>
                     </div>
                     <ul class="nav navbar-nav" th:if="${user == null}">
                         <li><a href="/login">Kirjaudu sisään</a></li>
@@ -24,13 +24,19 @@
                     </ul>
                 </div>
             </nav>
-            <table class="table" th:each="kategoria : ${kategoriat}">
+            <table class="table" th:each="kategoria : ${kategoriat}" th:unless="${#lists.isEmpty(kategoriat)}">
 
                 <tr class="active category">
                     <td th:text="${kategoria.name}" style="font-weight: bold;">Otsikko</td><td></td><td></td>
                 </tr>
                 <tr class="subCategory" th:each="alaKategoria : ${kategoria.subCategories}">
-                    <td style="font-weight: bold;"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td><td th:text="${alaKategoria.description}">Kuvaus</td><td>Viimeisin viesti: </td>
+                    <td style="font-weight: bold;"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td>
+                    <td th:text="${alaKategoria.description}">Kuvaus</td>
+                    <td th:if='${alaKategoria.hasMessages}'>Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
+                            <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
+                        </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span>
+                    </td>
+                    <td th:if="!${alaKategoria.hasMessages}">Ei viestejä</td>
                 </tr>
             </table>
         </div>

@@ -1,5 +1,7 @@
 package tikape.runko.domain;
 
+import java.util.Objects;
+
 public class User {
 
     private int id;
@@ -10,6 +12,7 @@ public class User {
 
     /**
      * User -luokka
+     *
      * @param id Käyttäjän ID
      * @param username Käyttäjätunnus
      */
@@ -34,6 +37,10 @@ public class User {
      */
     public String getUsername() {
         return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     /**
@@ -94,6 +101,18 @@ public class User {
     public User setUserLevel(int level) {
         userLevel = level;
         return this;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     /**

@@ -14,6 +14,11 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
 
     private final Database database;
 
+    /**
+     * Viestiketju Dao
+     *
+     * @param database Tietokantaobjekti
+     */
     public MessageThreadDao(Database database) {
         this.database = database;
     }
@@ -21,8 +26,8 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
     /**
      * Hakee tietyn viestiketjun ID:n avulla
      *
-     * @param key
-     * @return
+     * @param key Viestiketjun ID
+     * @return Viestiketju
      * @throws SQLException
      */
     @Override
@@ -37,25 +42,26 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         }
 
         Integer subCatId = rs.getInt("subCategoryId");
+        Integer threadId = rs.getInt("threadId");
         Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
-        String description = rs.getString("description");
-        MessageThread msgThread = new MessageThread(subCatId, userId, title, creationDate);
+        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
         rs.close();
         stmt.close();
 
         stmt = connection.prepareStatement("SELECT * FROM posts WHERE threadId = ? ORDER BY postId ASC");
-        stmt.setInt(0, key);
-        rs = stmt.executeQuery();
+        stmt.setInt(1, key);
+        ResultSet result = stmt.executeQuery();
 
-        while (rs.next()) {
-            Integer postId = rs.getInt("subCategoryId");
-            userId = rs.getInt("userId");
-            String body = rs.getString("body");
-            String timeStamp = rs.getString("timestamp");
+        while (result.next()) {
+            Integer postId = result.getInt("postId");
+            userId = result.getInt("userId");
+            String body = result.getString("body");
+            String timeStamp = result.getString("timestamp");
             msgThread.addMessage(new Message(postId, userId, body, timeStamp));
         }
+        result.close();
 
         connection.close();
 
@@ -70,14 +76,15 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     @Override
     public List<MessageThread> findAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
+        return null;
     }
 
     /**
      * Hakee kaikki viestiketjut tietystä alakategoriasta
      *
-     * @param subCategoryId
-     * @return
+     * @param subCategoryId Alakategorian id
+     * @return Lista viestiketjuista
      * @throws SQLException
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
@@ -89,10 +96,11 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         List<MessageThread> msgThreads = new ArrayList<>();
         while (rs.next()) {
             Integer subCatId = rs.getInt("subCategoryId");
+            Integer threadId = rs.getInt("threadId");
             Integer userId = rs.getInt("userId");
             String title = rs.getString("title");
             String creationDate = rs.getString("creationDate");
-            msgThreads.add(new MessageThread(subCategoryId, userId, title, creationDate));
+            msgThreads.add(new MessageThread(subCategoryId, threadId, userId, title, creationDate));
         }
 
         rs.close();
@@ -110,17 +118,14 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
     }
 
     /**
      * Uuden viestiketjun luonti. Samalla lisätään viestiketjuun aloituspostaus.
      *
-     * @param msgThread
-     * @param subCategoryId
-     * @param title
-     * @param desc
-     * @throws java.sql.SQLException
+     * @param msgThread Viestiketju-olio
+     * @throws SQLException
      */
     public void add(MessageThread msgThread) throws SQLException {
         Connection connection = database.getConnection();
@@ -142,7 +147,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
                 stmt2.setInt(1, insertId.getInt(1));
                 stmt2.setInt(2, msgThread.getUserId());
                 //Oletetaan että MessageThread -olioon on lisätty yksi viesti
-                stmt2.setString(3, msgThread.getMessages().get(0).getTimeStamp());
+                stmt2.setString(3, msgThread.getMessages().get(0).getTimestamp());
                 stmt2.setString(4, msgThread.getMessages().get(0).getBody());
                 //Suorita kysely
                 stmt2.execute();

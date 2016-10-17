@@ -1,0 +1,41 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Etusivu</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
+    </head>
+
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <a class="navbar-brand"  th:href="@{~/}">Keskustelualue</a>
+                    </div>
+                    <ul class="nav navbar-nav" th:if="${user == null}">
+                        <li><a href="/login">Kirjaudu sisään</a></li>
+                        <li><a href="/register">Rekisteröidy</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav" th:unless="${user == null}">
+                        <li class='navbar-text' th:text="'Hei, ' + ${user.username}">Hei, <b>käyttäjätunnus</b></li>
+                        <li><a href="/logout">Kirjaudu ulos</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <h3 th:if="${user == null}">Ole hyvä ja kirjaudu sisään.</h3>
+            <form method ="POST" class="form-horizontal" th:if="${user != null}">
+                <div class="form-group">
+                    <label for="title">Otsikko</label>
+                    <input type="text" class="form-control" id="title" name ="title" size="50"/>
+                    <label for="title">Viesti</label>
+                    <textarea cols="150" rows="10" class="form-control" id="body"  name="body"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" name="addTopic">Uusi viestiketju</button>
+            </form>
+        </div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </body>
+
+</html>

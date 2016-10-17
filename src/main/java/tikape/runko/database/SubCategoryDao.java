@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import tikape.runko.domain.Category;
 import tikape.runko.domain.SubCategory;
 
 public class SubCategoryDao implements Dao<SubCategory, Integer> {
@@ -35,7 +36,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
             return null;
         }
 
-        Integer subCatId = rs.getInt("categoryId");
+        Integer subCatId = rs.getInt("subCatId");
         Integer mainCatId = rs.getInt("catId");
         String title = rs.getString("title");
         String description = rs.getString("description");
@@ -43,7 +44,16 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
         //Tämä kysely hakee uusimman viestin tietystä alakategoriasta. Haku palauttaa viestin timestampin, käyttäjätunnuksen, viestiketjun otsikon sekä ID:n.
         String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
-
+        PreparedStatement stmt2 = connection.prepareStatement(query);
+        stmt2.setInt(1, key);
+        //Tässä haetaan viimeisimmän viestin tiedot
+        ResultSet result = stmt2.executeQuery();
+        if (result.next()) {
+            cat.setLatestMessageThreadId(result.getInt("threadId"));
+            cat.setLatestMessageThreadTitle(result.getString("title"));
+            cat.setLatestMessageTimestamp(result.getString("timestamp"));
+            cat.setLatestMessageUsername(result.getString("username"));
+        }
         rs.close();
         stmt.close();
         connection.close();
@@ -70,11 +80,33 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
             Integer subCatId = rs.getInt("categoryId");
             String title = rs.getString("title");
             String description = rs.getString("description");
-            categories.add(new SubCategory(mainCatId, subCatId, title).setDescription(description));
+
+            SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
+            //Haetaan vielä viimeisin tieto
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            PreparedStatement stmt2 = connection.prepareStatement(query);
+            stmt2.setInt(1, cat.getSubCategoryId());
+            //Tässä haetaan viimeisimmän viestin tiedot
+            ResultSet result = stmt2.executeQuery();
+            if (result.next()) {
+                System.out.println(cat.getLatestMessageThreadId());
+                System.out.println(cat.getLatestMessageThreadTitle());
+                System.out.println(cat.getLatestMessageTimestamp());
+                System.out.println(cat.getLatestMessageUsername());
+                cat.setLatestMessageThreadId(result.getInt("threads.threadId"));
+                cat.setLatestMessageThreadTitle(result.getString("threads.title"));
+                cat.setLatestMessageTimestamp(result.getString("posts.timestamp"));
+                cat.setLatestMessageUsername(result.getString("users.username"));
+            }
+            categories.add(cat);
+            result.close();
+            stmt2.close();
+
         }
 
         rs.close();
         stmt.close();
+
         connection.close();
 
         return categories;
@@ -99,7 +131,24 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
             Integer subCatId = rs.getInt("subCatId");
             String title = rs.getString("title");
             String description = rs.getString("description");
-            categories.add(new SubCategory(mainCatId, subCatId, title).setDescription(description));
+
+            SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
+            //Haetaan vielä viimeisin tieto
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            PreparedStatement stmt2 = connection.prepareStatement(query);
+            stmt2.setInt(1, cat.getSubCategoryId());
+            //Tässä haetaan viimeisimmän viestin tiedot
+            ResultSet result = stmt2.executeQuery();
+            if (result.next()) {
+                cat.setHasMessages(true);
+                cat.setLatestMessageThreadId(result.getInt("threadId"));
+                cat.setLatestMessageThreadTitle(result.getString("title"));
+                cat.setLatestMessageTimestamp(result.getString("timestamp"));
+                cat.setLatestMessageUsername(result.getString("username"));
+            }
+            categories.add(cat);
+            result.close();
+            stmt2.close();
         }
 
         rs.close();

@@ -5,14 +5,18 @@ import java.util.List;
 import java.util.Scanner;
 import spark.ModelAndView;
 import spark.Session;
+import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
 import tikape.runko.database.Database;
+import tikape.runko.database.MessageDao;
 import tikape.runko.database.MessageThreadDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
+import tikape.runko.domain.Message;
+import tikape.runko.domain.MessageThread;
 import tikape.runko.domain.User;
 
 public class Main {
@@ -25,17 +29,21 @@ public class Main {
         if (System.getenv("DATABASE_URL") != null) {
             jdbcOsoite = System.getenv("DATABASE_URL");
         }
+
+        Spark.staticFileLocation("/img");
+
         Database database = new Database(jdbcOsoite);
         database.init();
 
         UserDao userDao = new UserDao(database);
         CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
-        MessageThreadDao msgDao = new MessageThreadDao(database);
+        MessageThreadDao msgThreadDao = new MessageThreadDao(database);
+        MessageDao msgDao = new MessageDao(database);
         Scanner sc = new Scanner(System.in);
 
         //Tekstikäyttöliittymän alustus
-        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgDao);
+        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgThreadDao);
         //Näytä tekstikäyttöliittymä
 //        textUi.show();
 
@@ -61,22 +69,38 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         //Näytä viestiketju
         get("/thread/:threadId", (req, res) -> {
+            HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("threadId"));
+            map.put("messageThread", msgThreadDao.findOne(id));
+            map.put("viestit", msgDao.findAllFromTopic(id));
+            map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään viestiketju
-            return "Viestiketjun id: " + id;
-        });
+            return new ModelAndView(map, "messages");
+        }, new ThymeleafTemplateEngine());
         //Lähetä viestiketjuun uusi vastaus
         post("/thread/:threadId", (req, res) -> {
             int id = Integer.parseInt(req.params("threadId"));
+            User u = req.session().attribute("user");
+            String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+            String body = req.queryParams("message");
+            Message m = new Message(u.getId(), body, ts);
+            m.setThreadId(id);
+            msgDao.add(m);
             //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
+            res.redirect("/thread/" + id);
             return "Vastaus viestiketjuun, jolla id: " + id;
         });
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
+            HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("subCategoryId"));
+            map.put("subcategoryId", id);
+            map.put("subcategory", subCatDao.findOne(id));
+            map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
+            map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
-            return "Alakategorian id: " + id;
-        });
+            return new ModelAndView(map, "topics");
+        }, new ThymeleafTemplateEngine());
         //Uuden viestiketjun lähettäminen:
         post("/subcategory/:subCategoryId", (req, res) -> {
             int id = Integer.parseInt(req.params("subCategoryId"));
@@ -86,8 +110,24 @@ public class Main {
         //Uuden viestiketjun luominen:
         get("/new/:subCategoryId", (req, res) -> {
             int id = Integer.parseInt(req.params("subCategoryId"));
+            HashMap map = new HashMap<>();
+            map.put("user", (User) req.session().attribute("user"));
             //Näytetään tässä lomake käyttäjälle
-            return "Tällä luodaan uusi viestiketju alakategoriaan " + id + ".";
+            return new ModelAndView(map, "new");
+        }, new ThymeleafTemplateEngine());
+
+        //Uuden viestiketjun luominen:
+        post("/new/:subCategoryId", (req, res) -> {
+            int id = Integer.parseInt(req.params("subCategoryId"));
+            HashMap map = new HashMap<>();
+            User u = req.session().attribute("user");
+            String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+            MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
+            tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp
+            ));
+            msgThreadDao.add(tmpThread);
+            res.redirect("/subcategory/" + id);
+            return "";
         });
 
         //Kirjaudu sisään
@@ -107,12 +147,13 @@ public class Main {
                     return "Kirjauduttu sisään.";
                 } else {
                     //Väärä salasana!
-                    res.redirect("/login");
+                    res.redirect("/login?error");
                     return "Käyttäjätunnus tai salasana väärä.";
                 }
             } else {
                 //Käyttäjätunnusta ei ole olemassa!
-                res.redirect("/login");
+
+                res.redirect("/login?error");
                 return "Käyttäjätunnus tai salasana väärä.";
             }
 
@@ -138,6 +179,9 @@ public class Main {
         //Kirjautumissivu
         get("/login", (req, res) -> {
             HashMap map = new HashMap<>();
+            if (req.queryParams("error") != null) {
+                map.put("invalidCredentials", true);
+            }
             return new ModelAndView(map, "login");
         }, new ThymeleafTemplateEngine());
         //Rekisteröitymissivu
