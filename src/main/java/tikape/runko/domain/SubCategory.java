@@ -105,7 +105,7 @@ public class SubCategory {
 
 
     public void setLatestMessageTimestamp(String latestMessageTimestamp) {
-        this.latestMessageTimestamp = latestMessageTimestamp;
+        this.latestMessageTimestamp = latestMessageTimestamp.substring(0, 16);
     }
 
     public int getLatestMessageThreadId() {

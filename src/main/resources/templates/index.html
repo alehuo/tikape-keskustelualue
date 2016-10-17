@@ -32,7 +32,11 @@
                 <tr class="subCategory" th:each="alaKategoria : ${kategoria.subCategories}">
                     <td style="font-weight: bold;"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td>
                     <td th:text="${alaKategoria.description}">Kuvaus</td>
-                    <td th:if='${alaKategoria.hasMessages}'>Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span></b> <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span> <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i></td>
+                    <td th:if='${alaKategoria.hasMessages}'>Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername} + ', '">käyttäjä</span>
+                            <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}">
+                                    <span th:text="${alaKategoria.latestMessageThreadTitle} + ', '">Viestiketjun otsikko</span></a></i>
+                        </b><span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span>
+                    </td>
                     <td th:if="!${alaKategoria.hasMessages}">Ei viestejä</td>
                 </tr>
             </table>

@@ -25,7 +25,7 @@ public class Message {
         this.messageId = messageId;
         this.userId = userId;
         this.body = body;
-        this.timestamp = timeStamp;
+        this.timestamp = timeStamp.substring(0, 16);
 
     }
 
