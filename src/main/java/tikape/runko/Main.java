@@ -39,7 +39,7 @@ public class Main {
         //Tekstikäyttöliittymän alustus
         TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgThreadDao);
         //Näytä tekstikäyttöliittymä
-        textUi.show();
+//        textUi.show();
 
         //Oletusportti
         int appPort = 4567;
@@ -65,7 +65,9 @@ public class Main {
         get("/thread/:threadId", (req, res) -> {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("threadId"));
+            map.put("messageThread", msgThreadDao.findOne(id));
             map.put("viestit", msgDao.findAllFromTopic(id));
+            map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään viestiketju
             return new ModelAndView(map, "messages");
         }, new ThymeleafTemplateEngine());
@@ -80,6 +82,7 @@ public class Main {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("subCategoryId"));
             map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
+            map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
             return new ModelAndView(map, "topics");
         }, new ThymeleafTemplateEngine());

@@ -1,11 +1,21 @@
 package tikape.runko.domain;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Formatter;
+
 public class SubCategory {
 
-    public int subCategoryId;
-    public int categoryId;
-    public String name;
-    public String description;
+    private int subCategoryId;
+    private int categoryId;
+    private String name;
+    private String description;
+    private String latestMessageTimestamp;
+    private int latestMessageThreadId;
+    private String latestMessageThreadTitle;
+    private String latestMessageUsername;
+    private boolean hasMessages = false;
 
     /**
      * Alakategoria -luokka
@@ -87,6 +97,47 @@ public class SubCategory {
     @Override
     public String toString() {
         return subCategoryId + ": " + name + " (" + description + ")";
+    }
+
+    public String getLatestMessageTimestamp() {
+        return latestMessageTimestamp;
+    }
+
+
+    public void setLatestMessageTimestamp(String latestMessageTimestamp) {
+        this.latestMessageTimestamp = latestMessageTimestamp;
+    }
+
+    public int getLatestMessageThreadId() {
+        return latestMessageThreadId;
+    }
+
+    public void setLatestMessageThreadId(int latestMessageThreadId) {
+        this.latestMessageThreadId = latestMessageThreadId;
+    }
+
+    public String getLatestMessageUsername() {
+        return latestMessageUsername;
+    }
+
+    public void setLatestMessageUsername(String latestMessageUsername) {
+        this.latestMessageUsername = latestMessageUsername;
+    }
+
+    public void setLatestMessageThreadTitle(String latestMessageThreadTitle) {
+        this.latestMessageThreadTitle = latestMessageThreadTitle;
+    }
+
+    public String getLatestMessageThreadTitle() {
+        return latestMessageThreadTitle;
+    }
+
+    public void setHasMessages(boolean hasMessages) {
+        this.hasMessages = hasMessages;
+    }
+
+    public boolean getHasMessages() {
+        return hasMessages;
     }
 
 }

@@ -46,22 +46,22 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
-        String description = rs.getString("description");
         MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
         rs.close();
         stmt.close();
 
         stmt = connection.prepareStatement("SELECT * FROM posts WHERE threadId = ? ORDER BY postId ASC");
-        stmt.setInt(0, key);
-        rs = stmt.executeQuery();
+        stmt.setInt(1, key);
+        ResultSet result = stmt.executeQuery();
 
-        while (rs.next()) {
-            Integer postId = rs.getInt("subCategoryId");
-            userId = rs.getInt("userId");
-            String body = rs.getString("body");
-            String timeStamp = rs.getString("timestamp");
+        while (result.next()) {
+            Integer postId = result.getInt("postId");
+            userId = result.getInt("userId");
+            String body = result.getString("body");
+            String timeStamp = result.getString("timestamp");
             msgThread.addMessage(new Message(postId, userId, body, timeStamp));
         }
+        result.close();
 
         connection.close();
 
@@ -147,7 +147,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
                 stmt2.setInt(1, insertId.getInt(1));
                 stmt2.setInt(2, msgThread.getUserId());
                 //Oletetaan että MessageThread -olioon on lisätty yksi viesti
-                stmt2.setString(3, msgThread.getMessages().get(0).getTimeStamp());
+                stmt2.setString(3, msgThread.getMessages().get(0).getTimestamp());
                 stmt2.setString(4, msgThread.getMessages().get(0).getBody());
                 //Suorita kysely
                 stmt2.execute();

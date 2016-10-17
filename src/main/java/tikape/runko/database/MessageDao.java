@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
 
 /**
  *
@@ -44,7 +43,7 @@ public class MessageDao implements Dao<Message, Integer>{
     public List<Message> findAllFromTopic(int topicId) throws SQLException {
         
     Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM posts WHERE threadId = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ?");
         stmt.setInt(1, topicId);
         ResultSet rs = stmt.executeQuery();
 
@@ -52,9 +51,10 @@ public class MessageDao implements Dao<Message, Integer>{
         while (rs.next()) {
             Integer postId = rs.getInt("postId");
             Integer userId = rs.getInt("userId");
+            String username = rs.getString("username");
             String body = rs.getString("body");
             String timeStamp = rs.getString("timestamp");
-            msg.add(new Message(postId, userId, body, timeStamp));
+            msg.add(new Message(postId, userId, body, timeStamp).setUsername(username));
         }
 
         rs.close();
