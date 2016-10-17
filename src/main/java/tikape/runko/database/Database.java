@@ -150,8 +150,13 @@ public class Database {
         lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (3,1,'Testialakategoria 3','Hello World');");
         lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (4,2,'Testialakategoria 4','Hello World');");
         lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (5,2,'Testialakategoria 5','Hello World');");
-        //Alakategoriat
+        //Admin -tunnus (admin::admin)
+        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (1,'admin','RLxcC7GMXsb4lymp+tV/aMAJfCVc7N9+Sj1c2mZryT0=','5Wqs2e/dGhg=',1)");
+        //User -tunnus (user:user)
+        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
+        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, creationDate) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
+        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','Hello world!')");
         return lista;
     }
 }
