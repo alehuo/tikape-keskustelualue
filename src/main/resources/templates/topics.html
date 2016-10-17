@@ -12,7 +12,7 @@
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Keskustelualue</a>
+                        <a class="navbar-brand"  th:href="@{~/}">Keskustelualue</a>
                     </div>
                     <ul class="nav navbar-nav" th:if="${user == null}">
                         <li><a href="/login">Kirjaudu sisään</a></li>
@@ -24,7 +24,11 @@
                     </ul>
                 </div>
             </nav>
-            <table class="table">
+            <h3 th:if="${#lists.isEmpty(viestiketjut)}">Ei viestiketjuja.</h3>
+            <p th:if="${user != null}">
+                <a th:href="@{'~/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
+            </p>
+            <table class="table" th:unless="${#lists.isEmpty(viestiketjut)}">
                 <tr th:each="viestiketju : ${viestiketjut}">
                     <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td>
                 </tr>

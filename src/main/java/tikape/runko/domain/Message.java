@@ -11,6 +11,7 @@ public class Message {
     private String username;
     private final int messageId;
     private final String timestamp;
+    private int threadId;
 
     /**
      * Viesti -luokka
@@ -26,6 +27,10 @@ public class Message {
         this.body = body;
         this.timestamp = timeStamp;
 
+    }
+
+    public Message(int userId, String body, String timeStamp) {
+        this(-1, userId, body, timeStamp);
     }
 
     public String getUsername() {
@@ -62,6 +67,18 @@ public class Message {
      */
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public int getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(int threadId) {
+        this.threadId = threadId;
+    }
+
+    public int getMessageId() {
+        return messageId;
     }
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 import spark.ModelAndView;
 import spark.Session;
+import spark.Spark;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
@@ -14,10 +15,12 @@ import tikape.runko.database.MessageThreadDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
+import tikape.runko.domain.Message;
+import tikape.runko.domain.MessageThread;
 import tikape.runko.domain.User;
 
 public class Main {
-
+    
     public static void main(String[] args) throws Exception {
         //Tietokannan alustus
         //Käytetään oletuksena paikallista sqlite-tietokantaa
@@ -26,9 +29,12 @@ public class Main {
         if (System.getenv("DATABASE_URL") != null) {
             jdbcOsoite = System.getenv("DATABASE_URL");
         }
+        
+        Spark.staticFileLocation("/img");
+        
         Database database = new Database(jdbcOsoite);
         database.init();
-
+        
         UserDao userDao = new UserDao(database);
         CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
@@ -58,7 +64,7 @@ public class Main {
             List<Category> categories = catDao.findAll();
             map.put("kategoriat", categories);
             map.put("user", (User) req.session().attribute("user"));
-
+            
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         //Näytä viestiketju
@@ -74,13 +80,21 @@ public class Main {
         //Lähetä viestiketjuun uusi vastaus
         post("/thread/:threadId", (req, res) -> {
             int id = Integer.parseInt(req.params("threadId"));
+            User u = req.session().attribute("user");
+            String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+            String body = req.queryParams("message");
+            Message m = new Message(u.getId(), body, ts);
+            m.setThreadId(id);
+            msgDao.add(m);
             //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
+            res.redirect("/thread/" + id);
             return "Vastaus viestiketjuun, jolla id: " + id;
         });
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("subCategoryId"));
+            map.put("subcategoryId", id);
             map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
             map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
@@ -95,8 +109,24 @@ public class Main {
         //Uuden viestiketjun luominen:
         get("/new/:subCategoryId", (req, res) -> {
             int id = Integer.parseInt(req.params("subCategoryId"));
+            HashMap map = new HashMap<>();
+            map.put("user", (User) req.session().attribute("user"));
             //Näytetään tässä lomake käyttäjälle
-            return "Tällä luodaan uusi viestiketju alakategoriaan " + id + ".";
+            return new ModelAndView(map, "new");
+        }, new ThymeleafTemplateEngine());
+
+        //Uuden viestiketjun luominen:
+        post("/new/:subCategoryId", (req, res) -> {
+            int id = Integer.parseInt(req.params("subCategoryId"));
+            HashMap map = new HashMap<>();
+            User u = req.session().attribute("user");
+            String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+            MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
+            tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp
+            ));
+            msgThreadDao.add(tmpThread);
+            res.redirect("/subcategory/" + id);
+            return "";
         });
 
         //Kirjaudu sisään
@@ -124,7 +154,7 @@ public class Main {
                 res.redirect("/login");
                 return "Käyttäjätunnus tai salasana väärä.";
             }
-
+            
         });
         //Uuden käyttäjän lisääminen
         post("/register", (req, res) -> {

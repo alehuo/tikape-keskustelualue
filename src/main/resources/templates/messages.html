@@ -50,7 +50,7 @@
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="#">Keskustelualue</a>
+                        <a class="navbar-brand"  th:href="@{~/}">Keskustelualue</a>
                     </div>
                     <ul class="nav navbar-nav" th:if="${user == null}">
                         <li><a href="/login">Kirjaudu sisään</a></li>
@@ -63,13 +63,14 @@
                 </div>
             </nav>
             <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
+
             <div class="message" th:each="viesti : ${viestit}">
                 <div class="timestamp" th:text="${viesti.timestamp}">16.06.2016 09:34</div>
                 <div class="userinfo">
                     <p>
                         <b th:text="${viesti.username}">Käyttäjätunnus</b>
                     </p>
-                    <img src="../img/avatar_default_256_256.png" height="96"/> 
+                    <img th:src="@{'~/avatar_default_256_256.png'}" height="64"/> 
                 </div>
                 <div class="messageContent" th:text="${viesti.body}">
                     Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
@@ -89,7 +90,7 @@
             </div>
             <div class="replyBox" th:if="${user != null}">
                 <form method="POST" class="form-horizontal">
-                    <textarea name="message"></textarea>
+                    <textarea cols="100" rows="7" name="message"></textarea><br/>
                     <input type="submit" value="Lähetä"/>
                 </form>
                 <p>
@@ -97,7 +98,6 @@
                 </p>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-            <script src="https://cdn.tinymce.com/4/tinymce.min.js"></script>
             <script>tinymce.init({selector: 'textarea', height: 200, max_height: 250});</script>
         </div>
     </body>
