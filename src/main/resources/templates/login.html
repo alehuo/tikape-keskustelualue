@@ -10,7 +10,9 @@
     <body>
         <div class="container">
             <h2>Kirjaudu sisään</h2>
-            
+            <div class="alert alert-danger" th:if="${invalidCredentials}">
+                <strong>Virhe: </strong> Väärä käyttäjätunnus tai salasana
+            </div>
             <form action="/login" method="POST" class="form-horizontal">
                 <div class="form-group">
                     <label for="username">Käyttäjätunnus</label>

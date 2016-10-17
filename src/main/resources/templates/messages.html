@@ -63,40 +63,45 @@
                     </ul>
                 </div>
             </nav>
-            <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
-
-            <div class="message" th:each="viesti : ${viestit}">
-                <div class="timestamp" th:text="${viesti.timestamp}">16.06.2016 09:34</div>
-                <div class="userinfo">
-                    <p>
-                        <b th:text="${viesti.username}">Käyttäjätunnus</b>
-                    </p>
-                    <img th:src="@{'~/avatar_default_256_256.png'}" height="64"/> 
-                </div>
-                <div class="messageContent" th:text="${viesti.body}">
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
-                    Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. 
-                    Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. 
-                    Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
-                    Donec ultricies nisl ut felis, suspendisse potenti. 
-                    Lorem ipsum ligula ut hendrerit mollis, ipsum erat vehicula risus, eu suscipit sem libero nec erat. 
-                    Aliquam erat volutpat. Sed congue augue vitae neque. Nulla consectetuer porttitor pede. 
-                    Fusce purus morbi tortor magna condimentum vel, placerat id blandit sit amet tortor.
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
-                    Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. 
-                    Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. 
-                    Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
-                    Donec ultricies nisl ut felis, suspendisse potenti. 
-                </div>
+            <div class="alert alert-danger" th:if="${messageThread == null}">
+                <strong>Virhe: </strong> Viestiketjua ei löydy.
             </div>
-            <div class="replyBox" th:if="${user != null}">
-                <form method="POST" class="form-horizontal">
-                    <textarea cols="100" rows="7" name="message"></textarea><br/>
-                    <input type="submit" value="Lähetä"/>
-                </form>
-                <p>
-                    <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
-                </p>
+            <div th:if="${messageThread != null}">
+                <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
+
+                <div class="message" th:each="viesti : ${viestit}">
+                    <div class="timestamp" th:text="${viesti.timestamp}">16.06.2016 09:34</div>
+                    <div class="userinfo">
+                        <p>
+                            <b th:text="${viesti.username}">Käyttäjätunnus</b>
+                        </p>
+                        <img th:src="@{'~/avatar_default_256_256.png'}" height="64"/> 
+                    </div>
+                    <div class="messageContent" th:text="${viesti.body}">
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
+                        Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. 
+                        Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. 
+                        Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
+                        Donec ultricies nisl ut felis, suspendisse potenti. 
+                        Lorem ipsum ligula ut hendrerit mollis, ipsum erat vehicula risus, eu suscipit sem libero nec erat. 
+                        Aliquam erat volutpat. Sed congue augue vitae neque. Nulla consectetuer porttitor pede. 
+                        Fusce purus morbi tortor magna condimentum vel, placerat id blandit sit amet tortor.
+                        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
+                        Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. 
+                        Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. 
+                        Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
+                        Donec ultricies nisl ut felis, suspendisse potenti. 
+                    </div>
+                </div>
+                <div class="replyBox" th:if="${user != null}">
+                    <form method="POST" class="form-horizontal">
+                        <textarea cols="100" rows="7" name="message"></textarea><br/>
+                        <input type="submit" value="Lähetä"/>
+                    </form>
+                    <p>
+                        <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
+                    </p>
+                </div>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script>tinymce.init({selector: 'textarea', height: 200, max_height: 250});</script>

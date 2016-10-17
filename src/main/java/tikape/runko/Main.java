@@ -20,7 +20,7 @@ import tikape.runko.domain.MessageThread;
 import tikape.runko.domain.User;
 
 public class Main {
-    
+
     public static void main(String[] args) throws Exception {
         //Tietokannan alustus
         //Käytetään oletuksena paikallista sqlite-tietokantaa
@@ -29,12 +29,12 @@ public class Main {
         if (System.getenv("DATABASE_URL") != null) {
             jdbcOsoite = System.getenv("DATABASE_URL");
         }
-        
+
         Spark.staticFileLocation("/img");
-        
+
         Database database = new Database(jdbcOsoite);
         database.init();
-        
+
         UserDao userDao = new UserDao(database);
         CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
@@ -64,7 +64,7 @@ public class Main {
             List<Category> categories = catDao.findAll();
             map.put("kategoriat", categories);
             map.put("user", (User) req.session().attribute("user"));
-            
+
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         //Näytä viestiketju
@@ -95,6 +95,7 @@ public class Main {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("subCategoryId"));
             map.put("subcategoryId", id);
+            map.put("subcategory", subCatDao.findOne(id));
             map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
             map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
@@ -146,15 +147,16 @@ public class Main {
                     return "Kirjauduttu sisään.";
                 } else {
                     //Väärä salasana!
-                    res.redirect("/login");
+                    res.redirect("/login?error");
                     return "Käyttäjätunnus tai salasana väärä.";
                 }
             } else {
                 //Käyttäjätunnusta ei ole olemassa!
-                res.redirect("/login");
+
+                res.redirect("/login?error");
                 return "Käyttäjätunnus tai salasana väärä.";
             }
-            
+
         });
         //Uuden käyttäjän lisääminen
         post("/register", (req, res) -> {
@@ -177,6 +179,9 @@ public class Main {
         //Kirjautumissivu
         get("/login", (req, res) -> {
             HashMap map = new HashMap<>();
+            if (req.queryParams("error") != null) {
+                map.put("invalidCredentials", true);
+            }
             return new ModelAndView(map, "login");
         }, new ThymeleafTemplateEngine());
         //Rekisteröitymissivu

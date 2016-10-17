@@ -36,7 +36,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
             return null;
         }
 
-        Integer subCatId = rs.getInt("categoryId");
+        Integer subCatId = rs.getInt("subCatId");
         Integer mainCatId = rs.getInt("catId");
         String title = rs.getString("title");
         String description = rs.getString("description");
@@ -49,10 +49,10 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         //Tässä haetaan viimeisimmän viestin tiedot
         ResultSet result = stmt2.executeQuery();
         if (result.next()) {
-            cat.setLatestMessageThreadId(result.getInt("threads.threadId"));
-            cat.setLatestMessageThreadTitle(result.getString("threads.title"));
-            cat.setLatestMessageTimestamp(result.getString("posts.timestamp"));
-            cat.setLatestMessageUsername(result.getString("users.username"));
+            cat.setLatestMessageThreadId(result.getInt("threadId"));
+            cat.setLatestMessageThreadTitle(result.getString("title"));
+            cat.setLatestMessageTimestamp(result.getString("timestamp"));
+            cat.setLatestMessageUsername(result.getString("username"));
         }
         rs.close();
         stmt.close();
