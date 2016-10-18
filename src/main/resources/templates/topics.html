@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Etusivu</title>
+        <title>Viestiketjut</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
     </head>
@@ -28,16 +28,19 @@
                 <strong>Virhe: </strong> Alakategoriaa ei löydy.
             </div>
             <div th:unless="${subcategory == null}">
-            <h3 th:if="${#lists.isEmpty(viestiketjut)}">Ei viestiketjuja.</h3>
-            <p th:if="${user != null}">
-                <a th:href="@{'~/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
-            </p>
-            <table class="table" th:unless="${#lists.isEmpty(viestiketjut)}">
-                <tr th:each="viestiketju : ${viestiketjut}">
-                    <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td>Käyttäjätunnus</td><td>Viestien lukumäärä</td><td>Viimeisin viesti</td>
-                </tr>
-            </table>
-        </div>
+                <h3 th:if="${#lists.isEmpty(viestiketjut)}">Ei viestiketjuja.</h3>
+                <p th:if="${user != null}">
+                    <a th:href="@{'~/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
+                </p>
+                <table class="table" th:unless="${#lists.isEmpty(viestiketjut)}">
+                    <thead>
+                        <tr><td>Otsikko</td><td>Luonut</td><td>Viestien lukumäärä</td><td>Viimeisin viesti</td></tr>
+                    </thead>
+                    <tr th:each="viestiketju : ${viestiketjut}">
+                        <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td>Käyttäjätunnus</td><td>Viestien lukumäärä</td><td>Viimeisin viesti</td>
+                    </tr>
+                </table>
+            </div>
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>

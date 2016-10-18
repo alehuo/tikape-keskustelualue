@@ -1,10 +1,5 @@
 package tikape.runko.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Formatter;
-
 public class SubCategory {
 
     private int subCategoryId;

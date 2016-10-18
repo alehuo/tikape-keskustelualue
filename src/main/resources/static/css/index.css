@@ -1,13 +1,13 @@
 .category {
     width: 100%;
     margin-top: 8px;
-    margin-bottom: 8px;
-    background-color: #f2f2f2;
+    margin-bottom: 30px;
 }
 .categoryheader {
     width: 100%;
     height: 48px;
     line-height: 48px;
+    margin-bottom: 15px;
 }
 .categoryname {
     font-size: 16pt;
