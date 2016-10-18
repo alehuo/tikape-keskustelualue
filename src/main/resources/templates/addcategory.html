@@ -1,0 +1,23 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <title>Lisää uusi yläkategoria</title>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
+    </head>
+
+    <body>
+        <div class="container">
+            <h2>Lisää uusi yläkategoria</h2>
+            <form method="POST" class="form-horizontal">
+                <div class="form-group">
+                    <label for="categoryname">Yläkategorian nimi</label>
+                    <input type="text" class="form-control" id="categoryname" name="categoryname" placeholder="Kategorian nimi" autofocus="true"/><br/>
+                </div>
+                <button type="submit" class="btn btn-primary" name="add">Lisää</button>
+            </form>
+        </div>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </body>
+</html>

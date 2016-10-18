@@ -15,6 +15,7 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Yläkategorian DAO
+     *
      * @param db Database
      */
     public CategoryDao(Database db) {
@@ -24,9 +25,10 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Palauttaa kategorian tietyn kategorian ID:n avulla
+     *
      * @param key Kategorian ID
      * @return Kategoria
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Override
     public Category findOne(Integer key) throws SQLException {
@@ -55,15 +57,16 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Palauttaa jokaisen kategorian sekä hakee niiden alakategoriat
+     *
      * @return Lista kategorioista sekä niiden alakategorioista
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Override
     public List<Category> findAll() throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM categories");
         ResultSet rs = stmt.executeQuery();
-        
+
         List<Category> categories = new ArrayList<>();
         while (rs.next()) {
             Integer id = rs.getInt("categoryId");
@@ -82,19 +85,24 @@ public class CategoryDao implements Dao<Category, Integer> {
 
     /**
      * Poista kategorian
+     *
      * @param key Kategorian ID
-     * @throws SQLException 
+     * @throws SQLException
      */
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("DELETE FROM categories WHERE categoryId = ?");
+        stmt.setInt(1, key);
+        stmt.execute();
     }
 
     /**
      * Lisää kategorian
+     *
      * @param c Kategoria
      * @return true / false
-     * @throws SQLException 
+     * @throws SQLException
      */
     public boolean add(Category c) throws SQLException {
         Connection connection = database.getConnection();

@@ -17,6 +17,7 @@ import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
 public class Main {
@@ -194,6 +195,50 @@ public class Main {
             //Hylätään istunto
             Session sess = req.session();
             sess.invalidate();
+            res.redirect("/");
+            return "";
+        });
+
+        get("/category/delete/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
+            for (SubCategory c : subCategories) {
+                msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                msgThreadDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                subCatDao.delete(c.getSubCategoryId());
+            }
+            catDao.delete(id);
+            res.redirect("/");
+            return "";
+        });
+        get("/subcategory/delete/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            msgDao.deleteAllFromSubCategory(id);
+            msgThreadDao.deleteAllFromSubCategory(id);
+            subCatDao.delete(id);
+            res.redirect("/");
+            return "";
+        });
+        get("/subcategory/new/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            return new ModelAndView(map, "addsubcategory");
+        }, new ThymeleafTemplateEngine());
+        post("/subcategory/new/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            String name = req.queryParams("subcategoryname");
+            String desc = req.queryParams("subcategorydesc");
+            SubCategory c = new SubCategory(id, name).setDescription(desc);
+            subCatDao.add(c);
+            res.redirect("/");
+            return "";
+        });
+        get("/category/new", (req, res) -> {
+            HashMap map = new HashMap<>();
+            return new ModelAndView(map, "addcategory");
+        }, new ThymeleafTemplateEngine());
+        post("/category/new", (req, res) -> {
+            String name = req.queryParams("categoryname");
+            catDao.add(new Category(name));
             res.redirect("/");
             return "";
         });

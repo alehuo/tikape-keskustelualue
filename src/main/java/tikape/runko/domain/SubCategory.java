@@ -30,6 +30,10 @@ public class SubCategory {
         this.name = name;
     }
 
+    public SubCategory(int categoryId, String name) {
+        this(categoryId, -1, name);
+    }
+
     /**
      * Palauttaa alakategorian nimen
      *
@@ -102,7 +106,6 @@ public class SubCategory {
     public String getLatestMessageTimestamp() {
         return latestMessageTimestamp;
     }
-
 
     public void setLatestMessageTimestamp(String latestMessageTimestamp) {
         this.latestMessageTimestamp = latestMessageTimestamp.substring(0, 16);
