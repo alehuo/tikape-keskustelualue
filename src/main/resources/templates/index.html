@@ -5,78 +5,7 @@
         <title>Etusivu</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
-        <style type="text/css">
-            .category {
-                width: 100%;
-                margin-top: 8px;
-                margin-bottom: 8px;
-                background-color: #f2f2f2;
-            }
-            .categoryheader {
-                width: 100%;
-                height: 48px;
-                line-height: 48px;
-            }
-            .categoryname {
-                font-size: 16pt;
-                font-weight: bold;
-                width: 50%;
-                padding-left: 10px;
-                display: inline-block;
-            }
-            .categorydeletebutton {
-                width: 49%;
-                text-align: right;
-                padding-right: 4px;
-                display: inline-block;
-            }
-            .subcategory {
-                width: 100%;
-                /*margin-top: 10px;
-                margin-bottom: 10px;*/
-            }
-            .subcategory:first-child {
-                margin-top: 10px;
-            }
-            .subcategoryheader {
-                width: 100%;
-                height: 30px;
-                line-height: 30px;
-                -webkit-box-sizing: border-box;
-            }
-            .subcategorytitle {
-                padding-left: 20px;
-                font-size: 11pt;
-                font-weight: bold;
-                width: 30%;
-                display: inline-block;
-            }
-            .subcategorydesc {
-                width: 60%;
-                font-size: 8pt;
-                display: inline-block;
-            }
-            .deletebtn {
-                width: 9%;
-                display: inline-block;
-            }
-            .latestmessage {
-                clear: both;
-                width: 100%;
-                height: 25px;
-                line-height: 25px;
-                padding-left: 30px;
-            }
-            .borderbox {
-                box-sizing:  border-box;
-                -ms-box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                -webkit-box-sizing: border-box;
-            }
-            .subcategory:nth-child(even) {
-                background-color: #f7f7f7;
-            }
-        </style>
+        <link rel="stylesheet" th:href="@{~/css/index.css}" type="text/css"/>
     </head>
 
     <body>
@@ -99,51 +28,24 @@
             <p th:if="${user != null and user.userLevel == 1}">
                 <a th:href="@{'~/category/new'}" class="btn btn-success" role="button">Uusi yläkategoria</a>
             </p>
-            <!--<table class="table" th:each="kategoria : ${kategoriat}" th:unless="${#lists.isEmpty(kategoriat)}">
-
-                <tr class="active category">
-                    <td th:text="${kategoria.name}" style="font-weight: bold;">Otsikko</td><td></td><td></td><td th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger" role="button">Poista</a></td>
-                </tr>
-                <tr class="subCategory" th:each="alaKategoria : ${kategoria.subCategories}">
-                    <td style="font-weight: bold; min-width: 33%; white-space: nowrap; text-align: center;"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}" href=""></a></td>
-                    <td th:text="${alaKategoria.description}" style="min-width: 33%; white-space: nowrap; text-align: center;">Kuvaus</td>
-                    <td th:if='${alaKategoria.hasMessages}' style="min-width: 33%; white-space: nowrap; text-align: center;">Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
-                            <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
-                        </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span>
-                    </td>
-                    <td th:if="!${alaKategoria.hasMessages}" style="text-align: center;">Ei viestejä</td>
-                    <td th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger" role="button">Poista</a></td>
-                </tr>
-                <tr th:if="${user != null and user.userLevel == 1}"><td colspan="4"><a th:href="@{'~/subcategory/new/' + ${kategoria.categoryId}}" class="btn btn-success" role="button">Uusi alakategoria</a></td></tr>
-            </table>-->
-            <div class="category">
+            <div class="category" th:each="kategoria : ${kategoriat}" th:unless="${#lists.isEmpty(kategoriat)}">
                 <div class="categoryheader">
-                    <div class="categoryname">Kategorian nimi</div>
-                    <div class="categorydeletebutton">Poista -nappi</div>    
+                    <div class="categoryname" th:text="${kategoria.name}">Kategorian nimi</div>
+                    <div class="categorydeletebutton" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger" role="button">Poista</a></div>    
                 </div>
-                <div class="subcategory">
+                <div class="subcategory" th:each="alaKategoria : ${kategoria.subCategories}">
                     <div class="subcategoryheader borderbox">
                         <div class="subcategorytitle">Alakategorian otsikko</div>
-                        <div class="subcategorydesc">Alakategorian kuvaus</div>
-                        <div class="deletebtn">Poista-nappi</div>
+                        <div class="subcategorydesc" th:text="${alaKategoria.description}">Alakategorian kuvaus</div>
+                        <div class="deletebtn" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger" role="button">Poista</a></div>
                     </div>
-                    <div class="latestmessage">Viimeisin viesti</div>
+                    <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
+                            <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
+                        </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span>>Viimeisin viesti</div>
+                    <div class="latestmessage" th:unless="${alaKategoria.hasMessages}">Ei viestejä</div>
                 </div>
-                <div class="subcategory">
-                    <div class="subcategoryheader borderbox">
-                        <div class="subcategorytitle">Alakategorian otsikko</div>
-                        <div class="subcategorydesc">Alakategorian kuvaus</div>
-                        <div class="deletebtn">Poista-nappi</div>
-                    </div>
-                    <div class="latestmessage">Viimeisin viesti</div>
-                </div>
-                <div class="subcategory">
-                    <div class="subcategoryheader">
-                        <div class="subcategorytitle">Alakategorian otsikko</div>
-                        <div class="subcategorydesc">Alakategorian kuvaus</div>
-                        <div class="deletebtn">Poista-nappi</div>
-                    </div>
-                    <div class="latestmessage">Viimeisin viesti</div>
+                <div th:if="${user != null and user.userLevel == 1}" class="newsubcategorybtn">
+                    <a th:href="@{'~/subcategory/new/' + ${kategoria.categoryId}}" class="btn btn-success" role="button">Uusi alakategoria</a>
                 </div>
             </div>
         </div>
