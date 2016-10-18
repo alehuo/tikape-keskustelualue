@@ -34,7 +34,6 @@
     width: 100%;
     height: 30px;
     line-height: 30px;
-    -webkit-box-sizing: border-box;
 }
 .subcategorytitle {
     padding-left: 20px;
@@ -67,4 +66,9 @@
 }
 .subcategory:nth-child(even) {
     background-color: #f7f7f7;
+}
+.newsubcategorybtn {
+    padding-left: 30px; 
+    margin-top: 15px; 
+    margin-bottom: 15px;
 }
