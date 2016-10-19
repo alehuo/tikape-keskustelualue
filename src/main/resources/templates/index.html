@@ -26,18 +26,18 @@
                 </div>
             </nav>
             <p th:if="${user != null and user.userLevel == 1}">
-                <a th:href="@{'~/category/new'}" class="btn btn-success" role="button">Uusi yläkategoria</a>
+                <a th:href="@{'~/category/new'}" class="btn btn-success btn-xs" role="button">Uusi yläkategoria</a>
             </p>
             <div class="category" th:each="kategoria : ${kategoriat}" th:unless="${#lists.isEmpty(kategoriat)}">
                 <div class="categoryheader">
                     <div class="categoryname" th:text="${kategoria.name}">Kategorian nimi</div>
-                    <div class="categorydeletebutton" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger" role="button">Poista</a></div>    
+                    <div class="categorydeletebutton text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>    
                 </div>
                 <div class="subcategory" th:each="alaKategoria : ${kategoria.subCategories}">
                     <div class="subcategoryheader borderbox">
                         <div class="subcategorytitle"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}">Alakategorian otsikko</a></div>
                         <div class="subcategorydesc" th:text="${alaKategoria.description}">Alakategorian kuvaus</div>
-                        <div class="deletebtn" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger" role="button">Poista</a></div>
+                        <div class="deletebtn text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>
                     </div>
                     <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
                             <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>

@@ -51,6 +51,12 @@ public class Message {
         return body;
     }
 
+    public String getFormattedBody() {
+        String tmpBody = body;
+        tmpBody = tmpBody.replace("[b]", "<b>").replace("[/b]", "</b>");
+        return tmpBody;
+    }
+
     /**
      * Palauttaa käyttäjätunnuksen ID:n
      *
