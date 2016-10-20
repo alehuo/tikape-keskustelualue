@@ -10,10 +10,17 @@
     <body>
         <div class="container">
             <h2>Kirjaudu sisään</h2>
-            <div class="alert alert-danger" th:if="${invalidCredentials}">
+            <div class="alert alert-danger" id="errorbox" th:if="${invalidCredentials}">
                 <strong>Virhe: </strong> Väärä käyttäjätunnus tai salasana
             </div>
-            <form action="/login" method="POST" class="form-horizontal">
+            <div class="alert alert-danger" id="errorbox" style="display: none;">
+                <strong>Virhe: </strong> Väärä käyttäjätunnus tai salasana
+            </div>
+            <div class="alert alert-success" id="successbox" style="display: none;">
+                <strong>Kirjauduttu sisään.</strong> Ohjataan etusivulle..
+            </div>
+            <div id="spinner" style="display: none;"><img src="img/default.gif" height="32"/></div>
+            <form action="/login" method="POST" id="loginform" class="form-horizontal">
                 <div class="form-group">
                     <label for="username">Käyttäjätunnus</label>
                     <input type="text" class="form-control" id="username" name="username" placeholder="Käyttäjätunnus" autofocus="true"/><br/>
@@ -23,7 +30,8 @@
                 <button type="submit" class="btn btn-primary" name="login">Kirjaudu sisään</button>
             </form>
         </div>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src="js/login.js"></script>
     </body>
 </html>
