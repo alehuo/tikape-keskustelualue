@@ -25,8 +25,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         //Tietokannan alustus
         //Käytetään oletuksena paikallista sqlite-tietokantaa
-//        String jdbcOsoite = "jdbc:sqlite:keskustelualue.db";
-        String jdbcOsoite = "jdbc:postgresql://ec2-54-163-230-103.compute-1.amazonaws.com:5432/dbvgipcfv084eu?sslmode=require&user=nivwtnxzijqcud&password=ds0QG8VNITY94ZDHLWg0BFevJi";
+        String jdbcOsoite = "jdbc:sqlite:keskustelualue.db";
         //Jos heroku antaa käyttöömme tietokantaosoitteen, otetaan se käyttöön
         if (System.getenv("DATABASE_URL") != null) {
             jdbcOsoite = System.getenv("DATABASE_URL");
