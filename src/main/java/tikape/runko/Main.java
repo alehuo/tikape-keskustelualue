@@ -17,6 +17,7 @@ import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
 public class Main {
@@ -30,7 +31,7 @@ public class Main {
             jdbcOsoite = System.getenv("DATABASE_URL");
         }
 
-        Spark.staticFileLocation("/img");
+        Spark.staticFileLocation("/static");
 
         Database database = new Database(jdbcOsoite);
         database.init();
@@ -143,18 +144,28 @@ public class Main {
                 if (Auth.passwordMatches(password, u.getPasswordHash(), u.getSalt())) {
                     //Kirjaudu sisään. Aloitetaan uusi istunto
                     req.session(true).attribute("user", u);
-                    res.redirect("/");
-                    return "Kirjauduttu sisään.";
+                    //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                    if (req.queryParams("jslogin") == null) {
+                        res.redirect("/");
+                    }
+
+                    return "ok";
                 } else {
                     //Väärä salasana!
-                    res.redirect("/login?error");
-                    return "Käyttäjätunnus tai salasana väärä.";
+                    //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                    if (req.queryParams("jslogin") == null) {
+                        res.redirect("/login?error");
+                    }
+                    return "error";
                 }
             } else {
                 //Käyttäjätunnusta ei ole olemassa!
 
-                res.redirect("/login?error");
-                return "Käyttäjätunnus tai salasana väärä.";
+                //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                if (req.queryParams("jslogin") == null) {
+                    res.redirect("/login?error");
+                }
+                return "error";
             }
 
         });
@@ -163,18 +174,32 @@ public class Main {
             HashMap map = new HashMap<>();
             //Tähän uuden käyttäjän lisääminen
             //Käyttäjätunnus
-            String username = req.queryParams("username").trim();
-            //Salasana
-            String password = req.queryParams("password");
-            User userList = userDao.findByUsername(username);
-            //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
-            if (userList == null) {
-                System.out.println("Uusi käyttäjä lisätty: " + username);
-                userDao.add(username, password);
+            String username = null;
+            if (req.queryParams("username").length() > 3) {
+                username = req.queryParams("username").trim();
             }
-            //Ohjaus etusivulle
-            res.redirect("/");
-            return "";
+            //Salasana
+            String password = null;
+            if (req.queryParams("password").length() > 3) {
+                password = req.queryParams("password");
+            }
+
+            if (username != null && password != null) {
+                User userList = userDao.findByUsername(username);
+                //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
+                if (userList == null) {
+                    System.out.println("Uusi käyttäjä lisätty: " + username);
+                    userDao.add(username, password);
+                    //Ohjaus etusivulle
+                    res.redirect("/");
+                    return "Rekisteröinti onnistui";
+                }
+                res.redirect("/register?error");
+                return "Käyttäjätunnus jo käytössä";
+            }
+            res.redirect("/register?error2");
+            return "Käyttäjätunnus tai salasana liian lyhyt";
+
         });
         //Kirjautumissivu
         get("/login", (req, res) -> {
@@ -187,6 +212,11 @@ public class Main {
         //Rekisteröitymissivu
         get("/register", (req, res) -> {
             HashMap map = new HashMap<>();
+            if (req.queryParams("error") != null) {
+                map.put("invalidCredentials", true);
+            } else if (req.queryParams("error2") != null) {
+                map.put("invalidCredentials2", true);
+            }
             return new ModelAndView(map, "register");
         }, new ThymeleafTemplateEngine());
         //Uloskirjautuminen
@@ -194,6 +224,50 @@ public class Main {
             //Hylätään istunto
             Session sess = req.session();
             sess.invalidate();
+            res.redirect("/");
+            return "";
+        });
+
+        get("/category/delete/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
+            for (SubCategory c : subCategories) {
+                msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                msgThreadDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                subCatDao.delete(c.getSubCategoryId());
+            }
+            catDao.delete(id);
+            res.redirect("/");
+            return "";
+        });
+        get("/subcategory/delete/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            msgDao.deleteAllFromSubCategory(id);
+            msgThreadDao.deleteAllFromSubCategory(id);
+            subCatDao.delete(id);
+            res.redirect("/");
+            return "";
+        });
+        get("/subcategory/new/:id", (req, res) -> {
+            HashMap map = new HashMap<>();
+            return new ModelAndView(map, "addsubcategory");
+        }, new ThymeleafTemplateEngine());
+        post("/subcategory/new/:id", (req, res) -> {
+            int id = Integer.parseInt(req.params(":id"));
+            String name = req.queryParams("subcategoryname");
+            String desc = req.queryParams("subcategorydesc");
+            SubCategory c = new SubCategory(id, name).setDescription(desc);
+            subCatDao.add(c);
+            res.redirect("/");
+            return "";
+        });
+        get("/category/new", (req, res) -> {
+            HashMap map = new HashMap<>();
+            return new ModelAndView(map, "addcategory");
+        }, new ThymeleafTemplateEngine());
+        post("/category/new", (req, res) -> {
+            String name = req.queryParams("categoryname");
+            catDao.add(new Category(name));
             res.redirect("/");
             return "";
         });

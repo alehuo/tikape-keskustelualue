@@ -143,20 +143,20 @@ public class Database {
         lista.add("CREATE TABLE posts (postId SERIAL PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
 
         //Kategoriat
-        lista.add("INSERT INTO categories (categoryId, title) VALUES (1,'Testikategoria 1');");
-        lista.add("INSERT INTO categories (categoryId, title) VALUES (2,'Testikategoria 2');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (1,1,'Testialakategoria 1','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (2,1,'Testialakategoria 2','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (3,1,'Testialakategoria 3','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (4,2,'Testialakategoria 4','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (5,2,'Testialakategoria 5','Hello World');");
+        lista.add("INSERT INTO categories (title) VALUES ('Testikategoria 1');");
+        lista.add("INSERT INTO categories (title) VALUES ('Testikategoria 2');");
+        lista.add("INSERT INTO subCategories (catId, title, description) VALUES (1,'Testialakategoria 1','Hello World');");
+        lista.add("INSERT INTO subCategories (catId, title, description) VALUES (1,'Testialakategoria 2','Hello World');");
+        lista.add("INSERT INTO subCategories (catId, title, description) VALUES (1,'Testialakategoria 3','Hello World');");
+        lista.add("INSERT INTO subCategories (catId, title, description) VALUES (2,'Testialakategoria 4','Hello World');");
+        lista.add("INSERT INTO subCategories (catId, title, description) VALUES (2,'Testialakategoria 5','Hello World');");
         //Admin -tunnus (admin::admin)
-        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (1,'admin','RLxcC7GMXsb4lymp+tV/aMAJfCVc7N9+Sj1c2mZryT0=','5Wqs2e/dGhg=',1)");
+        lista.add("INSERT INTO users (username, password, salt, userLevel) VALUES ('admin','RLxcC7GMXsb4lymp+tV/aMAJfCVc7N9+Sj1c2mZryT0=','5Wqs2e/dGhg=',1)");
         //User -tunnus (user:user)
-        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
+        lista.add("INSERT INTO users (username, password, salt, userLevel) VALUES ('user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
-        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, creationDate) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
-        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','Hello world!')");
+        lista.add("INSERT INTO threads (subCategoryId, userId, title, creationDate) VALUES (1,1,'Testipostaus','2016-10-17 20:23')");
+        lista.add("INSERT INTO posts (threadId, userId, timestamp, body) VALUES (1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/]')");
         return lista;
     }
 }

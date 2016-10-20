@@ -1,0 +1,74 @@
+.category {
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 30px;
+}
+.categoryheader {
+    width: 100%;
+    height: 48px;
+    line-height: 48px;
+    margin-bottom: 15px;
+}
+.categoryname {
+    font-size: 16pt;
+    font-weight: bold;
+    width: 50%;
+    padding-left: 10px;
+    display: inline-block;
+}
+.categorydeletebutton {
+    width: 49%;
+    text-align: right;
+    display: inline-block;
+}
+.subcategory {
+    width: 100%;
+    /*margin-top: 10px;
+    margin-bottom: 10px;*/
+}
+.subcategory:first-child {
+    margin-top: 10px;
+}
+.subcategoryheader {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+}
+.subcategorytitle {
+    padding-left: 20px;
+    font-size: 11pt;
+    font-weight: bold;
+    width: 30%;
+    display: inline-block;
+}
+.subcategorydesc {
+    width: 60%;
+    font-size: 8pt;
+    display: inline-block;
+}
+.deletebtn {
+    width: 9%;
+    display: inline-block;
+}
+.latestmessage {
+    clear: both;
+    width: 100%;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 30px;
+    font-size: 8pt;
+}
+.borderbox {
+    box-sizing:  border-box;
+    -ms-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+.subcategory:nth-child(even) {
+    background-color: #f7f7f7;
+}
+.newsubcategorybtn {
+    padding-left: 30px; 
+    margin-top: 15px; 
+    margin-bottom: 15px;
+}

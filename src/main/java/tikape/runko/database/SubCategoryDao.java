@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import tikape.runko.domain.Category;
 import tikape.runko.domain.SubCategory;
 
 public class SubCategoryDao implements Dao<SubCategory, Integer> {
@@ -161,6 +160,12 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
     @Override
     public void delete(Integer key) throws SQLException {
         //To change body of generated methods, choose Tools | Templates.
+
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("DELETE FROM subCategories WHERE subCatId = ?;");
+        stmt.setInt(1, key);
+        stmt.execute();
+
     }
 
     /**

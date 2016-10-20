@@ -21,6 +21,10 @@ public class Category {
         subCategories = new ArrayList<>();
     }
 
+    public Category(String name) {
+        this(-1, name);
+    }
+
     /**
      * Asettaa yläkategoriaan alakategoriat
      *

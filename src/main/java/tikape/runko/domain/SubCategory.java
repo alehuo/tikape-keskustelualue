@@ -1,10 +1,5 @@
 package tikape.runko.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Formatter;
-
 public class SubCategory {
 
     private int subCategoryId;
@@ -28,6 +23,10 @@ public class SubCategory {
         this.categoryId = categoryId;
         this.subCategoryId = subCategoryId;
         this.name = name;
+    }
+
+    public SubCategory(int categoryId, String name) {
+        this(categoryId, -1, name);
     }
 
     /**
@@ -102,7 +101,6 @@ public class SubCategory {
     public String getLatestMessageTimestamp() {
         return latestMessageTimestamp;
     }
-
 
     public void setLatestMessageTimestamp(String latestMessageTimestamp) {
         this.latestMessageTimestamp = latestMessageTimestamp.substring(0, 16);

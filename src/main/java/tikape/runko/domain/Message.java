@@ -1,8 +1,7 @@
 package tikape.runko.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.kefirsf.bb.BBProcessorFactory;
+import org.kefirsf.bb.TextProcessor;
 
 public class Message {
 
@@ -12,6 +11,7 @@ public class Message {
     private final int messageId;
     private final String timestamp;
     private int threadId;
+    private TextProcessor tp;
 
     /**
      * Viesti -luokka
@@ -26,7 +26,7 @@ public class Message {
         this.userId = userId;
         this.body = body;
         this.timestamp = timeStamp.substring(0, 16);
-
+        tp = BBProcessorFactory.getInstance().create();
     }
 
     public Message(int userId, String body, String timeStamp) {
@@ -49,6 +49,16 @@ public class Message {
      */
     public String getBody() {
         return body;
+    }
+
+    public String getFormattedBody() {
+        String tmpBody = tp.process(body);
+        return tmpBody;
+    }
+
+    public String getEscapedBody() {
+        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
+        return tmpBody;
     }
 
     /**
