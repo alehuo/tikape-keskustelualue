@@ -148,7 +148,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
                 stmt2.setInt(2, msgThread.getUserId());
                 //Oletetaan että MessageThread -olioon on lisätty yksi viesti
                 stmt2.setString(3, msgThread.getMessages().get(0).getTimestamp());
-                stmt2.setString(4, msgThread.getMessages().get(0).getEscapedBody());
+                stmt2.setString(4, msgThread.getMessages().get(0).getBody());
                 //Suorita kysely
                 stmt2.execute();
             }
