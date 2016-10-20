@@ -1,6 +1,7 @@
 package tikape.runko.domain;
 
-import tikape.runko.util.BBCode;
+import org.kefirsf.bb.BBProcessorFactory;
+import org.kefirsf.bb.TextProcessor;
 
 public class Message {
 
@@ -10,7 +11,7 @@ public class Message {
     private final int messageId;
     private final String timestamp;
     private int threadId;
-    private BBCode bbCode;
+    private TextProcessor tp;
 
     /**
      * Viesti -luokka
@@ -25,8 +26,7 @@ public class Message {
         this.userId = userId;
         this.body = body;
         this.timestamp = timeStamp.substring(0, 16);
-        bbCode = new BBCode();
-
+        tp = BBProcessorFactory.getInstance().create();
     }
 
     public Message(int userId, String body, String timeStamp) {
@@ -52,7 +52,7 @@ public class Message {
     }
 
     public String getFormattedBody() {
-        String tmpBody = bbCode.parse(body);
+        String tmpBody = tp.process(body);
         return tmpBody;
     }
 
