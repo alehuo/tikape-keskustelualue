@@ -111,7 +111,7 @@ public class Database {
         lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
         lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, creationDate) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
-        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','Hello world!')");
+        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
         return lista;
     }
 
@@ -156,7 +156,7 @@ public class Database {
         lista.add("INSERT INTO users (username, password, salt, userLevel) VALUES ('user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
         lista.add("INSERT INTO threads (subCategoryId, userId, title, creationDate) VALUES (1,1,'Testipostaus','2016-10-17 20:23')");
-        lista.add("INSERT INTO posts (threadId, userId, timestamp, body) VALUES (1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/]')");
+        lista.add("INSERT INTO posts (threadId, userId, timestamp, body) VALUES (1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
         return lista;
     }
 }
