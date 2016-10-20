@@ -1,8 +1,6 @@
 package tikape.runko.domain;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import tikape.runko.util.BBCode;
 
 public class Message {
 
@@ -12,6 +10,7 @@ public class Message {
     private final int messageId;
     private final String timestamp;
     private int threadId;
+    private BBCode bbCode;
 
     /**
      * Viesti -luokka
@@ -26,6 +25,7 @@ public class Message {
         this.userId = userId;
         this.body = body;
         this.timestamp = timeStamp.substring(0, 16);
+        bbCode = new BBCode();
 
     }
 
@@ -52,8 +52,12 @@ public class Message {
     }
 
     public String getFormattedBody() {
-        String tmpBody = body;
-        tmpBody = tmpBody.replace("[b]", "<b>").replace("[/b]", "</b>");
+        String tmpBody = bbCode.parse(body);
+        return tmpBody;
+    }
+
+    public String getEscapedBody() {
+        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
         return tmpBody;
     }
 

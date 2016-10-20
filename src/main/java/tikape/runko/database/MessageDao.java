@@ -68,7 +68,7 @@ public class MessageDao implements Dao<Message, Integer> {
         int id = m.getThreadId();
         int uId = m.getUserId();
         String ts = m.getTimestamp();
-        String body = m.getBody();
+        String body = m.getEscapedBody();
 
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO posts (threadId , userId, timestamp , body) VALUES (?, ?, ?, ?)");

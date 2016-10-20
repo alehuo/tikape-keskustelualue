@@ -25,7 +25,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         //Tietokannan alustus
         //Käytetään oletuksena paikallista sqlite-tietokantaa
-        String jdbcOsoite = "jdbc:sqlite:keskustelualue.db";
+//        String jdbcOsoite = "jdbc:sqlite:keskustelualue.db";
+        String jdbcOsoite = "jdbc:postgresql://ec2-54-163-230-103.compute-1.amazonaws.com:5432/dbvgipcfv084eu?sslmode=require&user=nivwtnxzijqcud&password=ds0QG8VNITY94ZDHLWg0BFevJi";
         //Jos heroku antaa käyttöömme tietokantaosoitteen, otetaan se käyttöön
         if (System.getenv("DATABASE_URL") != null) {
             jdbcOsoite = System.getenv("DATABASE_URL");
@@ -164,18 +165,32 @@ public class Main {
             HashMap map = new HashMap<>();
             //Tähän uuden käyttäjän lisääminen
             //Käyttäjätunnus
-            String username = req.queryParams("username").trim();
-            //Salasana
-            String password = req.queryParams("password");
-            User userList = userDao.findByUsername(username);
-            //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
-            if (userList == null) {
-                System.out.println("Uusi käyttäjä lisätty: " + username);
-                userDao.add(username, password);
+            String username = null;
+            if (req.queryParams("username").length() > 3) {
+                username = req.queryParams("username").trim();
             }
-            //Ohjaus etusivulle
-            res.redirect("/");
-            return "";
+            //Salasana
+            String password = null;
+            if (req.queryParams("password").length() > 3) {
+                password = req.queryParams("password");
+            }
+ 
+            if (username != null && password != null) {
+                User userList = userDao.findByUsername(username);
+                //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
+                if (userList == null) {
+                    System.out.println("Uusi käyttäjä lisätty: " + username);
+                    userDao.add(username, password);
+                    //Ohjaus etusivulle
+                    res.redirect("/");
+                    return "Rekisteröinti onnistui";
+                }
+                res.redirect("/register?error");
+                return "Käyttäjätunnus jo käytössä";
+            }
+            res.redirect("/register?error2");
+            return "Käyttäjätunnus tai salasana liian lyhyt";
+ 
         });
         //Kirjautumissivu
         get("/login", (req, res) -> {
@@ -188,6 +203,11 @@ public class Main {
         //Rekisteröitymissivu
         get("/register", (req, res) -> {
             HashMap map = new HashMap<>();
+            if (req.queryParams("error") != null) {
+                map.put("invalidCredentials", true);
+            } else if (req.queryParams("error2") != null) {
+                map.put("invalidCredentials2", true);
+            }
             return new ModelAndView(map, "register");
         }, new ThymeleafTemplateEngine());
         //Uloskirjautuminen

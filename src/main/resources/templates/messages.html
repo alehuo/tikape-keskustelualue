@@ -40,7 +40,7 @@
                         </p>
                         <img th:src="@{'~/img/avatar_default_256_256.png'}" height="64"/> 
                     </div>
-                    <div class="messageContent" th:text="${viesti.formattedBody}">
+                    <div class="messageContent" th:utext="${viesti.formattedBody}">
                         Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed posuere interdum sem. 
                         Quisque ligula eros ullamcorper quis, lacinia quis facilisis sed sapien. 
                         Mauris varius diam vitae arcu. Sed arcu lectus auctor vitae, consectetuer et venenatis eget velit. 

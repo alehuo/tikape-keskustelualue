@@ -9,10 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
+import tikape.runko.util.BBCode;
 
 public class MessageThreadDao implements Dao<MessageThread, Integer> {
 
     private final Database database;
+    private BBCode bbCode;
 
     /**
      * Viestiketju Dao
@@ -21,6 +23,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     public MessageThreadDao(Database database) {
         this.database = database;
+        bbCode = new BBCode();
     }
 
     /**
@@ -148,7 +151,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
                 stmt2.setInt(2, msgThread.getUserId());
                 //Oletetaan että MessageThread -olioon on lisätty yksi viesti
                 stmt2.setString(3, msgThread.getMessages().get(0).getTimestamp());
-                stmt2.setString(4, msgThread.getMessages().get(0).getBody());
+                stmt2.setString(4, msgThread.getMessages().get(0).getEscapedBody());
                 //Suorita kysely
                 stmt2.execute();
             }

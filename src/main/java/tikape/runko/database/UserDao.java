@@ -103,7 +103,7 @@ public class UserDao implements Dao<User, Integer> {
     }
 
     public void add(String username, String password) throws SQLException {
-        username = username.trim().toLowerCase();
+        username = username.trim();
         //Luodaan salasanalle "suola"
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[8];
