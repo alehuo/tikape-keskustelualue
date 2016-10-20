@@ -145,18 +145,28 @@ public class Main {
                 if (Auth.passwordMatches(password, u.getPasswordHash(), u.getSalt())) {
                     //Kirjaudu sisään. Aloitetaan uusi istunto
                     req.session(true).attribute("user", u);
-                    res.redirect("/");
-                    return "Kirjauduttu sisään.";
+                    //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                    if (req.queryParams("jslogin") == null) {
+                        res.redirect("/");
+                    }
+
+                    return "ok";
                 } else {
                     //Väärä salasana!
-                    res.redirect("/login?error");
-                    return "Käyttäjätunnus tai salasana väärä.";
+                    //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                    if (req.queryParams("jslogin") == null) {
+                        res.redirect("/login?error");
+                    }
+                    return "error";
                 }
             } else {
                 //Käyttäjätunnusta ei ole olemassa!
 
-                res.redirect("/login?error");
-                return "Käyttäjätunnus tai salasana väärä.";
+                //Jos JavaScript ei ole päällä, niin ohjataan sivu automaattisesti
+                if (req.queryParams("jslogin") == null) {
+                    res.redirect("/login?error");
+                }
+                return "error";
             }
 
         });
@@ -174,7 +184,7 @@ public class Main {
             if (req.queryParams("password").length() > 3) {
                 password = req.queryParams("password");
             }
- 
+
             if (username != null && password != null) {
                 User userList = userDao.findByUsername(username);
                 //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
@@ -190,7 +200,7 @@ public class Main {
             }
             res.redirect("/register?error2");
             return "Käyttäjätunnus tai salasana liian lyhyt";
- 
+
         });
         //Kirjautumissivu
         get("/login", (req, res) -> {
