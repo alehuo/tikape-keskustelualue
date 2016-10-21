@@ -1,12 +1,22 @@
 $(document).ready(function () {
-    function login() {
+    /*
+     * Kirjautuminen sisään
+     */
+    $("#loginform").submit(function (event) {
         //Kirjautumistiedot
         var credentials = $("#loginform").serialize();
+        //Alkutila
         //Piilota lomake sekä näytä spinner -animaatio kun POST -pyyntö tehdään palvelimelle
         $("#loginform").hide();
         $("#errorbox").hide();
         $("#successbox").hide();
         $("#spinner").show();
+        //Tehdään /login -reittiin POST -pyyntö, joka lähettää 
+        //käyttäjätunnuksen ja salasanan lisäksi jslogin -nimisen lomaketiedon,
+        //jolla tarkistetaan tuliko kirjautumispyyntö lomakkeen vai tämän scriptin kautta.
+        //Kirjautumisen todentaminen tapahtuu palvelimen puolella, mutta tämä skripti toimii
+        //käyttäjän selaimessa.
+        //tilanteissa joissa sivusto hidastelee, tämä tapa kirjautua on käyttäjäystävällisempi.
         $.ajax({
             type: "POST",
             url: "/login",
@@ -22,9 +32,6 @@ $(document).ready(function () {
                 $("#errorbox").show();
             }
         });
-    }
-    $("#loginform").submit(function (event) {
-        login();
         event.preventDefault();
         return false;
     });
