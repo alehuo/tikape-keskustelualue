@@ -2,9 +2,17 @@ package tikape.runko.domain;
 
 import java.util.Objects;
 
+/**
+ *
+ * @author Aleksi Huotala
+ */
 public class User {
 
     private int id;
+
+    /**
+     *
+     */
     public String username;
     private String password;
     private String salt;
@@ -39,6 +47,10 @@ public class User {
         return username;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getPassword() {
         return password;
     }
@@ -103,14 +115,26 @@ public class User {
         return this;
     }
 
+    /**
+     *
+     * @param password
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
+    /**
+     *
+     * @param id
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     *
+     * @param username
+     */
     public void setUsername(String username) {
         this.username = username;
     }

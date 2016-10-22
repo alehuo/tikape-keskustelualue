@@ -24,7 +24,6 @@
                     </ul>
                 </div>
             </nav>
-            <h3 th:if="${user == null}">Ole hyvä ja kirjaudu sisään.</h3>
             <form method ="POST" class="form-horizontal" th:if="${user != null}">
                 <div class="form-group">
                     <label for="title">Otsikko</label>

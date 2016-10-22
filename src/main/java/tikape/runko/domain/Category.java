@@ -3,10 +3,25 @@ package tikape.runko.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Aleksi Huotala
+ */
 public class Category {
 
+    /**
+     *
+     */
     public int categoryId;
+
+    /**
+     *
+     */
     public String name;
+
+    /**
+     *
+     */
     public List<SubCategory> subCategories;
 
     /**
@@ -21,6 +36,10 @@ public class Category {
         subCategories = new ArrayList<>();
     }
 
+    /**
+     *
+     * @param name
+     */
     public Category(String name) {
         this(-1, name);
     }

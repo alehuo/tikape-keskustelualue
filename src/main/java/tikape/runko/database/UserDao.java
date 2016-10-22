@@ -14,14 +14,29 @@ import java.util.List;
 import tikape.runko.Auth;
 import tikape.runko.domain.User;
 
+/**
+ * UserDao
+ */
 public class UserDao implements Dao<User, Integer> {
 
-    private Database database;
+    private final Database database;
 
+    /**
+     * UserDao
+     *
+     * @param database Tietokantaolio
+     */
     public UserDao(Database database) {
         this.database = database;
     }
 
+    /**
+     * Palauttaa yhden käyttäjän ID:n perusteella
+     *
+     * @param key Käyttäjätilin ID
+     * @return Käyttäjä
+     * @throws SQLException
+     */
     @Override
     public User findOne(Integer key) throws SQLException {
         Connection connection = database.getConnection();
@@ -48,6 +63,13 @@ public class UserDao implements Dao<User, Integer> {
         return u;
     }
 
+    /**
+     * Palauttaa käyttäjätilin nimen perusteella
+     *
+     * @param username Käyttäjätunnus
+     * @return Käyttäjä
+     * @throws SQLException
+     */
     public User findByUsername(String username) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
@@ -73,6 +95,12 @@ public class UserDao implements Dao<User, Integer> {
         return u;
     }
 
+    /**
+     * Palauttaa kaikki käyttäjät tietokannasta
+     *
+     * @return Käyttäjä -lista
+     * @throws SQLException
+     */
     @Override
     public List<User> findAll() throws SQLException {
 
@@ -87,7 +115,11 @@ public class UserDao implements Dao<User, Integer> {
             String passwordHash = rs.getString("password");
             String salt = rs.getString("salt");
             Integer userLevel = rs.getInt("userLevel");
-            users.add(new User(id, uname).setUserLevel(userLevel).setPasswordHash(passwordHash).setSalt(salt));
+            User u = new User(id, uname);
+            u.setUserLevel(userLevel);
+            u.setPasswordHash(passwordHash);
+            u.setSalt(salt);
+            users.add(u);
         }
 
         rs.close();
@@ -97,11 +129,24 @@ public class UserDao implements Dao<User, Integer> {
         return users;
     }
 
+    /**
+     * Poistaa käyttäjätilin (EI TOTEUTETTU)
+     *
+     * @param key Käyttäjätilin ID
+     * @throws SQLException
+     */
     @Override
     public void delete(Integer key) throws SQLException {
         // ei toteutettu
     }
 
+    /**
+     * Lisää käyttäjätilin tietokantaan
+     *
+     * @param username Käyttäjätunnus
+     * @param password Salasana
+     * @throws SQLException
+     */
     public void add(String username, String password) throws SQLException {
         username = username.trim();
         //Luodaan salasanalle "suola"
@@ -133,9 +178,7 @@ public class UserDao implements Dao<User, Integer> {
             stmt.setString(3, saltBase64);
             //Suorita kysely
             stmt.execute();
-        } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchAlgorithmException ex) {
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
             ex.printStackTrace();
         }
     }

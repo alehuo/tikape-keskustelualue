@@ -5,7 +5,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64.Decoder;
+import tikape.runko.domain.User;
 
+/**
+ * Auth -luokkaa käytetään salasanojen tarkistamiseen, sekä käyttäjän
+ * luokituksen todentamiseen. Admin -tunnuksen taso on aina nollaa suurempi
+ * luku.
+ */
 public class Auth {
 
     /**
@@ -50,5 +56,25 @@ public class Auth {
             byteArray[i] = i < bytes1.length ? bytes1[i] : bytes2[i - bytes1.length];
         }
         return byteArray;
+    }
+
+    /**
+     * Palauttaa, onko käyttäjä pääkäyttäjä vai ei
+     *
+     * @param u Käyttäjä -olio
+     * @return true tai false
+     */
+    public static boolean isAdmin(User u) {
+        return (u != null && u.getUserLevel() > 0);
+    }
+
+    /**
+     * Palauttaa, onko kirjauduttu sisään vai ei
+     *
+     * @param u Käyttäjä -olio
+     * @return true tai false
+     */
+    public static boolean isAuthenticated(User u) {
+        return (u != null);
     }
 }

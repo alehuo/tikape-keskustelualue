@@ -8,10 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.SubCategory;
 
+/**
+ * Alakategorian DAO
+ */
 public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
     private final Database database;
 
+    /**
+     * Alakategorian DAO
+     *
+     * @param db Tietokantaolio
+     */
     public SubCategoryDao(Database db) {
         this.database = db;
     }
@@ -42,16 +50,17 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
 
         //Tämä kysely hakee uusimman viestin tietystä alakategoriasta. Haku palauttaa viestin timestampin, käyttäjätunnuksen, viestiketjun otsikon sekä ID:n.
-        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
         PreparedStatement stmt2 = connection.prepareStatement(query);
         stmt2.setInt(1, key);
         //Tässä haetaan viimeisimmän viestin tiedot
         ResultSet result = stmt2.executeQuery();
-        if (result.next()) {
+        if (result.next() && result.getString("timestamp") != null) {
             cat.setLatestMessageThreadId(result.getInt("threadId"));
             cat.setLatestMessageThreadTitle(result.getString("title"));
             cat.setLatestMessageTimestamp(result.getString("timestamp"));
             cat.setLatestMessageUsername(result.getString("username"));
+            cat.setMessageCount(result.getInt("messageCount"));
         }
         rs.close();
         stmt.close();
@@ -63,7 +72,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
     /**
      * Hakee kaikki alakategoriat
      *
-     * @return
+     * @return Lista alakategorioista
      * @throws SQLException
      */
     @Override
@@ -82,20 +91,17 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
             SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
             //Haetaan vielä viimeisin tieto
-            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
             PreparedStatement stmt2 = connection.prepareStatement(query);
             stmt2.setInt(1, cat.getSubCategoryId());
             //Tässä haetaan viimeisimmän viestin tiedot
             ResultSet result = stmt2.executeQuery();
-            if (result.next()) {
-                System.out.println(cat.getLatestMessageThreadId());
-                System.out.println(cat.getLatestMessageThreadTitle());
-                System.out.println(cat.getLatestMessageTimestamp());
-                System.out.println(cat.getLatestMessageUsername());
+            if (result.next() && result.getString("timestamp") != null) {
                 cat.setLatestMessageThreadId(result.getInt("threads.threadId"));
                 cat.setLatestMessageThreadTitle(result.getString("threads.title"));
                 cat.setLatestMessageTimestamp(result.getString("posts.timestamp"));
                 cat.setLatestMessageUsername(result.getString("users.username"));
+                cat.setMessageCount(result.getInt("messageCount"));
             }
             categories.add(cat);
             result.close();
@@ -133,17 +139,18 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
             SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
             //Haetaan vielä viimeisin tieto
-            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
             PreparedStatement stmt2 = connection.prepareStatement(query);
             stmt2.setInt(1, cat.getSubCategoryId());
             //Tässä haetaan viimeisimmän viestin tiedot
             ResultSet result = stmt2.executeQuery();
-            if (result.next()) {
+            if (result.next() && result.getString("timestamp") != null) {
                 cat.setHasMessages(true);
                 cat.setLatestMessageThreadId(result.getInt("threadId"));
                 cat.setLatestMessageThreadTitle(result.getString("title"));
                 cat.setLatestMessageTimestamp(result.getString("timestamp"));
                 cat.setLatestMessageUsername(result.getString("username"));
+                cat.setMessageCount(result.getInt("messageCount"));
             }
             categories.add(cat);
             result.close();
@@ -157,6 +164,12 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         return categories;
     }
 
+    /**
+     * Poistaa alakategorian ID:n perusteella
+     *
+     * @param key Alakategorian ID
+     * @throws SQLException
+     */
     @Override
     public void delete(Integer key) throws SQLException {
         //To change body of generated methods, choose Tools | Templates.
