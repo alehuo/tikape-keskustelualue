@@ -91,14 +91,19 @@ public class Main {
         post("/thread/:threadId", (req, res) -> {
             int id = Integer.parseInt(req.params("threadId"));
             User u = req.session().attribute("user");
-            String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-            String body = req.queryParams("message");
-            Message m = new Message(u.getId(), body, ts);
-            m.setThreadId(id);
-            msgDao.add(m);
-            //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
-            res.redirect("/thread/" + id);
-            return "Vastaus viestiketjuun, jolla id: " + id;
+            if (Auth.isAuthenticated(u)) {
+                String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+                String body = req.queryParams("message");
+                Message m = new Message(u.getId(), body, ts);
+                m.setThreadId(id);
+                msgDao.add(m);
+                //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
+                res.redirect("/thread/" + id);
+                return "Vastaus viestiketjuun, jolla id: " + id;
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+            }
+
         });
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
@@ -112,16 +117,20 @@ public class Main {
             return new ModelAndView(map, "topics");
         }, new ThymeleafTemplateEngine());
         //Uuden viestiketjun lähettäminen:
-        post("/subcategory/:subCategoryId", (req, res) -> {
-            int id = Integer.parseInt(req.params("subCategoryId"));
-            //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
-            return "Tällä käsitellään viestiketjun data alakategoriaan " + id + ".";
-        });
+//        post("/subcategory/:subCategoryId", (req, res) -> {
+//            int id = Integer.parseInt(req.params("subCategoryId"));
+//            //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
+//            return "Tällä käsitellään viestiketjun data alakategoriaan " + id + ".";
+//        });
         //Uuden viestiketjun luominen:
         get("/new/:subCategoryId", (req, res) -> {
             int id = Integer.parseInt(req.params("subCategoryId"));
             HashMap map = new HashMap<>();
-            map.put("user", (User) req.session().attribute("user"));
+            User u = req.session().attribute("user");
+            if (!Auth.isAuthenticated(u)) {
+                return new ModelAndView(map, "unauthorized");
+            }
+            map.put("user", u);
             //Näytetään tässä lomake käyttäjälle
             return new ModelAndView(map, "new");
         }, new ThymeleafTemplateEngine());
@@ -131,13 +140,17 @@ public class Main {
             int id = Integer.parseInt(req.params("subCategoryId"));
             HashMap map = new HashMap<>();
             User u = req.session().attribute("user");
-            String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-            MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
-            tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp
-            ));
-            topicDao.add(tmpThread);
-            res.redirect("/subcategory/" + id);
-            return "";
+            if (Auth.isAuthenticated(u)) {
+                String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+                MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
+                tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
+                topicDao.add(tmpThread);
+                res.redirect("/subcategory/" + id);
+                return "";
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+            }
+
         });
 
         //Kirjaudu sisään
