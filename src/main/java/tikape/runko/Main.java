@@ -11,7 +11,7 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
 import tikape.runko.database.Database;
 import tikape.runko.database.MessageDao;
-import tikape.runko.database.MessageThreadDao;
+import tikape.runko.database.TopicDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
@@ -39,12 +39,12 @@ public class Main {
         UserDao userDao = new UserDao(database);
         CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
-        MessageThreadDao msgThreadDao = new MessageThreadDao(database);
+        TopicDao topicDao = new TopicDao(database);
         MessageDao msgDao = new MessageDao(database);
         Scanner sc = new Scanner(System.in);
 
         //Tekstikäyttöliittymän alustus
-        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, msgThreadDao);
+        TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, topicDao, msgDao);
         //Näytä tekstikäyttöliittymä
 //        textUi.show();
 
@@ -72,7 +72,7 @@ public class Main {
         get("/thread/:threadId", (req, res) -> {
             HashMap map = new HashMap<>();
             int id = Integer.parseInt(req.params("threadId"));
-            map.put("messageThread", msgThreadDao.findOne(id));
+            map.put("messageThread", topicDao.findOne(id));
             map.put("viestit", msgDao.findAllFromTopic(id));
             map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään viestiketju
@@ -97,7 +97,7 @@ public class Main {
             int id = Integer.parseInt(req.params("subCategoryId"));
             map.put("subcategoryId", id);
             map.put("subcategory", subCatDao.findOne(id));
-            map.put("viestiketjut", msgThreadDao.findAllFromSubCategory(id));
+            map.put("viestiketjut", topicDao.findAllFromSubCategory(id));
             map.put("user", (User) req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
             return new ModelAndView(map, "topics");
@@ -126,7 +126,7 @@ public class Main {
             MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
             tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp
             ));
-            msgThreadDao.add(tmpThread);
+            topicDao.add(tmpThread);
             res.redirect("/subcategory/" + id);
             return "";
         });
@@ -174,32 +174,27 @@ public class Main {
             HashMap map = new HashMap<>();
             //Tähän uuden käyttäjän lisääminen
             //Käyttäjätunnus
-            String username = null;
-            if (req.queryParams("username").length() > 3) {
-                username = req.queryParams("username").trim();
-            }
+            String username = req.queryParams("username").trim();
             //Salasana
-            String password = null;
-            if (req.queryParams("password").length() > 3) {
-                password = req.queryParams("password");
-            }
+            String password = req.queryParams("password");
+            if (username != null && password != null && username.length() > 3 && password.length() > 3) {
 
-            if (username != null && password != null) {
                 User userList = userDao.findByUsername(username);
                 //Jos käyttäjänimellä ei löydy tietokannasta käyttäjää, lisätään se tietokantaan
                 if (userList == null) {
-                    System.out.println("Uusi käyttäjä lisätty: " + username);
                     userDao.add(username, password);
                     //Ohjaus etusivulle
                     res.redirect("/");
                     return "Rekisteröinti onnistui";
+                } else {
+                    res.redirect("/register?error");
+                    return "Käyttäjätunnus jo käytössä";
                 }
-                res.redirect("/register?error");
-                return "Käyttäjätunnus jo käytössä";
-            }
-            res.redirect("/register?error2");
-            return "Käyttäjätunnus tai salasana liian lyhyt";
 
+            } else {
+                res.redirect("/register?error2");
+                return "Käyttäjätunnus tai salasana liian lyhyt";
+            }
         });
         //Kirjautumissivu
         get("/login", (req, res) -> {
@@ -228,48 +223,86 @@ public class Main {
             return "";
         });
 
+        //Kategorian poisto
         get("/category/delete/:id", (req, res) -> {
-            int id = Integer.parseInt(req.params(":id"));
-            List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
-            for (SubCategory c : subCategories) {
-                msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
-                msgThreadDao.deleteAllFromSubCategory(c.getSubCategoryId());
-                subCatDao.delete(c.getSubCategoryId());
+            User u = req.session().attribute("user");
+            if (Auth.isAdmin(u)) {
+                int id = Integer.parseInt(req.params(":id"));
+                List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
+                for (SubCategory c : subCategories) {
+                    msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                    topicDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                    subCatDao.delete(c.getSubCategoryId());
+                }
+                catDao.delete(id);
+                res.redirect("/");
+                return "";
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
             }
-            catDao.delete(id);
-            res.redirect("/");
-            return "";
+
         });
+        //Alakategorian poisto
         get("/subcategory/delete/:id", (req, res) -> {
-            int id = Integer.parseInt(req.params(":id"));
-            msgDao.deleteAllFromSubCategory(id);
-            msgThreadDao.deleteAllFromSubCategory(id);
-            subCatDao.delete(id);
-            res.redirect("/");
-            return "";
+            User u = req.session().attribute("user");
+            if (Auth.isAdmin(u)) {
+                int id = Integer.parseInt(req.params(":id"));
+                msgDao.deleteAllFromSubCategory(id);
+                topicDao.deleteAllFromSubCategory(id);
+                subCatDao.delete(id);
+                res.redirect("/");
+                return "";
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+            }
+
         });
+        //Uuden alakategorian lisäys
         get("/subcategory/new/:id", (req, res) -> {
             HashMap map = new HashMap<>();
+            User u = req.session().attribute("user");
+            if (!Auth.isAdmin(u)) {
+                return new ModelAndView(map, "unauthorized");
+            }
             return new ModelAndView(map, "addsubcategory");
         }, new ThymeleafTemplateEngine());
+        //Uuden alakategorian lisäys
         post("/subcategory/new/:id", (req, res) -> {
-            int id = Integer.parseInt(req.params(":id"));
-            String name = req.queryParams("subcategoryname");
-            String desc = req.queryParams("subcategorydesc");
-            SubCategory c = new SubCategory(id, name).setDescription(desc);
-            subCatDao.add(c);
-            res.redirect("/");
-            return "";
+            User u = req.session().attribute("user");
+            if (Auth.isAdmin(u)) {
+                int id = Integer.parseInt(req.params(":id"));
+                String name = req.queryParams("subcategoryname");
+                String desc = req.queryParams("subcategorydesc");
+                SubCategory c = new SubCategory(id, name).setDescription(desc);
+                subCatDao.add(c);
+                res.redirect("/");
+                return "";
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+            }
+
         });
+        //Uuden kategorian lisäys
         get("/category/new", (req, res) -> {
             HashMap map = new HashMap<>();
+            User u = req.session().attribute("user");
+            if (!Auth.isAdmin(u)) {
+                return new ModelAndView(map, "unauthorized");
+            }
             return new ModelAndView(map, "addcategory");
         }, new ThymeleafTemplateEngine());
+        //Uuden kategorian lisäys
         post("/category/new", (req, res) -> {
-            String name = req.queryParams("categoryname");
-            catDao.add(new Category(name));
-            res.redirect("/");
-            return "";
+            User u = req.session().attribute("user");
+            if (Auth.isAdmin(u)) {
+                String name = req.queryParams("categoryname");
+                catDao.add(new Category(name));
+                res.redirect("/");
+                return "";
+            } else {
+                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+            }
+
         });
     }
 }
