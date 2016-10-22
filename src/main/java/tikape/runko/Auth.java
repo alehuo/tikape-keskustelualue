@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Base64.Decoder;
+import tikape.runko.domain.User;
 
 public class Auth {
 
@@ -50,5 +51,15 @@ public class Auth {
             byteArray[i] = i < bytes1.length ? bytes1[i] : bytes2[i - bytes1.length];
         }
         return byteArray;
+    }
+
+    /**
+     * Palauttaa, onko käyttäjä pääkäyttäjä vai ei
+     *
+     * @param u Käyttäjä -olio
+     * @return true tai false
+     */
+    public static boolean isAdmin(User u) {
+        return (u != null && u.getUserLevel() > 0);
     }
 }
