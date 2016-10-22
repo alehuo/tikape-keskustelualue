@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package tikape.runko.database;
 
 import java.sql.Connection;
@@ -90,7 +85,9 @@ public class MessageDao implements Dao<Message, Integer> {
             String username = rs.getString("username");
             String body = rs.getString("body");
             String timeStamp = rs.getString("timestamp");
-            msg.add(new Message(postId, userId, body, timeStamp).setUsername(username));
+            Message m = new Message(postId, userId, body, timeStamp);
+            m.setUsername(username);
+            msg.add(m);
         }
 
         rs.close();

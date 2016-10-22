@@ -8,10 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Category;
 
+/**
+ * CategoryDao
+ */
 public class CategoryDao implements Dao<Category, Integer> {
 
     private final Database database;
-    private SubCategoryDao subCategoryDao;
+    private final SubCategoryDao subCategoryDao;
 
     /**
      * Yläkategorian DAO

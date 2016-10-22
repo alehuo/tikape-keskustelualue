@@ -3,6 +3,10 @@ package tikape.runko.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ * @author Aleksi Huotala
+ */
 public class MessageThread {
 
     private List<Message> messages;
@@ -79,9 +83,6 @@ public class MessageThread {
      * @return Viestien lukumäärä
      */
     public int getMessageCount() {
-        if (messages.size() != 0) {
-            return messages.size();
-        }
         return messageCount;
     }
 
@@ -133,44 +134,132 @@ public class MessageThread {
         return creationDate;
     }
 
+    /**
+     * Asettaa viestiketjun viestit
+     *
+     * @param messages Viestiketjun viestit
+     */
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+        messageCount = messages.size();
     }
 
+    /**
+     * Palauttaa viestiketjun alakategorian ID:n
+     *
+     * @return Alakategorian ID
+     */
     public int getSubCatId() {
         return subCatId;
     }
 
+    /**
+     * Palauttaa viestiketjun luomispäiväyksen
+     *
+     * @return Luomispäiväys
+     */
     public String getCreationDate() {
         return creationDate;
     }
 
+    /**
+     * Palauttaa viestiketjun ID:n
+     *
+     * @return Viestiketjun ID
+     */
     public int getThreadId() {
         return threadId;
     }
 
+    /**
+     * Asettaa viestiketjun luomispäiväyksen
+     *
+     * @param creationDate Luomispäiväys
+     */
     public void setCreationDate(String creationDate) {
         this.creationDate = creationDate;
     }
 
+    /**
+     * Asettaa viestien lukumäärän viestiketjussa
+     *
+     * @param messageCount Viestien lukumäärä
+     */
     public void setMessageCount(int messageCount) {
         this.messageCount = messageCount;
     }
 
+    /**
+     * Asettaa alakategorian ID:n
+     *
+     * @param subCatId Alakategorian ID
+     */
     public void setSubCatId(int subCatId) {
         this.subCatId = subCatId;
     }
 
+    /**
+     * Asettaa viestiketjun ID:n
+     *
+     * @param threadId Viestiketjun ID
+     */
     public void setThreadId(int threadId) {
         this.threadId = threadId;
     }
 
+    /**
+     * Asettaa viestiketjun otsikon
+     *
+     * @param title Viestiketjun otsikko
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Asettaa viestiketjun luojan ID:n
+     *
+     * @param userId Käyttäjätunnuksen ID
+     */
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    /**
+     * Asettaa viimeisimmän postauksen käyttäjänimen
+     *
+     * @param username Käyttäjänimi
+     */
+    public void setLatestPostUsername(String username) {
+        latestPostUsername = username;
+
+    }
+
+    /**
+     * Palauttaa viimeisimmän postauksen käyttäjänimen
+     *
+     * @return Käyttäjänimi
+     */
+    public String getLatestPostUsername() {
+        return latestPostUsername;
+    }
+
+    /**
+     * Palauttaa viestiketjun luojan käyttäjänimen
+     *
+     * @return Käyttäjänimi
+     */
+    public String getCreationUsername() {
+        return creationUsername;
+    }
+
+    /**
+     * Asettaa viestiketjun luojan käyttäjänimen
+     *
+     * @param creationUsername Käyttäjänimi
+     */
+    public void setCreationUsername(String creationUsername) {
+        this.creationUsername = creationUsername;
     }
 
     /**
@@ -181,24 +270,6 @@ public class MessageThread {
     @Override
     public String toString() {
         return title + " (" + creationDate + ")";
-    }
-
-    public MessageThread setLatestPostUsername(String username) {
-        latestPostUsername = username;
-        return this;
-    }
-
-    public String getLatestPostUsername() {
-        return latestPostUsername;
-    }
-
-    public String getCreationUsername() {
-        return creationUsername;
-    }
-
-    public MessageThread setCreationUsername(String creationUsername) {
-        this.creationUsername = creationUsername;
-        return this;
     }
 
 }

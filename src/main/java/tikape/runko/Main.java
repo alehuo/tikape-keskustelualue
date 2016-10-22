@@ -20,8 +20,17 @@ import tikape.runko.domain.MessageThread;
 import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
+/**
+ * Tietokantasovellus
+ */
 public class Main {
 
+    /**
+     * Tietokantasovellus
+     *
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         //Tietokannan alustus
         //Käytetään oletuksena paikallista sqlite-tietokantaa

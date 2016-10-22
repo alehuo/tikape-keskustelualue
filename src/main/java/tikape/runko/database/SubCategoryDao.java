@@ -8,10 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.SubCategory;
 
+/**
+ * Alakategorian DAO
+ */
 public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
     private final Database database;
 
+    /**
+     * Alakategorian DAO
+     *
+     * @param db Tietokantaolio
+     */
     public SubCategoryDao(Database db) {
         this.database = db;
     }
@@ -65,7 +73,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
     /**
      * Hakee kaikki alakategoriat
      *
-     * @return
+     * @return Lista alakategorioista
      * @throws SQLException
      */
     @Override
@@ -157,6 +165,12 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         return categories;
     }
 
+    /**
+     * Poistaa alakategorian ID:n perusteella
+     *
+     * @param key Alakategorian ID
+     * @throws SQLException
+     */
     @Override
     public void delete(Integer key) throws SQLException {
         //To change body of generated methods, choose Tools | Templates.

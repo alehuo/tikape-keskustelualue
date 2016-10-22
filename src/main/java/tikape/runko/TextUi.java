@@ -4,7 +4,8 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 import tikape.runko.database.CategoryDao;
-import tikape.runko.database.MessageThreadDao;
+import tikape.runko.database.MessageDao;
+import tikape.runko.database.TopicDao;
 import tikape.runko.database.SubCategoryDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
@@ -18,31 +19,54 @@ import tikape.runko.domain.User;
  */
 public class TextUi {
 
+    /**
+     * Skanneri
+     */
     private final Scanner sc;
+    /**
+     * UserDao
+     */
     private final UserDao userDao;
+    /**
+     * CategoryDao
+     */
     private final CategoryDao catDao;
+    /**
+     * SubCategoryDao
+     */
     private final SubCategoryDao subCatDao;
-    private final MessageThreadDao msgDao;
+    /**
+     * TopicDao
+     */
+    private final TopicDao msgThreadDao;
+    /**
+     * MessageDao
+     */
+    private final MessageDao msgDao;
 
     /**
      * Tekstikäyttöliittymä
+     *
      * @param sc Scanner
      * @param userDao UserDao
      * @param catDao CategoryDao
      * @param subCatDao SubCategoryDao
-     * @param msgDao MessageThreadDao
+     * @param msgThreadDao TopicDao
+     * @param msgDao MessageDao
      */
-    public TextUi(Scanner sc, UserDao userDao, CategoryDao catDao, SubCategoryDao subCatDao, MessageThreadDao msgDao) {
+    public TextUi(Scanner sc, UserDao userDao, CategoryDao catDao, SubCategoryDao subCatDao, TopicDao msgThreadDao, MessageDao msgDao) {
         this.sc = sc;
         this.userDao = userDao;
         this.catDao = catDao;
         this.subCatDao = subCatDao;
+        this.msgThreadDao = msgThreadDao;
         this.msgDao = msgDao;
     }
 
     /**
      * Näyttää tekstikäyttöliittymän
-     * @throws SQLException 
+     *
+     * @throws SQLException
      */
     public void show() throws SQLException {
         OUTER:
@@ -53,7 +77,7 @@ public class TextUi {
             System.out.println("3) Lisää uusi kategoria");
             System.out.println("4) Lisää uusi alakategoria");
             System.out.println("5) Kirjoita uusi viestiketju");
-            System.out.println("6) Kirjoita uusi viesti viestiketjuun (TODO)");
+            System.out.println("6) Kirjoita uusi viesti viestiketjuun");
             System.out.println("7) Lisää uusi käyttäjä tietokantaan");
             System.out.println("8) Listaa käyttäjät");
             System.out.println("exit Poistu ja käynnistä Web-sovellus");
@@ -83,7 +107,7 @@ public class TextUi {
                 case "2":
                     System.out.print("Anna alakategorian ID: ");
                     Integer subCategoryId = Integer.parseInt(sc.nextLine());
-                    List<MessageThread> msgThreads = msgDao.findAllFromSubCategory(subCategoryId);
+                    List<MessageThread> msgThreads = msgThreadDao.findAllFromSubCategory(subCategoryId);
                     if (msgThreads.size() > 0) {
                         for (MessageThread msgThread : msgThreads) {
                             System.out.println(msgThread);
@@ -122,9 +146,19 @@ public class TextUi {
                     String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
                     MessageThread tmpThread = new MessageThread(subCategoryId, userId, title, timeStamp);
                     tmpThread.addMessage(new Message(-1, userId, body, timeStamp));
-                    msgDao.add(tmpThread);
+                    msgThreadDao.add(tmpThread);
                     break;
                 case "6":
+                    System.out.println("Viestiketjun ID: ");
+                    int threadId = Integer.parseInt(sc.nextLine());
+                    System.out.println("Käyttäjätunnuksen ID: ");
+                    userId = Integer.parseInt(sc.nextLine());
+                    System.out.println("Viestin sisältö: ");
+                    body = sc.nextLine();
+                    String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
+                    Message m = new Message(userId, body, ts);
+                    m.setThreadId(threadId);
+                    msgDao.add(m);
                     break;
                 case "7":
                     System.out.print("Anna käyttäjätunnus: ");

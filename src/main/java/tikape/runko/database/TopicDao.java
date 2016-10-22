@@ -10,7 +10,10 @@ import java.util.List;
 import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
 
-public class MessageThreadDao implements Dao<MessageThread, Integer> {
+/**
+ * Viestiketju DAO
+ */
+public class TopicDao implements Dao<MessageThread, Integer> {
 
     private final Database database;
 
@@ -19,7 +22,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      *
      * @param database Tietokantaobjekti
      */
-    public MessageThreadDao(Database database) {
+    public TopicDao(Database database) {
         this.database = database;
     }
 
@@ -46,7 +49,8 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
-        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate).setCreationUsername(rs.getString("username"));
+        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
+        msgThread.setCreationUsername(rs.getString("username"));
         msgThread.setMessageCount(rs.getInt("postCount"));
         rs.close();
         stmt.close();
@@ -163,6 +167,11 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
 
     }
 
+    /**
+     * Poistaa kaikki viestiketjut tietyn alakategorian ID:n perusteella
+     * @param id Alakategorian ID
+     * @throws SQLException
+     */
     public void deleteAllFromSubCategory(int id) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM threads WHERE subCategoryId = ?");
