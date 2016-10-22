@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.Base64.Decoder;
 import tikape.runko.domain.User;
 
+/**
+ * Auth -luokkaa käytetään salasanojen tarkistamiseen, sekä käyttäjän
+ * luokituksen todentamiseen. Admin -tunnuksen taso on aina nollaa suurempi
+ * luku.
+ */
 public class Auth {
 
     /**
