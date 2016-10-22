@@ -60,7 +60,6 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
             cat.setLatestMessageThreadTitle(result.getString("title"));
             cat.setLatestMessageTimestamp(result.getString("timestamp"));
             cat.setLatestMessageUsername(result.getString("username"));
-            System.out.println(result.getInt("messageCount"));
             cat.setMessageCount(result.getInt("messageCount"));
         }
         rs.close();
