@@ -87,7 +87,7 @@ public class CategoryDao implements Dao<Category, Integer> {
     }
 
     /**
-     * Poista kategorian
+     * Poistaa kategorian
      *
      * @param key Kategorian ID
      * @throws SQLException
