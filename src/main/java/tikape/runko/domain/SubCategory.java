@@ -11,6 +11,7 @@ public class SubCategory {
     private String latestMessageThreadTitle;
     private String latestMessageUsername;
     private boolean hasMessages = false;
+    private int messageCount = 0;
 
     /**
      * Alakategoria -luokka
@@ -136,6 +137,14 @@ public class SubCategory {
 
     public boolean getHasMessages() {
         return hasMessages;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+    }
+
+    public int getMessageCount() {
+        return messageCount;
     }
 
 }

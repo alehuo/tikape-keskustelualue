@@ -39,10 +39,10 @@
                         <div class="subcategorydesc" th:text="${alaKategoria.description}">Alakategorian kuvaus</div>
                         <div class="deletebtn text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>
                     </div>
-                    <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
+                    <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viestien lukumäärä: <b><span th:text="${alaKategoria.messageCount}">0</span></b> Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
                             <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
                         </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span></div>
-                    <div class="latestmessage" th:unless="${alaKategoria.hasMessages}">Ei viestejä</div>
+                    <div class="latestmessage" th:unless="${alaKategoria.hasMessages}">Viestien lukumäärä: <b>0</b></div>
                 </div>
                 <div th:if="${user != null and user.userLevel == 1}" class="newsubcategorybtn">
                     <a th:href="@{'~/subcategory/new/' + ${kategoria.categoryId}}" class="btn btn-success" role="button">Uusi alakategoria</a>

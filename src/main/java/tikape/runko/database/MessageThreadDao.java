@@ -33,7 +33,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
     @Override
     public MessageThread findOne(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM threads WHERE threadId = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT DISTINCT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.threadId = ? GROUP BY threads.threadId");
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
 
@@ -46,11 +46,12 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
         Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
-        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
+        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate).setCreationUsername(rs.getString("username"));
+        msgThread.setMessageCount(rs.getInt("postCount"));
         rs.close();
         stmt.close();
 
-        stmt = connection.prepareStatement("SELECT * FROM posts WHERE threadId = ? ORDER BY postId ASC");
+        stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, posts.body, posts.timestamp FROM posts WHERE threadId = ? ORDER BY postId ASC");
         stmt.setInt(1, key);
         ResultSet result = stmt.executeQuery();
 
@@ -89,7 +90,7 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM threads WHERE subCategoryId = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT DISTINCT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
@@ -100,7 +101,12 @@ public class MessageThreadDao implements Dao<MessageThread, Integer> {
             Integer userId = rs.getInt("userId");
             String title = rs.getString("title");
             String creationDate = rs.getString("creationDate");
-            msgThreads.add(new MessageThread(subCategoryId, threadId, userId, title, creationDate));
+            int postCount = rs.getInt("postCount");
+            String creationUsername = rs.getString("username");
+            MessageThread mt = new MessageThread(subCategoryId, threadId, userId, title, creationDate);
+            mt.setCreationUsername(creationUsername);
+            mt.setMessageCount(postCount);
+            msgThreads.add(mt);
         }
 
         rs.close();

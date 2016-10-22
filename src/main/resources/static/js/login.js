@@ -25,11 +25,13 @@ $(document).ready(function () {
             if (data === "ok") {
                 $("#successbox").show();
                 $("#spinner").hide();
+                console.log("Kirjautuminen sisään onnistui. Ohjataan nyt etusivulle.");
                 window.location.href = '/';
             } else {
                 $("#spinner").hide();
                 $("#loginform").show();
                 $("#errorbox").show();
+                console.log("Kirjautuminen sisään epäonnistui");
             }
         });
         event.preventDefault();

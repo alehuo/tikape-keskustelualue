@@ -8,9 +8,12 @@ public class MessageThread {
     private List<Message> messages;
     private int subCatId;
     private int userId;
+    private String latestPostUsername;
     private String title;
     private String creationDate;
+    private String creationUsername;
     private int threadId;
+    private int messageCount = 0;
 
     /**
      * Viestiketjujen käsittelyyn tarkoitettu luokka
@@ -76,7 +79,10 @@ public class MessageThread {
      * @return Viestien lukumäärä
      */
     public int getMessageCount() {
-        return messages.size();
+        if (messages.size() != 0) {
+            return messages.size();
+        }
+        return messageCount;
     }
 
     /**
@@ -143,6 +149,30 @@ public class MessageThread {
         return threadId;
     }
 
+    public void setCreationDate(String creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+    }
+
+    public void setSubCatId(int subCatId) {
+        this.subCatId = subCatId;
+    }
+
+    public void setThreadId(int threadId) {
+        this.threadId = threadId;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     /**
      * Palauttaa viestiketjun otsikon ja aikaleiman
      *
@@ -152,4 +182,23 @@ public class MessageThread {
     public String toString() {
         return title + " (" + creationDate + ")";
     }
+
+    public MessageThread setLatestPostUsername(String username) {
+        latestPostUsername = username;
+        return this;
+    }
+
+    public String getLatestPostUsername() {
+        return latestPostUsername;
+    }
+
+    public String getCreationUsername() {
+        return creationUsername;
+    }
+
+    public MessageThread setCreationUsername(String creationUsername) {
+        this.creationUsername = creationUsername;
+        return this;
+    }
+
 }
