@@ -67,4 +67,14 @@ public class Auth {
     public static boolean isAdmin(User u) {
         return (u != null && u.getUserLevel() > 0);
     }
+
+    /**
+     * Palauttaa, onko kirjauduttu sisään vai ei
+     *
+     * @param u Käyttäjä -olio
+     * @return true tai false
+     */
+    public static boolean isAuthenticated(User u) {
+        return (u != null);
+    }
 }
