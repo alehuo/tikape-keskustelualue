@@ -14,32 +14,68 @@ import java.util.List;
 import tikape.runko.domain.Message;
 
 /**
- *
- * @author jussiliu
+ * MessageDao
  */
 public class MessageDao implements Dao<Message, Integer> {
 
+    /**
+     * Tietokanta -olio
+     */
     private final Database database;
 
+    /**
+     * MessageDao
+     *
+     * @param database Tietokanta -olio
+     */
     public MessageDao(Database database) {
         this.database = database;
     }
 
+    /**
+     * Palauttaa viestin ID:n perusteella (EI TOTEUTETTU)
+     *
+     * @param key Viestin ID
+     * @return Viesti
+     * @throws SQLException
+     */
     @Override
     public Message findOne(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
+        return null;
     }
 
+    /**
+     * Palauttaa kaikki viestit (EI TOTEUTETTU)
+     *
+     * @return Lista viesteistä
+     * @throws SQLException
+     */
     @Override
     public List<Message> findAll() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Message> msgs = new ArrayList<>();
+        //Ei toteutettu
+        return msgs;
     }
 
+    /**
+     * Poistaa viestin ID:n perusteella (EI TOTEUTETTU)
+     *
+     * @param key Viestin ID
+     * @throws SQLException
+     */
     @Override
     public void delete(Integer key) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //Ei toteutettu
     }
 
+    /**
+     * Palauttaa kaikki viestit viestiketjusta
+     *
+     * @param topicId Viestiketjun ID
+     * @return Lista viesteistä
+     * @throws SQLException
+     */
     public List<Message> findAllFromTopic(int topicId) throws SQLException {
 
         Connection connection = database.getConnection();
@@ -64,6 +100,12 @@ public class MessageDao implements Dao<Message, Integer> {
         return msg;
     }
 
+    /**
+     * Lisää uuden viestin tietokantaan
+     *
+     * @param m Viesti -olio
+     * @throws SQLException
+     */
     public void add(Message m) throws SQLException {
         int id = m.getThreadId();
         int uId = m.getUserId();
@@ -80,6 +122,12 @@ public class MessageDao implements Dao<Message, Integer> {
 
     }
 
+    /**
+     * Poistaa kaikki viestit alakategoriasta
+     *
+     * @param id Alakategorian ID
+     * @throws SQLException
+     */
     public void deleteAllFromSubCategory(int id) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM posts WHERE threadId IN(SELECT threadId FROM threads WHERE subCategoryId = ?); ");
