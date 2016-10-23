@@ -91,7 +91,7 @@ public class Main {
         post("/thread/:threadId", (req, res) -> {
             int id = Integer.parseInt(req.params("threadId"));
             User u = req.session().attribute("user");
-            if (Auth.isAuthenticated(u)) {
+            if (Auth.isLoggedIn(u)) {
                 String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
                 String body = req.queryParams("message");
                 Message m = new Message(u.getId(), body, ts);
@@ -127,7 +127,7 @@ public class Main {
             int id = Integer.parseInt(req.params("subCategoryId"));
             HashMap map = new HashMap<>();
             User u = req.session().attribute("user");
-            if (!Auth.isAuthenticated(u)) {
+            if (!Auth.isLoggedIn(u)) {
                 return new ModelAndView(map, "unauthorized");
             }
             map.put("user", u);
@@ -140,7 +140,7 @@ public class Main {
             int id = Integer.parseInt(req.params("subCategoryId"));
             HashMap map = new HashMap<>();
             User u = req.session().attribute("user");
-            if (Auth.isAuthenticated(u)) {
+            if (Auth.isLoggedIn(u)) {
                 String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
                 MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
                 tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
