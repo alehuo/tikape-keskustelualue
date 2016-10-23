@@ -35,7 +35,7 @@
                 </div>
                 <div class="subcategory" th:each="alaKategoria : ${kategoria.subCategories}">
                     <div class="subcategoryheader borderbox">
-                        <div class="subcategorytitle"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}">Alakategorian otsikko</a></div>
+                        <div class="subcategorytitle"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}">Alakategorian otsikko</a></div>
                         <div class="subcategorydesc" th:text="${alaKategoria.description}">Alakategorian kuvaus</div>
                         <div class="deletebtn text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>
                     </div>
