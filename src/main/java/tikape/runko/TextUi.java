@@ -80,14 +80,14 @@ public class TextUi {
             System.out.println("6) Kirjoita uusi viesti viestiketjuun");
             System.out.println("7) Lisää uusi käyttäjä tietokantaan");
             System.out.println("8) Listaa käyttäjät");
-            System.out.println("exit Poistu ja käynnistä Web-sovellus");
+            System.out.println("enter Poistu ja käynnistä Web-sovellus");
             System.out.println("");
             System.out.print("> ");
             //Poimitaan käyttäjän syöte
             String komento = sc.nextLine();
             //Tarkastetaan, löytyykö komennolle vastike
             switch (komento) {
-                case "exit":
+                case "":
                     break OUTER;
                 case "1":
                     System.out.println("Listataan kategoriat ja niiden alakategoriat: ");
@@ -149,6 +149,7 @@ public class TextUi {
                     msgThreadDao.add(tmpThread);
                     break;
                 case "6":
+                    //Viestiketjuun vastaus
                     System.out.println("Viestiketjun ID: ");
                     int threadId = Integer.parseInt(sc.nextLine());
                     System.out.println("Käyttäjätunnuksen ID: ");
@@ -161,6 +162,7 @@ public class TextUi {
                     msgDao.add(m);
                     break;
                 case "7":
+                    //Käyttäjätilin luonti
                     System.out.print("Anna käyttäjätunnus: ");
                     String userName = sc.nextLine();
                     System.out.print("Anna salasana: ");
@@ -174,6 +176,7 @@ public class TextUi {
 
                     break;
                 case "8":
+                    //Listaa kaikki käyttäjät
                     List<User> users = userDao.findAll();
                     for (User u : users) {
                         System.out.println(u);

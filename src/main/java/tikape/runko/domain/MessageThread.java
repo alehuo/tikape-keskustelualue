@@ -51,6 +51,22 @@ public class MessageThread {
     }
 
     /**
+     * Viestiketjujen käsittelyyn tarkoitettu luokka
+     *
+     * @param threadId Viestiketjun ID
+     * @param creator Viestiketjun luojan nimi
+     * @param postCount Viestiketjun viestien lukumäärä
+     * @param title Viestiketjun otsikko
+     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     */
+    public MessageThread(int threadId, String title, String creationDate, String creator, int postCount) {
+        this(-1, -1, -1, title, creationDate);
+        this.threadId = threadId;
+        messageCount = postCount;
+        creationUsername = creator;
+    }
+
+    /**
      * Lisää uusi viesti viestiketjuun
      *
      * @param message Message -olio

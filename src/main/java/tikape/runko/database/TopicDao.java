@@ -94,22 +94,18 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
         List<MessageThread> msgThreads = new ArrayList<>();
         while (rs.next()) {
-            Integer subCatId = rs.getInt("subCategoryId");
             Integer threadId = rs.getInt("threadId");
-            Integer userId = rs.getInt("userId");
             String title = rs.getString("title");
             String creationDate = rs.getString("creationDate");
             int postCount = rs.getInt("postCount");
-            String creationUsername = rs.getString("username");
-            MessageThread mt = new MessageThread(subCategoryId, threadId, userId, title, creationDate);
-            mt.setCreationUsername(creationUsername);
-            mt.setMessageCount(postCount);
+            String creationUsername = rs.getString("creator");
+            MessageThread mt = new MessageThread(threadId, title, creationDate, creationUsername, postCount);
             msgThreads.add(mt);
         }
 

@@ -55,7 +55,7 @@ public class Main {
         //Tekstikäyttöliittymän alustus
         TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, topicDao, msgDao);
         //Näytä tekstikäyttöliittymä
-//        textUi.show();
+        //textUi.show();
 
         //Oletusportti
         int appPort = 4567;
