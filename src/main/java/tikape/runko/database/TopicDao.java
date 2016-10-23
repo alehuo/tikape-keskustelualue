@@ -36,7 +36,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
     @Override
     public MessageThread findOne(Integer key) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT DISTINCT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.threadId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.threadId = ? GROUP BY threads.threadId");
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
 
@@ -94,7 +94,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT DISTINCT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
@@ -123,7 +123,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
     /**
      * Poistaa viestiketjun
      *
-     * @param key
+     * @param key Viestiketjun ID
      * @throws SQLException
      */
     @Override
@@ -148,7 +148,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         stmt.setString(4, msgThread.getTimeStamp());
         System.out.println(stmt.toString());
         //Poimitaan uuden viestiketjun ID kun kysely on suoritettu
-        int affectedRows = stmt.executeUpdate();
+        stmt.execute();
         try (ResultSet insertId = stmt.getGeneratedKeys()) {
             if (insertId.next()) {
                 //Tämän voisi korvata MessageDao:lla?
@@ -169,6 +169,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 
     /**
      * Poistaa kaikki viestiketjut tietyn alakategorian ID:n perusteella
+     *
      * @param id Alakategorian ID
      * @throws SQLException
      */
