@@ -30,7 +30,7 @@
             <div th:unless="${subcategory == null}">
                 <h3 th:if="${#lists.isEmpty(viestiketjut)}">Ei viestiketjuja.</h3>
                 <p th:if="${user != null}">
-                    <a th:href="@{'~/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
+                    <a th:href="@{'~/thread/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
                 </p>
                 <table class="table" th:unless="${#lists.isEmpty(viestiketjut)}">
                     <thead>

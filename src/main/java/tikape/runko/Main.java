@@ -148,7 +148,7 @@ public class Main {
 //            return "Tällä käsitellään viestiketjun data alakategoriaan " + id + ".";
 //        });
         //Uuden viestiketjun luominen:
-        get("/new/:subCategoryId", (req, res) -> {
+        get("/thread/new/:subCategoryId", (req, res) -> {
             HashMap map = new HashMap<>();
             int id;
             try {
@@ -166,7 +166,7 @@ public class Main {
         }, new ThymeleafTemplateEngine());
 
         //Uuden viestiketjun luominen:
-        post("/new/:subCategoryId", (req, res) -> {
+        post("/thread/new/:subCategoryId", (req, res) -> {
             int id;
             try {
                 id = Integer.parseInt(req.params("subCategoryId"));
