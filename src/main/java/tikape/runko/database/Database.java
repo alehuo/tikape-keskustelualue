@@ -94,7 +94,7 @@ public class Database {
         //Alakategoriat -taulu
         lista.add("CREATE TABLE subCategories (subCatId integer PRIMARY KEY, catId integer , title varchar(45), description varchar(150), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
         //Käyttäjät
-        lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(255), password varchar(255), salt varchar(255), userLevel integer);");
+        lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel integer);");
         //Viestiketjut
         lista.add("CREATE TABLE threads (threadId integer PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
         //Viestiketjun postaukset
@@ -139,7 +139,7 @@ public class Database {
         //Alakategoriat -taulu
         lista.add("CREATE TABLE subCategories (subCatId SERIAL PRIMARY KEY, catId integer , title varchar(45), description varchar(150), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
         //Käyttäjät
-        lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(255), password varchar(255), salt varchar(255), userLevel SERIAL);");
+        lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel SERIAL);");
         //Viestiketjut
         lista.add("CREATE TABLE threads (threadId SERIAL PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
         //Viestiketjun postaukset
