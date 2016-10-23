@@ -92,7 +92,7 @@ public class Database {
         //Kategoriat -taulu
         lista.add("CREATE TABLE categories (categoryId integer PRIMARY KEY, title varchar(60));");
         //Alakategoriat -taulu
-        lista.add("CREATE TABLE subCategories (subCatId integer PRIMARY KEY, catId integer , title varchar(45), description varchar(150), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
+        lista.add("CREATE TABLE subCategories (subCatId integer PRIMARY KEY, catId integer , title varchar(30), description varchar(100), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
         //Käyttäjät
         lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel integer);");
         //Viestiketjut
@@ -137,7 +137,7 @@ public class Database {
         //Kategoriat -taulu
         lista.add("CREATE TABLE categories (categoryId SERIAL PRIMARY KEY, title varchar(60));");
         //Alakategoriat -taulu
-        lista.add("CREATE TABLE subCategories (subCatId SERIAL PRIMARY KEY, catId integer , title varchar(45), description varchar(150), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
+        lista.add("CREATE TABLE subCategories (subCatId SERIAL PRIMARY KEY, catId integer , title varchar(30), description varchar(100), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
         //Käyttäjät
         lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel SERIAL);");
         //Viestiketjut
