@@ -27,9 +27,9 @@
             <form method ="POST" class="form-horizontal" th:if="${user != null}">
                 <div class="form-group">
                     <label for="title">Otsikko</label>
-                    <input type="text" class="form-control" id="title" name ="title" size="50"/>
+                    <input type="text" class="form-control" id="title" name ="title" size="80" maxlength="80"/>
                     <label for="title">Viesti</label>
-                    <textarea cols="150" rows="10" class="form-control" id="body"  name="body"></textarea>
+                    <textarea cols="150" rows="10" class="form-control" id="body"  name="body" maxlength="4096"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" name="addTopic">Uusi viestiketju</button>
             </form>
