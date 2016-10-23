@@ -94,8 +94,8 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
         Connection connection = database.getConnection();
-        String query = 
-                "SELECT "
+        String query
+                = "SELECT "
                 + "threads.threadId, "
                 + "users.username AS creator, "
                 + "threads.title, "
@@ -162,7 +162,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         stmt.setInt(2, msgThread.getUserId());
         stmt.setString(3, msgThread.getTitle());
         stmt.setString(4, msgThread.getTimeStamp());
-        System.out.println(stmt.toString());
+
         //Poimitaan uuden viestiketjun ID kun kysely on suoritettu
         stmt.execute();
         try (ResultSet insertId = stmt.getGeneratedKeys()) {
