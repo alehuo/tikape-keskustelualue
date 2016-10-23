@@ -77,10 +77,24 @@ public class Main {
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
+        //Uudelleenohjaa pois vääristä sivuista
+        get("/subcategory", (req, res) -> {
+            res.redirect("/");
+            return "";
+        });
+        get("/thread", (req, res) -> {
+            res.redirect("/");
+            return "";
+        });
         //Näytä viestiketju
         get("/thread/:threadId", (req, res) -> {
             HashMap map = new HashMap<>();
-            int id = Integer.parseInt(req.params("threadId"));
+            int id;
+            try {
+                id = Integer.parseInt(req.params("threadId"));
+            } catch (NumberFormatException e) {
+                id = -1;
+            }
             map.put("messageThread", topicDao.findOne(id));
             map.put("viestit", msgDao.findAllFromTopic(id));
             map.put("user", (User) req.session().attribute("user"));
@@ -89,7 +103,12 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         //Lähetä viestiketjuun uusi vastaus
         post("/thread/:threadId", (req, res) -> {
-            int id = Integer.parseInt(req.params("threadId"));
+            int id;
+            try {
+                id = Integer.parseInt(req.params("threadId"));
+            } catch (NumberFormatException e) {
+                id = -1;
+            }
             User u = req.session().attribute("user");
             if (Auth.isLoggedIn(u)) {
                 String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
@@ -108,7 +127,13 @@ public class Main {
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
             HashMap map = new HashMap<>();
-            int id = Integer.parseInt(req.params("subCategoryId"));
+            int id;
+            try {
+                id = Integer.parseInt(req.params("subCategoryId"));
+            } catch (NumberFormatException e) {
+                id = -1;
+            }
+
             map.put("subcategoryId", id);
             map.put("subcategory", subCatDao.findOne(id));
             map.put("viestiketjut", topicDao.findAllFromSubCategory(id));
@@ -124,8 +149,13 @@ public class Main {
 //        });
         //Uuden viestiketjun luominen:
         get("/new/:subCategoryId", (req, res) -> {
-            int id = Integer.parseInt(req.params("subCategoryId"));
             HashMap map = new HashMap<>();
+            int id;
+            try {
+                id = Integer.parseInt(req.params("subCategoryId"));
+            } catch (NumberFormatException e) {
+                return new ModelAndView(map, "unauthorized");
+            }
             User u = req.session().attribute("user");
             if (!Auth.isLoggedIn(u)) {
                 return new ModelAndView(map, "unauthorized");
@@ -137,7 +167,12 @@ public class Main {
 
         //Uuden viestiketjun luominen:
         post("/new/:subCategoryId", (req, res) -> {
-            int id = Integer.parseInt(req.params("subCategoryId"));
+            int id;
+            try {
+                id = Integer.parseInt(req.params("subCategoryId"));
+            } catch (NumberFormatException e) {
+                id = -1;
+            }
             HashMap map = new HashMap<>();
             User u = req.session().attribute("user");
             if (Auth.isLoggedIn(u)) {
@@ -249,16 +284,21 @@ public class Main {
         get("/category/delete/:id", (req, res) -> {
             User u = req.session().attribute("user");
             if (Auth.isAdmin(u)) {
-                int id = Integer.parseInt(req.params(":id"));
-                List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
-                for (SubCategory c : subCategories) {
-                    msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
-                    topicDao.deleteAllFromSubCategory(c.getSubCategoryId());
-                    subCatDao.delete(c.getSubCategoryId());
+                try {
+                    int id = Integer.parseInt(req.params("subCategoryId"));
+                    List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
+                    for (SubCategory c : subCategories) {
+                        msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                        topicDao.deleteAllFromSubCategory(c.getSubCategoryId());
+                        subCatDao.delete(c.getSubCategoryId());
+                    }
+                    catDao.delete(id);
+                    res.redirect("/");
+                    return "";
+                } catch (NumberFormatException e) {
+                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
                 }
-                catDao.delete(id);
-                res.redirect("/");
-                return "";
+
             } else {
                 return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
             }
@@ -268,12 +308,16 @@ public class Main {
         get("/subcategory/delete/:id", (req, res) -> {
             User u = req.session().attribute("user");
             if (Auth.isAdmin(u)) {
-                int id = Integer.parseInt(req.params(":id"));
-                msgDao.deleteAllFromSubCategory(id);
-                topicDao.deleteAllFromSubCategory(id);
-                subCatDao.delete(id);
-                res.redirect("/");
-                return "";
+                try {
+                    int id = Integer.parseInt(req.params(":id"));
+                    msgDao.deleteAllFromSubCategory(id);
+                    topicDao.deleteAllFromSubCategory(id);
+                    subCatDao.delete(id);
+                    res.redirect("/");
+                    return "";
+                } catch (NumberFormatException e) {
+                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                }
             } else {
                 return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
             }
@@ -292,13 +336,17 @@ public class Main {
         post("/subcategory/new/:id", (req, res) -> {
             User u = req.session().attribute("user");
             if (Auth.isAdmin(u)) {
-                int id = Integer.parseInt(req.params(":id"));
-                String name = req.queryParams("subcategoryname");
-                String desc = req.queryParams("subcategorydesc");
-                SubCategory c = new SubCategory(id, name).setDescription(desc);
-                subCatDao.add(c);
-                res.redirect("/");
-                return "";
+                try {
+                    int id = Integer.parseInt(req.params(":id"));
+                    String name = req.queryParams("subcategoryname");
+                    String desc = req.queryParams("subcategorydesc");
+                    SubCategory c = new SubCategory(id, name).setDescription(desc);
+                    subCatDao.add(c);
+                    res.redirect("/");
+                    return "";
+                } catch (NumberFormatException e) {
+                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                }
             } else {
                 return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
             }
