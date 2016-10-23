@@ -50,7 +50,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
 
         //Tämä kysely hakee uusimman viestin tietystä alakategoriasta. Haku palauttaa viestin timestampin, käyttäjätunnuksen, viestiketjun otsikon sekä ID:n.
-        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(posts.postId) AS messageCount  FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? GROUP BY threads.subCategoryId ORDER BY posts.timestamp DESC";
         PreparedStatement stmt2 = connection.prepareStatement(query);
         stmt2.setInt(1, key);
         //Tässä haetaan viimeisimmän viestin tiedot
@@ -91,7 +91,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
             SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
             //Haetaan vielä viimeisin tieto
-            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(posts.postId) AS messageCount  FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? GROUP BY threads.subCategoryId ORDER BY posts.timestamp DESC";
             PreparedStatement stmt2 = connection.prepareStatement(query);
             stmt2.setInt(1, cat.getSubCategoryId());
             //Tässä haetaan viimeisimmän viestin tiedot
@@ -139,7 +139,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
 
             SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
             //Haetaan vielä viimeisin tieto
-            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY posts.timestamp DESC LIMIT 1";
+            String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(posts.postId) AS messageCount  FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? GROUP BY threads.subCategoryId ORDER BY posts.timestamp DESC";
             PreparedStatement stmt2 = connection.prepareStatement(query);
             stmt2.setInt(1, cat.getSubCategoryId());
             //Tässä haetaan viimeisimmän viestin tiedot
@@ -172,20 +172,17 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
      */
     @Override
     public void delete(Integer key) throws SQLException {
-        //To change body of generated methods, choose Tools | Templates.
-
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM subCategories WHERE subCatId = ?;");
         stmt.setInt(1, key);
         stmt.execute();
-
     }
 
     /**
      * Lisää alakategorian
      *
-     * @param c
-     * @return
+     * @param c Alakategoria
+     * @return true tai false
      * @throws SQLException
      */
     public boolean add(SubCategory c) throws SQLException {
