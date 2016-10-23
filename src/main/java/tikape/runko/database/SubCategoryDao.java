@@ -80,7 +80,6 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT * FROM subCategories");
         ResultSet rs = stmt.executeQuery();
-        boolean hasOne = rs.next();
 
         List<SubCategory> categories = new ArrayList<>();
         while (rs.next()) {
