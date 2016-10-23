@@ -13,6 +13,7 @@ public class MessageThread {
     private int subCatId;
     private int userId;
     private String latestPostUsername;
+    private String latestPostTimestamp;
     private String title;
     private String creationDate;
     private String creationUsername;
@@ -276,6 +277,14 @@ public class MessageThread {
      */
     public void setCreationUsername(String creationUsername) {
         this.creationUsername = creationUsername;
+    }
+
+    public String getLatestPostTimestamp() {
+        return latestPostTimestamp;
+    }
+
+    public void setLatestPostTimestamp(String latestPostTimestamp) {
+        this.latestPostTimestamp = latestPostTimestamp;
     }
 
     /**

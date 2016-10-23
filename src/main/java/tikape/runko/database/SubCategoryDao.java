@@ -50,7 +50,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
                 + "LEFT JOIN users ON posts.userId = users.userId "
                 + "WHERE s.subCatId = ? "
                 + "GROUP BY s.subCatId "
-                + "ORDER BY posts.timestamp ASC;";
+                + "ORDER BY posts.postId DESC;";
         PreparedStatement stmt = connection.prepareStatement(query);
 
         stmt.setObject(1, key);
@@ -125,7 +125,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
                 + "LEFT JOIN posts ON threads.threadId = posts.threadId "
                 + "LEFT JOIN users ON posts.userId = users.userId "
                 + "GROUP BY s.subCatId "
-                + "ORDER BY posts.timestamp ASC;";
+                + "ORDER BY posts.postId DESC;";
         PreparedStatement stmt = connection.prepareStatement(query);
         ResultSet rs = stmt.executeQuery();
 
@@ -208,7 +208,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
                 + "LEFT JOIN users ON posts.userId = users.userId "
                 + "WHERE s.catId = ? "
                 + "GROUP BY s.subCatId "
-                + "ORDER BY s.subCatId ASC, posts.timestamp ASC;";
+                + "ORDER BY s.subCatId ASC, posts.postId DESC;";
         PreparedStatement stmt = connection.prepareStatement(query);
         stmt.setInt(1, categoryId);
         ResultSet rs = stmt.executeQuery();

@@ -37,7 +37,7 @@
                         <tr><td>Otsikko</td><td>Luonut</td><td>Viestien lukumäärä</td><td>Viimeisin viesti</td></tr>
                     </thead>
                     <tr th:each="viestiketju : ${viestiketjut}">
-                        <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td th:text="${viestiketju.creationUsername}">Käyttäjätunnus</td><td th:text="${viestiketju.messageCount}">Viestien lukumäärä</td><td>Viimeisin viesti</td>
+                        <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td th:text="${viestiketju.creationUsername}">Käyttäjätunnus</td><td th:text="${viestiketju.messageCount}">Viestien lukumäärä</td><td><span th:text="${viestiketju.latestPostUsername}">Käyttäjätunnus</span>, <span th:text="${viestiketju.latestPostTimestamp}"></span></td>
                     </tr>
                 </table>
             </div>
