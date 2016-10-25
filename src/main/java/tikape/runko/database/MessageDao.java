@@ -116,7 +116,13 @@ public class MessageDao implements Dao<Message, Integer> {
         stmt.setString(3, ts);
         stmt.setString(4, body);
         stmt.execute();
+        stmt.close();
 
+        PreparedStatement stmt2 = connection.prepareStatement("UPDATE threads SET timestamp = ? WHERE threads.threadId = ?");
+        stmt2.setString(1, ts);
+        stmt2.setInt(2, id);
+        stmt2.execute();
+        stmt2.close();
     }
 
     /**

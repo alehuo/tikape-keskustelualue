@@ -96,7 +96,7 @@ public class Database {
         //Käyttäjät
         lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel integer);");
         //Viestiketjut
-        lista.add("CREATE TABLE threads (threadId integer PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
+        lista.add("CREATE TABLE threads (threadId integer PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), timestamp varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
         //Viestiketjun postaukset
         lista.add("CREATE TABLE posts (postId integer PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
 
@@ -113,7 +113,7 @@ public class Database {
         //User -tunnus (user:user)
         lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
-        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, creationDate) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
+        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, timestamp) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
         lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
         return lista;
     }
@@ -141,7 +141,7 @@ public class Database {
         //Käyttäjät
         lista.add("CREATE TABLE users (userId SERIAL PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel SERIAL);");
         //Viestiketjut
-        lista.add("CREATE TABLE threads (threadId SERIAL PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), creationDate varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
+        lista.add("CREATE TABLE threads (threadId SERIAL PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), timestamp varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
         //Viestiketjun postaukset
         lista.add("CREATE TABLE posts (postId SERIAL PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
 
@@ -158,7 +158,7 @@ public class Database {
         //User -tunnus (user:user)
         lista.add("INSERT INTO users (username, password, salt, userLevel) VALUES ('user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
         //Jne..
-        lista.add("INSERT INTO threads (subCategoryId, userId, title, creationDate) VALUES (1,1,'Testipostaus','2016-10-17 20:23')");
+        lista.add("INSERT INTO threads (subCategoryId, userId, title, timestamp) VALUES (1,1,'Testipostaus','2016-10-17 20:23')");
         lista.add("INSERT INTO posts (threadId, userId, timestamp, body) VALUES (1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
         return lista;
     }

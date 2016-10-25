@@ -47,7 +47,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 //                + "threads.threadId, "
 //                + "users.username AS creator, "
 //                + "threads.title, "
-//                + "threads.creationDate, "
+//                + "threads.timestamp, "
 //                + "COUNT(posts.postId) AS postCount , "
 //                + "posts.timestamp AS latestPostTimestamp,"
 //                + "(SELECT username FROM users WHERE userId = posts.userId) AS latestPostUserName "
@@ -58,8 +58,8 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 //                + "WHERE threads.subCategoryId = ? "
 //                + "GROUP BY threads.threadId "
 //                + "ORDER BY posts.postId DESC;";
-//        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
-        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.creationDate, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.threadId = ?");
+//        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.timestamp, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.timestamp, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.threadId = ?");
 
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
@@ -71,7 +71,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         //1
         Integer threadId = rs.getInt("threadId");
         String title = rs.getString("title");
-        String creationDate = rs.getString("creationDate");
+        String timestamp = rs.getString("timestamp");
         String creationUsername = rs.getString("creator");
         //2 Hae viestien lukumäärä viestiketjussa
         PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
@@ -81,7 +81,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
             return null;
         }
         int postCount = rs2.getInt("messageCount");
-        MessageThread mt = new MessageThread(threadId, title, creationDate, creationUsername, postCount);
+        MessageThread mt = new MessageThread(threadId, title, timestamp, creationUsername, postCount);
         PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
         stmt3.setInt(1, threadId);
         ResultSet rs3 = stmt3.executeQuery();
@@ -129,7 +129,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 //                + "threads.threadId, "
 //                + "users.username AS creator, "
 //                + "threads.title, "
-//                + "threads.creationDate, "
+//                + "threads.timestamp, "
 //                + "COUNT(posts.postId) AS postCount , "
 //                + "posts.timestamp AS latestPostTimestamp,"
 //                + "(SELECT username FROM users WHERE userId = posts.userId) AS latestPostUserName "
@@ -140,8 +140,8 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 //                + "WHERE threads.subCategoryId = ? "
 //                + "GROUP BY threads.threadId "
 //                + "ORDER BY posts.postId DESC;";
-//        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
-        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.creationDate, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.subCategoryId = ?");
+//        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.timestamp, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.timestamp, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY threads.timestamp DESC");
 
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
@@ -151,7 +151,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
             //1
             Integer threadId = rs.getInt("threadId");
             String title = rs.getString("title");
-            String creationDate = rs.getString("creationDate");
+            String timestamp = rs.getString("timestamp");
             String creationUsername = rs.getString("creator");
             //2 Hae viestien lukumäärä viestiketjussa
             PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
@@ -161,7 +161,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
                 return null;
             }
             int postCount = rs2.getInt("messageCount");
-            MessageThread mt = new MessageThread(threadId, title, creationDate, creationUsername, postCount);
+            MessageThread mt = new MessageThread(threadId, title, timestamp, creationUsername, postCount);
             PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
             stmt3.setInt(1, threadId);
             ResultSet rs3 = stmt3.executeQuery();
@@ -172,7 +172,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 
             msgThreads.add(mt);
         }
-
+        
         //3 Hae viimeisin viesti
         rs.close();
         stmt.close();
@@ -201,7 +201,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
     public void add(MessageThread msgThread) throws SQLException {
         Connection connection = database.getConnection();
         //Lisätään uusi viestiketju
-        String query = "INSERT INTO threads (subCategoryId, userId, title, creationDate) VALUES (?,?,?,?)";
+        String query = "INSERT INTO threads (subCategoryId, userId, title, timestamp) VALUES (?,?,?,?)";
         PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
         stmt.setInt(1, msgThread.getSubCategoryId());
         stmt.setInt(2, msgThread.getUserId());

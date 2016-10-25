@@ -15,7 +15,7 @@ public class MessageThread {
     private String latestPostUsername;
     private String latestPostTimestamp;
     private String title;
-    private String creationDate;
+    private String timestamp;
     private String creationUsername;
     private int threadId;
     private int messageCount = 0;
@@ -27,15 +27,15 @@ public class MessageThread {
      * @param threadId
      * @param userId Käyttäjätunnuksen ID
      * @param title Viestiketjun otsikko
-     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
-    public MessageThread(int subCatId, int threadId, int userId, String title, String creationDate) {
+    public MessageThread(int subCatId, int threadId, int userId, String title, String timestamp) {
         messages = new ArrayList<>();
         this.threadId = threadId;
         this.subCatId = subCatId;
         this.userId = userId;
         this.title = title;
-        this.creationDate = creationDate;
+        this.timestamp = timestamp;
     }
 
     /**
@@ -44,10 +44,10 @@ public class MessageThread {
      * @param subCatId Alakategoria ID
      * @param userId Käyttäjätunnuksen ID
      * @param title Viestiketjun otsikko
-     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
-    public MessageThread(int subCatId, int userId, String title, String creationDate) {
-        this(subCatId, -1, userId, title, creationDate);
+    public MessageThread(int subCatId, int userId, String title, String timestamp) {
+        this(subCatId, -1, userId, title, timestamp);
         messages = new ArrayList<>();
     }
 
@@ -58,10 +58,10 @@ public class MessageThread {
      * @param creator Viestiketjun luojan nimi
      * @param postCount Viestiketjun viestien lukumäärä
      * @param title Viestiketjun otsikko
-     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
-    public MessageThread(int threadId, String title, String creationDate, String creator, int postCount) {
-        this(-1, -1, -1, title, creationDate);
+    public MessageThread(int threadId, String title, String timestamp, String creator, int postCount) {
+        this(-1, -1, -1, title, timestamp);
         this.threadId = threadId;
         messageCount = postCount;
         creationUsername = creator;
@@ -148,7 +148,7 @@ public class MessageThread {
      * @return Viestiketjun aikaleima
      */
     public String getTimeStamp() {
-        return creationDate;
+        return timestamp;
     }
 
     /**
@@ -171,15 +171,6 @@ public class MessageThread {
     }
 
     /**
-     * Palauttaa viestiketjun luomispäiväyksen
-     *
-     * @return Luomispäiväys
-     */
-    public String getCreationDate() {
-        return creationDate;
-    }
-
-    /**
      * Palauttaa viestiketjun ID:n
      *
      * @return Viestiketjun ID
@@ -191,10 +182,10 @@ public class MessageThread {
     /**
      * Asettaa viestiketjun luomispäiväyksen
      *
-     * @param creationDate Luomispäiväys
+     * @param timestamp Luomispäiväys
      */
-    public void setCreationDate(String creationDate) {
-        this.creationDate = creationDate;
+    public void setTimeStamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     /**
@@ -294,7 +285,7 @@ public class MessageThread {
      */
     @Override
     public String toString() {
-        return title + " (" + creationDate + ")";
+        return title + " (" + timestamp + ")";
     }
 
 }
