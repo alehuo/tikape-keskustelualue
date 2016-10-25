@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
@@ -35,42 +36,66 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      */
     @Override
     public MessageThread findOne(Integer key) throws SQLException {
+        /*
+        Emme löytäneet syytä sille, miksi SQLitellä toimivat kyselyt eivät toimiveet PostgreSQL:n kanssa.
+        Todella mystinen ongelma. Siksi on käytetty kolmea eri kyselyä.
+         */
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.subCategoryId, threads.userId, users.username, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.threadId = ? GROUP BY threads.threadId");
+        //1 Hae viestiketjun perustiedot
+//        String query
+//                = "SELECT "
+//                + "threads.threadId, "
+//                + "users.username AS creator, "
+//                + "threads.title, "
+//                + "threads.creationDate, "
+//                + "COUNT(posts.postId) AS postCount , "
+//                + "posts.timestamp AS latestPostTimestamp,"
+//                + "(SELECT username FROM users WHERE userId = posts.userId) AS latestPostUserName "
+//                + "FROM threads "
+//                + "INNER JOIN users "
+//                + "ON threads.userId = users.userId "
+//                + "INNER JOIN posts ON posts.threadId = threads.threadId "
+//                + "WHERE threads.subCategoryId = ? "
+//                + "GROUP BY threads.threadId "
+//                + "ORDER BY posts.postId DESC;";
+//        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.creationDate, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.threadId = ?");
+
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
 
+        List<MessageThread> msgThreads = new ArrayList<>();
         if (!rs.next()) {
             return null;
         }
-
-        Integer subCatId = rs.getInt("subCategoryId");
+        //1
         Integer threadId = rs.getInt("threadId");
-        Integer userId = rs.getInt("userId");
         String title = rs.getString("title");
         String creationDate = rs.getString("creationDate");
-        MessageThread msgThread = new MessageThread(subCatId, threadId, userId, title, creationDate);
-        msgThread.setCreationUsername(rs.getString("username"));
-        msgThread.setMessageCount(rs.getInt("postCount"));
+        String creationUsername = rs.getString("creator");
+        //2 Hae viestien lukumäärä viestiketjussa
+        PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
+        stmt2.setInt(1, threadId);
+        ResultSet rs2 = stmt2.executeQuery();
+        if (!rs2.next()) {
+            return null;
+        }
+        int postCount = rs2.getInt("messageCount");
+        MessageThread mt = new MessageThread(threadId, title, creationDate, creationUsername, postCount);
+        PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
+        stmt3.setInt(1, threadId);
+        ResultSet rs3 = stmt3.executeQuery();
+        if (rs3.next()) {
+            mt.setLatestPostTimestamp(rs3.getString("latestPostTimestamp"));
+            mt.setLatestPostUsername(rs3.getString("latestPostUsername"));
+        }
+
+        //3 Hae viimeisin viesti
         rs.close();
         stmt.close();
-
-        stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, posts.body, posts.timestamp FROM posts WHERE threadId = ? ORDER BY postId ASC");
-        stmt.setInt(1, key);
-        ResultSet result = stmt.executeQuery();
-
-        while (result.next()) {
-            Integer postId = result.getInt("postId");
-            userId = result.getInt("userId");
-            String body = result.getString("body");
-            String timeStamp = result.getString("timestamp");
-            msgThread.addMessage(new Message(postId, userId, body, timeStamp));
-        }
-        result.close();
-
         connection.close();
 
-        return msgThread;
+        return mt;
     }
 
     /**
@@ -93,42 +118,62 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      * @throws SQLException
      */
     public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
+        /*
+        Emme löytäneet syytä sille, miksi SQLitellä toimivat kyselyt eivät toimiveet PostgreSQL:n kanssa.
+        Todella mystinen ongelma. Siksi on käytetty kolmea eri kyselyä.
+         */
         Connection connection = database.getConnection();
-        String query
-                = "SELECT "
-                + "threads.threadId, "
-                + "users.username AS creator, "
-                + "threads.title, "
-                + "threads.creationDate, "
-                + "COUNT(posts.postId) AS postCount , "
-                + "posts.timestamp AS latestPostTimestamp,"
-                + "(SELECT username FROM users WHERE userId = posts.userId) AS latestPostUserName "
-                + "FROM threads "
-                + "INNER JOIN users "
-                + "ON threads.userId = users.userId "
-                + "INNER JOIN posts ON posts.threadId = threads.threadId "
-                + "WHERE threads.subCategoryId = ? "
-                + "GROUP BY threads.threadId "
-                + "ORDER BY posts.postId DESC;";
+        //1 Hae viestiketjun perustiedot
+//        String query
+//                = "SELECT "
+//                + "threads.threadId, "
+//                + "users.username AS creator, "
+//                + "threads.title, "
+//                + "threads.creationDate, "
+//                + "COUNT(posts.postId) AS postCount , "
+//                + "posts.timestamp AS latestPostTimestamp,"
+//                + "(SELECT username FROM users WHERE userId = posts.userId) AS latestPostUserName "
+//                + "FROM threads "
+//                + "INNER JOIN users "
+//                + "ON threads.userId = users.userId "
+//                + "INNER JOIN posts ON posts.threadId = threads.threadId "
+//                + "WHERE threads.subCategoryId = ? "
+//                + "GROUP BY threads.threadId "
+//                + "ORDER BY posts.postId DESC;";
 //        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, users.username AS creator, threads.title, threads.creationDate, COUNT(posts.postId) AS postCount FROM threads INNER JOIN users ON threads.userId = users.userId INNER JOIN posts ON posts.threadId = threads.threadId WHERE threads.subCategoryId = ? GROUP BY threads.threadId");
-        PreparedStatement stmt = connection.prepareStatement(query);
+        PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.creationDate, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.subCategoryId = ?");
 
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
         List<MessageThread> msgThreads = new ArrayList<>();
         while (rs.next()) {
+            //1
             Integer threadId = rs.getInt("threadId");
             String title = rs.getString("title");
             String creationDate = rs.getString("creationDate");
-            int postCount = rs.getInt("postCount");
             String creationUsername = rs.getString("creator");
+            //2 Hae viestien lukumäärä viestiketjussa
+            PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
+            stmt2.setInt(1, threadId);
+            ResultSet rs2 = stmt2.executeQuery();
+            if (!rs2.next()) {
+                return null;
+            }
+            int postCount = rs2.getInt("messageCount");
             MessageThread mt = new MessageThread(threadId, title, creationDate, creationUsername, postCount);
-            mt.setLatestPostTimestamp(rs.getString("latestPostTimestamp"));
-            mt.setLatestPostUsername(rs.getString("latestPostUsername"));
+            PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
+            stmt3.setInt(1, threadId);
+            ResultSet rs3 = stmt3.executeQuery();
+            if (rs3.next()) {
+                mt.setLatestPostTimestamp(rs3.getString("latestPostTimestamp"));
+                mt.setLatestPostUsername(rs3.getString("latestPostUsername"));
+            }
+
             msgThreads.add(mt);
         }
 
+        //3 Hae viimeisin viesti
         rs.close();
         stmt.close();
         connection.close();
