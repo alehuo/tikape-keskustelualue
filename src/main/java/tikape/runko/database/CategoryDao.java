@@ -98,20 +98,21 @@ public class CategoryDao implements Dao<Category, Integer> {
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM categories WHERE categoryId = ?");
         stmt.setInt(1, key);
         stmt.execute();
+        stmt.close();
     }
 
     /**
      * Lisää kategorian
      *
      * @param c Kategoria
-     * @return true / false
      * @throws SQLException
      */
-    public boolean add(Category c) throws SQLException {
+    public void add(Category c) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO categories (title) VALUES (?)");
         stmt.setString(1, c.getName());
-        return stmt.execute();
+        stmt.execute();
+        stmt.close();
     }
 
 }

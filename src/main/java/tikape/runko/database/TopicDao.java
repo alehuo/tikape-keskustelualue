@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import tikape.runko.domain.Message;
 import tikape.runko.domain.MessageThread;
 
 /**
@@ -172,7 +170,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
 
             msgThreads.add(mt);
         }
-        
+
         //3 Hae viimeisin viesti
         rs.close();
         stmt.close();
@@ -222,10 +220,10 @@ public class TopicDao implements Dao<MessageThread, Integer> {
                 stmt2.setString(4, msgThread.getMessages().get(0).getBody());
                 //Suorita kysely
                 stmt2.execute();
+                stmt2.close();
             }
-
         }
-
+        stmt.close();
     }
 
     /**
@@ -239,6 +237,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM threads WHERE subCategoryId = ?");
         stmt.setInt(1, id);
         stmt.execute();
+        stmt.close();
     }
 
 }

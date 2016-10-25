@@ -314,16 +314,16 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM subCategories WHERE subCatId = ?;");
         stmt.setInt(1, key);
         stmt.execute();
+        stmt.close();
     }
 
     /**
      * Lisää alakategorian
      *
      * @param c Alakategoria
-     * @return true tai false
      * @throws SQLException
      */
-    public boolean add(SubCategory c) throws SQLException {
+    public void add(SubCategory c) throws SQLException {
         Connection connection = database.getConnection();
         int mainCatId = c.getCategoryId();
         String title = c.getName();
@@ -332,7 +332,8 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         stmt.setInt(1, mainCatId);
         stmt.setString(2, title);
         stmt.setString(3, desc);
-        return stmt.execute();
+        stmt.execute();
+        stmt.close();
     }
 
 }

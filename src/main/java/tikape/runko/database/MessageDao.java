@@ -136,6 +136,7 @@ public class MessageDao implements Dao<Message, Integer> {
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM posts WHERE threadId IN(SELECT threadId FROM threads WHERE subCategoryId = ?); ");
         stmt.setInt(1, id);
         stmt.execute();
+        stmt.close();
     }
 
 }
