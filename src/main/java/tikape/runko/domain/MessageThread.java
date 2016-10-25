@@ -270,10 +270,18 @@ public class MessageThread {
         this.creationUsername = creationUsername;
     }
 
+    /**
+     * Palauttaa viestiketjun viimeisimmän postauksen aikaleiman
+     * @return Aikaleima
+     */
     public String getLatestPostTimestamp() {
         return latestPostTimestamp;
     }
 
+    /**
+     * Asettaa viestiketjun viimeisimmän postauksen aikaleiman
+     * @param latestPostTimestamp Aikaleima
+     */
     public void setLatestPostTimestamp(String latestPostTimestamp) {
         this.latestPostTimestamp = latestPostTimestamp;
     }

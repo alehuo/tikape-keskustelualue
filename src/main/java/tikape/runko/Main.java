@@ -11,8 +11,8 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.CategoryDao;
 import tikape.runko.database.Database;
 import tikape.runko.database.MessageDao;
-import tikape.runko.database.TopicDao;
 import tikape.runko.database.SubCategoryDao;
+import tikape.runko.database.TopicDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
@@ -73,7 +73,7 @@ public class Main {
             //Haetaan kategoriat
             List<Category> categories = catDao.findAll();
             map.put("kategoriat", categories);
-            map.put("user", (User) req.session().attribute("user"));
+            map.put("user", req.session().attribute("user"));
 
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
@@ -97,7 +97,7 @@ public class Main {
             }
             map.put("messageThread", topicDao.findOne(id));
             map.put("viestit", msgDao.findAllFromTopic(id));
-            map.put("user", (User) req.session().attribute("user"));
+            map.put("user", req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään viestiketju
             return new ModelAndView(map, "messages");
         }, new ThymeleafTemplateEngine());
@@ -137,7 +137,7 @@ public class Main {
             map.put("subcategoryId", id);
             map.put("subcategory", subCatDao.findOne(id));
             map.put("viestiketjut", topicDao.findAllFromSubCategory(id));
-            map.put("user", (User) req.session().attribute("user"));
+            map.put("user", req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
             return new ModelAndView(map, "topics");
         }, new ThymeleafTemplateEngine());

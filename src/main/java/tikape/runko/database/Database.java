@@ -40,7 +40,6 @@ public class Database {
                 return DriverManager.getConnection(dbUrl, username, password);
             } catch (Throwable t) {
                 System.out.println("Error: " + t.getMessage());
-                t.printStackTrace();
             }
         }
 

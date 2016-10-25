@@ -38,7 +38,6 @@ public class Auth {
             byte[] hashedPasswordWithSalt = digest.digest(passwordWithSalt);
             return Arrays.equals(hashedPasswordWithSalt, hashedPassword);
         } catch (UnsupportedEncodingException ex) {
-            ex.printStackTrace();
         }
         return false;
     }

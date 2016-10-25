@@ -1,7 +1,5 @@
 package tikape.runko.domain;
 
-import java.util.Objects;
-
 /**
  *
  * @author Aleksi Huotala

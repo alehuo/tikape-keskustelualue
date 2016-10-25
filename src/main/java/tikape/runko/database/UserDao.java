@@ -180,7 +180,6 @@ public class UserDao implements Dao<User, Integer> {
             stmt.execute();
             stmt.close();
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
         }
     }
 
