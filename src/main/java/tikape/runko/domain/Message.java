@@ -14,6 +14,7 @@ public class Message {
     private String username;
     private final int messageId;
     private final String timestamp;
+    private final String formattedTimestamp;
     private int threadId;
     private TextProcessor tp;
 
@@ -29,7 +30,8 @@ public class Message {
         this.messageId = messageId;
         this.userId = userId;
         this.body = body;
-        this.timestamp = timeStamp.substring(0, 16);
+        this.timestamp = timeStamp;
+        formattedTimestamp = timeStamp.substring(0, 16);
         tp = BBProcessorFactory.getInstance().create();
     }
 
@@ -109,6 +111,10 @@ public class Message {
      */
     public String getTimestamp() {
         return timestamp;
+    }
+
+    public String getFormattedTimestamp() {
+        return formattedTimestamp;
     }
 
     /**

@@ -41,7 +41,7 @@
                     </div>
                     <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viestien lukumäärä: <b><span th:text="${alaKategoria.messageCount}">0</span></b> Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
                             <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
-                        </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span></div>
+                        </b>, <span th:text="'(' + ${alaKategoria.formattedLatestMessageTimestamp} + ')'">(Aikaleima)</span></div>
                     <div class="latestmessage" th:unless="${alaKategoria.hasMessages}">Viestien lukumäärä: <b>0</b></div>
                 </div>
                 <div th:if="${user != null and user.userLevel == 1}" class="newsubcategorybtn">

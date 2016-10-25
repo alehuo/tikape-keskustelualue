@@ -11,6 +11,7 @@ public class SubCategory {
     private String name;
     private String description;
     private String latestMessageTimestamp;
+    private String formattedLatestMessageTimestamp;
     private int latestMessageThreadId;
     private String latestMessageThreadTitle;
     private String latestMessageUsername;
@@ -139,7 +140,16 @@ public class SubCategory {
      * @param latestMessageTimestamp Viestin aikaleima
      */
     public void setLatestMessageTimestamp(String latestMessageTimestamp) {
-        this.latestMessageTimestamp = latestMessageTimestamp.substring(0, 16);
+        this.latestMessageTimestamp = latestMessageTimestamp;
+        setFormattedLatestMessageTimestamp(latestMessageTimestamp);
+    }
+
+    public String getFormattedLatestMessageTimestamp() {
+        return formattedLatestMessageTimestamp;
+    }
+
+    public void setFormattedLatestMessageTimestamp(String formattedLatestMessageTimestamp) {
+        this.formattedLatestMessageTimestamp = formattedLatestMessageTimestamp.substring(0, 16);
     }
 
     /**

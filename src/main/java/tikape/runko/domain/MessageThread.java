@@ -14,6 +14,7 @@ public class MessageThread {
     private int userId;
     private String latestPostUsername;
     private String latestPostTimestamp;
+    private String formattedLatestPostTimestamp;
     private String title;
     private String timestamp;
     private String creationUsername;
@@ -272,6 +273,7 @@ public class MessageThread {
 
     /**
      * Palauttaa viestiketjun viimeisimmän postauksen aikaleiman
+     *
      * @return Aikaleima
      */
     public String getLatestPostTimestamp() {
@@ -279,11 +281,31 @@ public class MessageThread {
     }
 
     /**
+     * Palauttaa parsitun aikaleiman
+     *
+     * @return Aikaleima
+     */
+    public String getFormattedLatestPostTimestamp() {
+        return formattedLatestPostTimestamp;
+    }
+
+    /**
      * Asettaa viestiketjun viimeisimmän postauksen aikaleiman
+     *
      * @param latestPostTimestamp Aikaleima
      */
     public void setLatestPostTimestamp(String latestPostTimestamp) {
         this.latestPostTimestamp = latestPostTimestamp;
+        setFormattedLatestPostTimestamp(latestPostTimestamp);
+    }
+
+    /**
+     * Asettaa viestiketjun viimeisimmän postauksen parsitun aikaleiman
+     *
+     * @param latestPostTimestamp Aikaleima
+     */
+    public void setFormattedLatestPostTimestamp(String latestPostTimestamp) {
+        formattedLatestPostTimestamp = latestPostTimestamp.substring(0, 16);
     }
 
     /**

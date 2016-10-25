@@ -33,7 +33,7 @@
                 <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
 
                 <div class="message" th:each="viesti : ${viestit}">
-                    <div class="timestamp" th:text="${viesti.timestamp}">16.06.2016 09:34</div>
+                    <div class="timestamp" th:text="${viesti.formattedTimestamp}">30.30.3030 30:30</div>
                     <div class="userinfo">
                         <p>
                             <b th:text="${viesti.username}">Käyttäjätunnus</b>
