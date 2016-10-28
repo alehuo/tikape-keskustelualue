@@ -112,9 +112,11 @@ public class MessageDao implements Dao<Message, Integer> {
         Connection connection = database.getConnection();
 
         //Haetaan kaikki viestit viestiketjusta
-        PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp, (SELECT COUNT(*) FROM posts AS posts2 WHERE posts2.postId <= posts.postId  AND posts2.threadId = ?) AS row_index FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ? AND row_index BETWEEN ? AND ?");
+        //PostgreSQL ei ymmärrä tätäkään kyselyä. Mitähän ihmettä..
+//        PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp, (SELECT COUNT(*) FROM posts AS posts2 WHERE posts2.postId <= posts.postId  AND posts2.threadId = ?) AS row_index FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ? AND row_index BETWEEN ? AND ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ?");
         stmt.setInt(1, topicId);
-        stmt.setInt(2, topicId);
+//        stmt.setInt(2, topicId);
         //Aloitus- ja lopetusindeksi
         /*
         MessagesPerPage = 10;
@@ -128,15 +130,22 @@ public class MessageDao implements Dao<Message, Integer> {
          */
         //Aloitusindeksi
         int startingIndex = MessageThread.messagesPerPage * (pageNum - 1) + 1;
-        stmt.setInt(3, startingIndex);
+//        stmt.setInt(3, startingIndex);
         //Lopetusindeksi
         int endingIndex = MessageThread.messagesPerPage * pageNum;
-        stmt.setInt(4, endingIndex);
+//        stmt.setInt(4, endingIndex);
         ResultSet rs = stmt.executeQuery();
 
         List<Message> msg = new ArrayList<>();
-
+        int index = 1;
         while (rs.next()) {
+            //Jos viestin ID ei ole sivuvälillä, jatka
+            if (!(index >= startingIndex && index <= endingIndex)) {
+                index++;
+                continue;
+            } else {
+                index++;
+            }
             Integer postId = rs.getInt("postId");
             Integer userId = rs.getInt("userId");
             String username = rs.getString("username");
@@ -145,6 +154,7 @@ public class MessageDao implements Dao<Message, Integer> {
             Message m = new Message(postId, userId, body, timeStamp);
             m.setUsername(username);
             msg.add(m);
+
         }
 
         rs.close();
