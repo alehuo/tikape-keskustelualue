@@ -215,16 +215,23 @@ public class Main {
             User u = req.session().attribute("user");
             if (Auth.isLoggedIn(u)) {
                 String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-                Topic tmpThread = new Topic(id, u.getId(), req.queryParams("title"), timeStamp);
-                tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
-                topicDao.add(tmpThread);
-                res.redirect("/subcategory/" + id);
-                return "";
+                if (req.queryParams("title").isEmpty()) {
+                    map.put("error", "Viestiketjun otsikko ei saa olla tyhjä.");
+                    return new ModelAndView(map, "unauthorized");
+                } else {
+                    Topic tmpThread = new Topic(id, u.getId(), req.queryParams("title"), timeStamp);
+                    tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
+                    topicDao.add(tmpThread);
+                    res.redirect("/subcategory/" + id);
+                    return new ModelAndView(map, "unauthorized");
+                }
+
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                map.put("error", "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.");
+                return new ModelAndView(map, "unauthorized");
             }
 
-        });
+        }, new ThymeleafTemplateEngine());
 
         //Kirjaudu sisään
         post("/login", (req, res) -> {

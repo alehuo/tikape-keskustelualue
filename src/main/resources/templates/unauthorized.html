@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Pääsy estetty</title>
+        <title>Virhe</title>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css"/>
     </head>
@@ -10,7 +10,8 @@
     <body>
         <div class="container">
             <div class="alert alert-danger">
-                <strong>Virhe: </strong> Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.
+                <strong>Virhe: </strong> <span th:text="${error}" th:unless="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
+                <span th:if="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
             </div>
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
