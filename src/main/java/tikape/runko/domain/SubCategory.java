@@ -144,10 +144,20 @@ public class SubCategory {
         setFormattedLatestMessageTimestamp(latestMessageTimestamp);
     }
 
+    /**
+     * Palauttaa viimeisimmän viestin aikaleiman nätimmässä muodossa
+     *
+     * @return Aikaleima
+     */
     public String getFormattedLatestMessageTimestamp() {
         return formattedLatestMessageTimestamp;
     }
 
+    /**
+     * Asettaa viimeisimmän viestin aikaleiman nätimmässä muodossa
+     *
+     * @param formattedLatestMessageTimestamp Aikaleima
+     */
     public void setFormattedLatestMessageTimestamp(String formattedLatestMessageTimestamp) {
         this.formattedLatestMessageTimestamp = formattedLatestMessageTimestamp.substring(0, 16);
     }
