@@ -16,8 +16,8 @@ import tikape.runko.database.TopicDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.Topic;
 import tikape.runko.domain.SubCategory;
+import tikape.runko.domain.Topic;
 import tikape.runko.domain.User;
 
 /**
