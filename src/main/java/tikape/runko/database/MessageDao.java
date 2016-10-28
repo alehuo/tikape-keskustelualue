@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Message;
+import tikape.runko.domain.MessageThread;
 
 /**
  * MessageDao
@@ -79,6 +80,62 @@ public class MessageDao implements Dao<Message, Integer> {
         ResultSet rs = stmt.executeQuery();
 
         List<Message> msg = new ArrayList<>();
+        while (rs.next()) {
+            Integer postId = rs.getInt("postId");
+            Integer userId = rs.getInt("userId");
+            String username = rs.getString("username");
+            String body = rs.getString("body");
+            String timeStamp = rs.getString("timestamp");
+            Message m = new Message(postId, userId, body, timeStamp);
+            m.setUsername(username);
+            msg.add(m);
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return msg;
+    }
+
+    /**
+     * Palauttaa kaikki viestit viestiketjusta, rajoittaen näkymää. Jos
+     * sivunumero on yksi, näytetään viestit väliltä [aloitus_id,aloitus_id +
+     * 10] (Viestejä jokaisella sivulla on kymmenen!)
+     *
+     * @param topicId Viestiketjun ID
+     * @return Lista viesteistä
+     * @throws SQLException
+     */
+    public List<Message> findAllFromTopicByPageNumber(int topicId, int pageNum) throws SQLException {
+
+        Connection connection = database.getConnection();
+
+        //Haetaan kaikki viestit viestiketjusta
+        PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp, (SELECT COUNT(*) FROM posts AS posts2 WHERE posts2.postId <= posts.postId  AND posts2.threadId = ?) AS row_index FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ? AND row_index BETWEEN ? AND ?");
+        stmt.setInt(1, topicId);
+        stmt.setInt(2, topicId);
+        //Aloitus- ja lopetusindeksi
+        /*
+        MessagesPerPage = 10;
+        pageNum = 1;
+        start = 10 * (1 - 1) + 1 = 1
+        end = 10 * 1 = 10
+        
+        pageNum = 2;
+        start = 10 * (2 - 1) + 1 = 11
+        end = 10 * 2 = 20
+         */
+        //Aloitusindeksi
+        int startingIndex = MessageThread.messagesPerPage * (pageNum - 1) + 1;
+        stmt.setInt(3, startingIndex);
+        //Lopetusindeksi
+        int endingIndex = MessageThread.messagesPerPage * pageNum;
+        stmt.setInt(4, endingIndex);
+        ResultSet rs = stmt.executeQuery();
+
+        List<Message> msg = new ArrayList<>();
+
         while (rs.next()) {
             Integer postId = rs.getInt("postId");
             Integer userId = rs.getInt("userId");

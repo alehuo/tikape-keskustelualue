@@ -80,6 +80,7 @@ public class Message {
      * @return Viestin sisältö
      */
     public String getFormattedBody() {
+        //TextProcessor parsii tietokannan viestistä haitalliset tägit pois XSS -injektioiden varalta sekä muuntaa BBCoden luettavaan muotoon.
         String tmpBody = tp.process(body);
         return tmpBody;
     }
@@ -91,8 +92,9 @@ public class Message {
      * @return Viestin sisältö
      */
     public String getEscapedBody() {
-        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
-        return tmpBody;
+//        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
+//        return tmpBody;
+        return body;
     }
 
     /**

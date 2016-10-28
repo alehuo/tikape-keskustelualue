@@ -20,6 +20,9 @@ public class MessageThread {
     private String creationUsername;
     private int threadId;
     private int messageCount = 0;
+    public static int messagesPerPage = 5;
+    private int pageCount;
+    private int currentPage = 1;
 
     /**
      * Viestiketjujen käsittelyyn tarkoitettu luokka
@@ -196,6 +199,7 @@ public class MessageThread {
      */
     public void setMessageCount(int messageCount) {
         this.messageCount = messageCount;
+        pageCount = (int) Math.ceil(messageCount * 1.0 / messagesPerPage);
     }
 
     /**
@@ -306,6 +310,22 @@ public class MessageThread {
      */
     public void setFormattedLatestPostTimestamp(String latestPostTimestamp) {
         formattedLatestPostTimestamp = latestPostTimestamp.substring(0, 16);
+    }
+
+    public void setPageCount(int pages) {
+        pageCount = pages;
+    }
+
+    public int getPageCount() {
+        return pageCount;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
     }
 
     /**

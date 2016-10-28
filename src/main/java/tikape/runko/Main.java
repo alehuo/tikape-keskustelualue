@@ -55,7 +55,7 @@ public class Main {
         //Tekstikäyttöliittymän alustus
         TextUi textUi = new TextUi(sc, userDao, catDao, subCatDao, topicDao, msgDao);
         //Näytä tekstikäyttöliittymä
-        //textUi.show();
+//        textUi.show();
 
         //Oletusportti
         int appPort = 4567;
@@ -88,26 +88,64 @@ public class Main {
         });
         //Näytä viestiketju
         get("/thread/:threadId", (req, res) -> {
+//            HashMap map = new HashMap<>();
+            int id;
+            try {
+                id = Integer.parseInt(req.params("threadId"));
+            } catch (NumberFormatException e) {
+                return "Virheellinen viesti-ID!";
+            }
+//            map.put("messageThread", topicDao.findOne(id));
+//            map.put("viestit", msgDao.findAllFromTopic(id));
+//            map.put("user", req.session().attribute("user"));
+//            //Tähän näkymä, jossa näytetään viestiketju
+//            return new ModelAndView(map, "messages");
+            res.redirect("/thread/" + id + "/page/1");
+            return "";
+        });
+        //Näytä viestiketju sivunumerolla
+        get("/thread/:threadId/page/:pageId", (req, res) -> {
             HashMap map = new HashMap<>();
             int id;
+            int pageId;
             try {
                 id = Integer.parseInt(req.params("threadId"));
             } catch (NumberFormatException e) {
                 id = -1;
             }
-            map.put("messageThread", topicDao.findOne(id));
-            map.put("viestit", msgDao.findAllFromTopic(id));
+            //Sivun ID:n tarkistus
+            try {
+                pageId = Integer.parseInt(req.params("pageId"));
+            } catch (NumberFormatException e) {
+                pageId = 1;
+            }
+            MessageThread tmpThread = topicDao.findOne(id);
+            List<Message> tmpMessages2 = msgDao.findAllFromTopic(id);
+            List<Message> tmpMessages = msgDao.findAllFromTopicByPageNumber(id, pageId);
+            if (tmpThread != null) {
+                tmpThread.setMessageCount(tmpMessages2.size());
+                tmpThread.setCurrentPage(pageId);
+            }
+            map.put("messageThread", tmpThread);
+            map.put("viestit", tmpMessages);
             map.put("user", req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään viestiketju
             return new ModelAndView(map, "messages");
         }, new ThymeleafTemplateEngine());
         //Lähetä viestiketjuun uusi vastaus
-        post("/thread/:threadId", (req, res) -> {
+        post("/thread/:threadId/page/:pageId", (req, res) -> {
             int id;
+            int pageId;
             try {
                 id = Integer.parseInt(req.params("threadId"));
             } catch (NumberFormatException e) {
                 id = -1;
+            }
+            //Sivun ID:n tarkistus
+            try {
+                pageId = Integer.parseInt(req.params("pageId"));
+            } catch (NumberFormatException e) {
+                pageId = 1;
             }
             User u = req.session().attribute("user");
             if (Auth.isLoggedIn(u)) {
@@ -117,7 +155,7 @@ public class Main {
                 m.setThreadId(id);
                 msgDao.add(m);
                 //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
-                res.redirect("/thread/" + id);
+                res.redirect("/thread/" + id + "/page/" + pageId);
                 return "Vastaus viestiketjuun, jolla id: " + id;
             } else {
                 return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";

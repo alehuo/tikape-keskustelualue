@@ -81,39 +81,39 @@ public class Database {
         //Foreign keys päälle
         lista.add("PRAGMA foreign_keys = ON;");
 
-        // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä
-        lista.add("DROP TABLE IF EXISTS posts;");
-        lista.add("DROP TABLE IF EXISTS threads;");
-        lista.add("DROP TABLE IF EXISTS users;");
-        lista.add("DROP TABLE IF EXISTS subCategories;");
-        lista.add("DROP TABLE IF EXISTS categories;");
-
-        //Kategoriat -taulu
-        lista.add("CREATE TABLE categories (categoryId integer PRIMARY KEY, title varchar(60));");
-        //Alakategoriat -taulu
-        lista.add("CREATE TABLE subCategories (subCatId integer PRIMARY KEY, catId integer , title varchar(30), description varchar(100), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
-        //Käyttäjät
-        lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel integer);");
-        //Viestiketjut
-        lista.add("CREATE TABLE threads (threadId integer PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), timestamp varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
-        //Viestiketjun postaukset
-        lista.add("CREATE TABLE posts (postId integer PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
-
-        //Kategoriat
-        lista.add("INSERT INTO categories (categoryId, title) VALUES (1,'Testikategoria 1');");
-        lista.add("INSERT INTO categories (categoryId, title) VALUES (2,'Testikategoria 2');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (1,1,'Testialakategoria 1','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (2,1,'Testialakategoria 2','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (3,1,'Testialakategoria 3','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (4,2,'Testialakategoria 4','Hello World');");
-        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (5,2,'Testialakategoria 5','Hello World');");
-        //Admin -tunnus (admin::admin)
-        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (1,'admin','RLxcC7GMXsb4lymp+tV/aMAJfCVc7N9+Sj1c2mZryT0=','5Wqs2e/dGhg=',1)");
-        //User -tunnus (user:user)
-        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
-        //Jne..
-        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, timestamp) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
-        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
+//        // tietokantataulujen luomiseen tarvittavat komennot suoritusjärjestyksessä
+//        lista.add("DROP TABLE IF EXISTS posts;");
+//        lista.add("DROP TABLE IF EXISTS threads;");
+//        lista.add("DROP TABLE IF EXISTS users;");
+//        lista.add("DROP TABLE IF EXISTS subCategories;");
+//        lista.add("DROP TABLE IF EXISTS categories;");
+//
+//        //Kategoriat -taulu
+//        lista.add("CREATE TABLE categories (categoryId integer PRIMARY KEY, title varchar(60));");
+//        //Alakategoriat -taulu
+//        lista.add("CREATE TABLE subCategories (subCatId integer PRIMARY KEY, catId integer , title varchar(30), description varchar(100), FOREIGN KEY(catId) REFERENCES categories(categoryId));");
+//        //Käyttäjät
+//        lista.add("CREATE TABLE users (userId integer PRIMARY KEY, username varchar(16), password varchar(1024), salt varchar(1024), userLevel integer);");
+//        //Viestiketjut
+//        lista.add("CREATE TABLE threads (threadId integer PRIMARY KEY, subCategoryId integer , userId integer, title varchar(80), timestamp varchar(255), FOREIGN KEY(subCategoryId) REFERENCES subCategories(subCatId), FOREIGN KEY(userId) REFERENCES users(userId));");
+//        //Viestiketjun postaukset
+//        lista.add("CREATE TABLE posts (postId integer PRIMARY KEY, threadId integer , userId integer , timestamp varchar(255), body varchar(4096), FOREIGN KEY(threadId) REFERENCES threads(threadId), FOREIGN KEY(userId) REFERENCES users(userId));");
+//
+//        //Kategoriat
+//        lista.add("INSERT INTO categories (categoryId, title) VALUES (1,'Testikategoria 1');");
+//        lista.add("INSERT INTO categories (categoryId, title) VALUES (2,'Testikategoria 2');");
+//        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (1,1,'Testialakategoria 1','Hello World');");
+//        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (2,1,'Testialakategoria 2','Hello World');");
+//        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (3,1,'Testialakategoria 3','Hello World');");
+//        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (4,2,'Testialakategoria 4','Hello World');");
+//        lista.add("INSERT INTO subCategories (subCatId, catId, title, description) VALUES (5,2,'Testialakategoria 5','Hello World');");
+//        //Admin -tunnus (admin::admin)
+//        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (1,'admin','RLxcC7GMXsb4lymp+tV/aMAJfCVc7N9+Sj1c2mZryT0=','5Wqs2e/dGhg=',1)");
+//        //User -tunnus (user:user)
+//        lista.add("INSERT INTO users (userId, username, password, salt, userLevel) VALUES (2,'user','QDEj1qay1U05Q7UBRsznCfTG2nR40CzNrKflcs6skWg=','BFxg7e3SPJE=',0)");
+//        //Jne..
+//        lista.add("INSERT INTO threads (threadId, subCategoryId, userId, title, timestamp) VALUES (1,1,1,'Testipostaus','2016-10-17 20:23')");
+//        lista.add("INSERT INTO posts (postId, threadId, userId, timestamp, body) VALUES (1,1,1,'2016-10-17 20:23','[b]Hello world![/b][i]Kursivoitu[/i]')");
         return lista;
     }
 

@@ -31,8 +31,8 @@
             </div>
             <div th:if="${messageThread != null}">
                 <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
-
                 <div class="message" th:each="viesti : ${viestit}">
+                    <!--Message start-->
                     <div class="timestamp" th:text="${viesti.formattedTimestamp}">30.30.3030 30:30</div>
                     <div class="userinfo">
                         <p>
@@ -55,7 +55,13 @@
                         Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
                         Donec ultricies nisl ut felis, suspendisse potenti. 
                     </div>
+                    <!--Message end-->
                 </div>
+                <span th:if="${messageThread.pageCount > 1}" th:each="i : ${#numbers.sequence(1, messageThread.pageCount)}" th:switch="${i}">
+                    <b th:case="${messageThread.currentPage}" th:text="${i}">heihei</b>
+                    <a th:case="*" th:text="${i}" th:href="@{'~/thread/' + ${messageThread.threadId} + '/page/' + ${i}}">heihei</a>
+                </span>
+                
                 <div class="replyBox" th:if="${user != null}">
                     <form method="POST" class="form-horizontal">
                         <textarea cols="100" rows="7" name="message"></textarea><br/>
@@ -64,6 +70,13 @@
                     <p>
                         <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
                     </p>
+                    <ul>
+                        <li>[b]Tekstiä[/b] - <b>Tekstiä</b></li>
+                        <li>[i]Tekstiä[/i] - <i>Tekstiä</i></li>
+                        <li>[u]Tekstiä[/u] - <u>Tekstiä</u></li>
+                        <li>[url]https://cs.helsinki.fi[url] - <a href="https://cs.helsinki.fi">https://cs.helsinki.fi</a></li>
+                        <li>[code]Koodia[/code] - <pre>Koodia</pre></li>
+                    </ul>
                 </div>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
