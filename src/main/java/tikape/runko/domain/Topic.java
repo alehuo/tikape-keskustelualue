@@ -75,6 +75,13 @@ public class Topic {
         creationUsername = creator;
     }
 
+    /**
+     * Viestiketjujen käsittelyyn tarkoitettu luokka
+     *
+     * @param threadId Viestiketjun ID
+     * @param title Viestiketjun otsikko
+     * @param messageCount Viestien lukumäärä viestiketjussa
+     */
     public Topic(int threadId, String title, int messageCount) {
         this(-1, threadId, -1, title, "");
         this.messageCount = messageCount;
