@@ -104,6 +104,7 @@ public class MessageDao implements Dao<Message, Integer> {
      * 10] (Viestejä jokaisella sivulla on kymmenen!)
      *
      * @param topicId Viestiketjun ID
+     * @param pageNum Sivunumero
      * @return Lista viesteistä
      * @throws SQLException
      */
@@ -112,33 +113,20 @@ public class MessageDao implements Dao<Message, Integer> {
         Connection connection = database.getConnection();
 
         //Haetaan kaikki viestit viestiketjusta
-        //PostgreSQL ei ymmärrä tätäkään kyselyä. Mitähän ihmettä..
-//        PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp, (SELECT COUNT(*) FROM posts AS posts2 WHERE posts2.postId <= posts.postId  AND posts2.threadId = ?) AS row_index FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ? AND row_index BETWEEN ? AND ?");
         PreparedStatement stmt = connection.prepareStatement("SELECT posts.postId, posts.userId, users.username, posts.body, posts.timestamp FROM posts INNER JOIN users ON posts.userId = users.userId WHERE posts.threadId = ?");
         stmt.setInt(1, topicId);
-//        stmt.setInt(2, topicId);
-        //Aloitus- ja lopetusindeksi
-        /*
-        MessagesPerPage = 10;
-        pageNum = 1;
-        start = 10 * (1 - 1) + 1 = 1
-        end = 10 * 1 = 10
-        
-        pageNum = 2;
-        start = 10 * (2 - 1) + 1 = 11
-        end = 10 * 2 = 20
-         */
+
         //Aloitusindeksi
         int startingIndex = Topic.messagesPerPage * (pageNum - 1) + 1;
-//        stmt.setInt(3, startingIndex);
         //Lopetusindeksi
         int endingIndex = Topic.messagesPerPage * pageNum;
-//        stmt.setInt(4, endingIndex);
+
         ResultSet rs = stmt.executeQuery();
 
         List<Message> msg = new ArrayList<>();
         int index = 1;
         while (rs.next()) {
+
             //Jos viestin ID ei ole sivuvälillä, jatka
             if (!(index >= startingIndex && index <= endingIndex)) {
                 index++;
@@ -146,13 +134,16 @@ public class MessageDao implements Dao<Message, Integer> {
             } else {
                 index++;
             }
+
             Integer postId = rs.getInt("postId");
             Integer userId = rs.getInt("userId");
             String username = rs.getString("username");
             String body = rs.getString("body");
             String timeStamp = rs.getString("timestamp");
+
             Message m = new Message(postId, userId, body, timeStamp);
             m.setUsername(username);
+
             msg.add(m);
 
         }
@@ -171,23 +162,27 @@ public class MessageDao implements Dao<Message, Integer> {
      * @throws SQLException
      */
     public void add(Message m) throws SQLException {
+
         int id = m.getThreadId();
         int uId = m.getUserId();
         String ts = m.getTimestamp();
         String body = m.getEscapedBody();
 
         Connection connection = database.getConnection();
+
         PreparedStatement stmt = connection.prepareStatement("INSERT INTO posts (threadId , userId, timestamp , body) VALUES (?, ?, ?, ?)");
         stmt.setInt(1, id);
         stmt.setInt(2, uId);
         stmt.setString(3, ts);
         stmt.setString(4, body);
+
         stmt.execute();
         stmt.close();
 
         PreparedStatement stmt2 = connection.prepareStatement("UPDATE threads SET timestamp = ? WHERE threads.threadId = ?");
         stmt2.setString(1, ts);
         stmt2.setInt(2, id);
+
         stmt2.execute();
         stmt2.close();
     }
@@ -199,9 +194,12 @@ public class MessageDao implements Dao<Message, Integer> {
      * @throws SQLException
      */
     public void deleteAllFromSubCategory(int id) throws SQLException {
+
         Connection connection = database.getConnection();
+
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM posts WHERE threadId IN(SELECT threadId FROM threads WHERE subCategoryId = ?); ");
         stmt.setInt(1, id);
+
         stmt.execute();
         stmt.close();
     }
