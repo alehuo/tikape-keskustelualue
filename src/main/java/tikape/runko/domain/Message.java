@@ -31,7 +31,9 @@ public class Message {
         this.userId = userId;
         this.body = body;
         this.timestamp = timeStamp;
+        //Parsitaan aikaleiman lopusta sekunnit ja muu roska pois
         formattedTimestamp = timeStamp.substring(0, 16);
+        //Luodaan BBCoden parsija
         tp = BBProcessorFactory.getInstance().create();
     }
 
