@@ -7,12 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.Topic;
 
 /**
  * Viestiketju DAO
  */
-public class TopicDao implements Dao<MessageThread, Integer> {
+public class TopicDao implements Dao<Topic, Integer> {
 
     private final Database database;
 
@@ -33,7 +33,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      * @throws SQLException
      */
     @Override
-    public MessageThread findOne(Integer key) throws SQLException {
+    public Topic findOne(Integer key) throws SQLException {
         /*
         Emme löytäneet syytä sille, miksi SQLitellä toimivat kyselyt eivät toimiveet PostgreSQL:n kanssa.
         Todella mystinen ongelma. Siksi on käytetty kolmea eri kyselyä.
@@ -62,7 +62,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
 
-        List<MessageThread> msgThreads = new ArrayList<>();
+        List<Topic> msgThreads = new ArrayList<>();
         if (!rs.next()) {
             return null;
         }
@@ -79,7 +79,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
             return null;
         }
         int postCount = rs2.getInt("messageCount");
-        MessageThread mt = new MessageThread(threadId, title, timestamp, creationUsername, postCount);
+        Topic mt = new Topic(threadId, title, timestamp, creationUsername, postCount);
         PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
         stmt3.setInt(1, threadId);
         ResultSet rs3 = stmt3.executeQuery();
@@ -103,7 +103,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      * @throws SQLException
      */
     @Override
-    public List<MessageThread> findAll() throws SQLException {
+    public List<Topic> findAll() throws SQLException {
         //Ei toteutettu
         return null;
     }
@@ -115,7 +115,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      * @return Lista viestiketjuista
      * @throws SQLException
      */
-    public List<MessageThread> findAllFromSubCategory(int subCategoryId) throws SQLException {
+    public List<Topic> findAllFromSubCategory(int subCategoryId) throws SQLException {
         /*
         Emme löytäneet syytä sille, miksi SQLitellä toimivat kyselyt eivät toimiveet PostgreSQL:n kanssa.
         Todella mystinen ongelma. Siksi on käytetty kolmea eri kyselyä.
@@ -144,7 +144,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
-        List<MessageThread> msgThreads = new ArrayList<>();
+        List<Topic> msgThreads = new ArrayList<>();
         while (rs.next()) {
             //1
             Integer threadId = rs.getInt("threadId");
@@ -159,7 +159,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
                 return null;
             }
             int postCount = rs2.getInt("messageCount");
-            MessageThread mt = new MessageThread(threadId, title, timestamp, creationUsername, postCount);
+            Topic mt = new Topic(threadId, title, timestamp, creationUsername, postCount);
             PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
             stmt3.setInt(1, threadId);
             ResultSet rs3 = stmt3.executeQuery();
@@ -196,7 +196,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
      * @param msgThread Viestiketju-olio
      * @throws SQLException
      */
-    public void add(MessageThread msgThread) throws SQLException {
+    public void add(Topic msgThread) throws SQLException {
         Connection connection = database.getConnection();
         //Lisätään uusi viestiketju
         String query = "INSERT INTO threads (subCategoryId, userId, title, timestamp) VALUES (?,?,?,?)";
@@ -215,7 +215,7 @@ public class TopicDao implements Dao<MessageThread, Integer> {
                 PreparedStatement stmt2 = connection.prepareStatement(query);
                 stmt2.setInt(1, insertId.getInt(1));
                 stmt2.setInt(2, msgThread.getUserId());
-                //Oletetaan että MessageThread -olioon on lisätty yksi viesti
+                //Oletetaan että Topic -olioon on lisätty yksi viesti
                 stmt2.setString(3, msgThread.getMessages().get(0).getTimestamp());
                 stmt2.setString(4, msgThread.getMessages().get(0).getBody());
                 //Suorita kysely

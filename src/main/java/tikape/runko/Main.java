@@ -16,7 +16,7 @@ import tikape.runko.database.TopicDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.Topic;
 import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
@@ -46,8 +46,8 @@ public class Main {
         database.init();
 
         UserDao userDao = new UserDao(database);
-        CategoryDao catDao = new CategoryDao(database);
         SubCategoryDao subCatDao = new SubCategoryDao(database);
+        CategoryDao catDao = new CategoryDao(database, subCatDao);
         TopicDao topicDao = new TopicDao(database);
         MessageDao msgDao = new MessageDao(database);
         Scanner sc = new Scanner(System.in);
@@ -119,7 +119,7 @@ public class Main {
             } catch (NumberFormatException e) {
                 pageId = 1;
             }
-            MessageThread tmpThread = topicDao.findOne(id);
+            Topic tmpThread = topicDao.findOne(id);
             List<Message> tmpMessages2 = msgDao.findAllFromTopic(id);
             List<Message> tmpMessages = msgDao.findAllFromTopicByPageNumber(id, pageId);
             if (tmpThread != null) {
@@ -215,7 +215,7 @@ public class Main {
             User u = req.session().attribute("user");
             if (Auth.isLoggedIn(u)) {
                 String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-                MessageThread tmpThread = new MessageThread(id, u.getId(), req.queryParams("title"), timeStamp);
+                Topic tmpThread = new Topic(id, u.getId(), req.queryParams("title"), timeStamp);
                 tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
                 topicDao.add(tmpThread);
                 res.redirect("/subcategory/" + id);

@@ -10,7 +10,7 @@ import tikape.runko.database.TopicDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.Topic;
 import tikape.runko.domain.SubCategory;
 import tikape.runko.domain.User;
 
@@ -107,9 +107,9 @@ public class TextUi {
                 case "2":
                     System.out.print("Anna alakategorian ID: ");
                     Integer subCategoryId = Integer.parseInt(sc.nextLine());
-                    List<MessageThread> msgThreads = msgThreadDao.findAllFromSubCategory(subCategoryId);
+                    List<Topic> msgThreads = msgThreadDao.findAllFromSubCategory(subCategoryId);
                     if (msgThreads.size() > 0) {
-                        for (MessageThread msgThread : msgThreads) {
+                        for (Topic msgThread : msgThreads) {
                             System.out.println(msgThread);
                         }
                     } else {
@@ -144,7 +144,7 @@ public class TextUi {
                     System.out.println("Kirjoita aloituspostaus: ");
                     String body = sc.nextLine();
                     String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-                    MessageThread tmpThread = new MessageThread(subCategoryId, userId, title, timeStamp);
+                    Topic tmpThread = new Topic(subCategoryId, userId, title, timeStamp);
                     tmpThread.addMessage(new Message(-1, userId, body, timeStamp));
                     msgThreadDao.add(tmpThread);
                     break;

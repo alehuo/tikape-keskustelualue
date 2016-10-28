@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
+import tikape.runko.domain.Topic;
 
 /**
  * MessageDao
@@ -129,10 +129,10 @@ public class MessageDao implements Dao<Message, Integer> {
         end = 10 * 2 = 20
          */
         //Aloitusindeksi
-        int startingIndex = MessageThread.messagesPerPage * (pageNum - 1) + 1;
+        int startingIndex = Topic.messagesPerPage * (pageNum - 1) + 1;
 //        stmt.setInt(3, startingIndex);
         //Lopetusindeksi
-        int endingIndex = MessageThread.messagesPerPage * pageNum;
+        int endingIndex = Topic.messagesPerPage * pageNum;
 //        stmt.setInt(4, endingIndex);
         ResultSet rs = stmt.executeQuery();
 

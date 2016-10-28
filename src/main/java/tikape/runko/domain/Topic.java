@@ -75,8 +75,8 @@ public class Topic {
         creationUsername = creator;
     }
 
-    public Topic(String title, int messageCount) {
-        this(-1, -1, -1, title, "");
+    public Topic(int threadId, String title, int messageCount) {
+        this(-1, threadId, -1, title, "");
         this.messageCount = messageCount;
     }
 

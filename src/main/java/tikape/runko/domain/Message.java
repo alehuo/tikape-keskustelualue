@@ -47,6 +47,20 @@ public class Message {
     }
 
     /**
+     * Viesti -luokka
+     * 
+     * @param threadId Viestiketjun ID
+     * @param userId Käyttäjätunnuksen ID
+     * @param title Otsikko
+     * @param timeStamp Aikaleima
+     * @param username  Käyttäjätunnus
+     */
+    public Message(int threadId, int userId, String title, String timeStamp, String username) {
+        this(-1, userId, "", timeStamp);
+        this.username = username;
+    }
+
+    /**
      * Palauttaa käyttäjätunnuksen
      *
      * @return Käyttäjätunnus
@@ -115,6 +129,10 @@ public class Message {
         return timestamp;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFormattedTimestamp() {
         return formattedTimestamp;
     }
