@@ -28,7 +28,6 @@ public class Message {
      * @param timeStamp Viestin aikaleima
      */
     public Message(int messageId, int userId, String body, String timeStamp) {
-        System.out.println(timeStamp);
         this.messageId = messageId;
         this.userId = userId;
         this.body = body;
