@@ -232,7 +232,6 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
      * Lisää alakategorian
      *
      * @param c Alakategoria
-     * @return true tai false
      * @throws SQLException
      */
     public void add(SubCategory c) throws SQLException {
