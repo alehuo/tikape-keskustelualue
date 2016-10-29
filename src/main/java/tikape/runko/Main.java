@@ -214,7 +214,7 @@ public class Main {
                     tmpThread.addMessage(new Message(-1, u.getId(), req.queryParams("body"), timeStamp));
                     topicDao.add(tmpThread);
                     res.redirect("/subcategory/" + id);
-                    return new ModelAndView(map, "unauthorized");
+                    return new ModelAndView(map, "blank");
                 }
 
             } else {
@@ -374,11 +374,16 @@ public class Main {
                 try {
                     int id = Integer.parseInt(req.params(":id"));
                     String name = req.queryParams("subcategoryname");
-                    String desc = req.queryParams("subcategorydesc");
-                    SubCategory c = new SubCategory(id, name).setDescription(desc);
-                    subCatDao.add(c);
-                    res.redirect("/");
-                    return new ModelAndView(new HashMap<>(), "blank");
+                    if (name.isEmpty()) {
+                        return new ModelAndView(new HashMap<>().put("error", "Otsikko ei saa olla tyhjä!"), "unauthorized");
+                    } else {
+                        String desc = req.queryParams("subcategorydesc");
+                        SubCategory c = new SubCategory(id, name).setDescription(desc);
+                        subCatDao.add(c);
+                        res.redirect("/");
+                        return new ModelAndView(new HashMap<>(), "blank");
+                    }
+
                 } catch (NumberFormatException e) {
                     return new ModelAndView(new HashMap<>(), "unauthorized");
                 }
@@ -401,9 +406,14 @@ public class Main {
             User u = req.session().attribute("user");
             if (Auth.isAdmin(u)) {
                 String name = req.queryParams("categoryname");
-                catDao.add(new Category(name));
-                res.redirect("/");
-                return new ModelAndView(new HashMap<>(), "blank");
+                if (name.isEmpty()) {
+                    return new ModelAndView(new HashMap<>().put("error", "Otsikko ei saa olla tyhjä!"), "unauthorized");
+                } else {
+                    catDao.add(new Category(name));
+                    res.redirect("/");
+                    return new ModelAndView(new HashMap<>(), "blank");
+                }
+
             } else {
                 return new ModelAndView(new HashMap<>(), "unauthorized");
             }
