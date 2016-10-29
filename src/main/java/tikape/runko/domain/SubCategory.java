@@ -1,5 +1,7 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
+
 /**
  *
  * @author Aleksi Huotala
@@ -159,7 +161,7 @@ public class SubCategory {
      * @param formattedLatestMessageTimestamp Aikaleima
      */
     public void setFormattedLatestMessageTimestamp(String formattedLatestMessageTimestamp) {
-        this.formattedLatestMessageTimestamp = formattedLatestMessageTimestamp.substring(0, 16);
+        this.formattedLatestMessageTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(formattedLatestMessageTimestamp));
     }
 
     /**

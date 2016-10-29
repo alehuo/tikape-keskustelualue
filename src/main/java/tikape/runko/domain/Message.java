@@ -1,5 +1,6 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.TextProcessor;
 
@@ -27,12 +28,13 @@ public class Message {
      * @param timeStamp Viestin aikaleima
      */
     public Message(int messageId, int userId, String body, String timeStamp) {
+        System.out.println(timeStamp);
         this.messageId = messageId;
         this.userId = userId;
         this.body = body;
         this.timestamp = timeStamp;
         //Parsitaan aikaleiman lopusta sekunnit ja muu roska pois
-        formattedTimestamp = timeStamp.substring(0, 16);
+        formattedTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(timeStamp));
         //Luodaan BBCoden parsija
         tp = BBProcessorFactory.getInstance().create();
     }
@@ -50,12 +52,12 @@ public class Message {
 
     /**
      * Viesti -luokka
-     * 
+     *
      * @param threadId Viestiketjun ID
      * @param userId Käyttäjätunnuksen ID
      * @param title Otsikko
      * @param timeStamp Aikaleima
-     * @param username  Käyttäjätunnus
+     * @param username Käyttäjätunnus
      */
     public Message(int threadId, int userId, String title, String timeStamp, String username) {
         this(-1, userId, "", timeStamp);

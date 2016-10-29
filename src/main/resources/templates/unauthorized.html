@@ -14,7 +14,7 @@
                 <strong>Virhe: </strong> <span th:text="${error}" th:unless="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
                 <span th:if="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
             </div>
-
+            <a th:href="@{~/}">&lt;&lt; Etusivulle</a>
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>

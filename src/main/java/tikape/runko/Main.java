@@ -351,7 +351,7 @@ public class Main {
                     res.redirect("/");
                     return new ModelAndView(new HashMap<>(), "blank");
                 } catch (NumberFormatException e) {
-                    return new ModelAndView(new HashMap<>(), "unauthorized");
+                    return new ModelAndView(new HashMap<>().put("error", "Virheellinen yläkategorian ID!"), "unauthorized");
                 }
             } else {
                 return new ModelAndView(new HashMap<>(), "unauthorized");

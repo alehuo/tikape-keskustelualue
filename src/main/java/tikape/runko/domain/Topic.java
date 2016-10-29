@@ -1,5 +1,6 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -325,7 +326,7 @@ public class Topic {
      * @param latestPostTimestamp Aikaleima
      */
     public void setFormattedLatestPostTimestamp(String latestPostTimestamp) {
-        formattedLatestPostTimestamp = latestPostTimestamp.substring(0, 16);
+        formattedLatestPostTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(latestPostTimestamp));
     }
 
     /**
