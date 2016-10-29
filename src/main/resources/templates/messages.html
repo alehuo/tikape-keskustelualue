@@ -73,19 +73,12 @@
                     <p>
                         <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
                     </p>
-                    <ul>
-                        <li>[b]Tekstiä[/b] - <b>Tekstiä</b></li>
-                        <li>[i]Tekstiä[/i] - <i>Tekstiä</i></li>
-                        <li>[u]Tekstiä[/u] - <u>Tekstiä</u></li>
-                        <li>[url]https://cs.helsinki.fi[/url] - <a href="https://cs.helsinki.fi">https://cs.helsinki.fi</a></li>
-                        <li>[code]Koodia[/code]</li>
-                    </ul>
                 </div>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
             <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-            <script>tinymce.init({selector: 'textarea', plugins: ["bbcode","autolink","link", "image"], toolbar1: "undo redo | bold italic | forecolor | link image"});</script>
+            <script>tinymce.init({selector: 'textarea', menubar : false, plugins: ["bbcode","autolink","link", "image", "textcolor"], toolbar1: "undo redo | bold italic | forecolor | link image"});</script>
         </div>
     </body>
 
