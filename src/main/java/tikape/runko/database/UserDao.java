@@ -179,8 +179,10 @@ public class UserDao implements Dao<User, Integer> {
             //Suorita kysely
             stmt.execute();
             stmt.close();
+            con.close();
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
         }
+
     }
 
 }

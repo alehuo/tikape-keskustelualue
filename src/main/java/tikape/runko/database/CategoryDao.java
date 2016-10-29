@@ -115,6 +115,7 @@ public class CategoryDao implements Dao<Category, Integer> {
 
         stmt.execute();
         stmt.close();
+        connection.close();
     }
 
     /**
@@ -131,6 +132,7 @@ public class CategoryDao implements Dao<Category, Integer> {
         
         stmt.execute();
         stmt.close();
+        connection.close();
     }
 
 }

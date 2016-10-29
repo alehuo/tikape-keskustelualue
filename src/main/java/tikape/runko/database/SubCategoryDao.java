@@ -115,7 +115,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         SubCategory cat = new SubCategory(mainCatId, subCatId, title).setDescription(description);
 
         //Haetaan vielä viimeisin tieto
-        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(posts.postId) AS messageCount  FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? GROUP BY threads.subCategoryId ORDER BY posts.timestamp DESC";
+        String query = "SELECT posts.timestamp, users.username, threads.title, threads.threadId, COUNT(posts.postId) AS messageCount  FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.subCategoryId = ? GROUP BY threads.subCategoryId ORDER BY posts.timestamp DESC LIMIT 1";
         PreparedStatement stmt2 = connection.prepareStatement(query);
         stmt2.setInt(1, cat.getSubCategoryId());
 
@@ -224,6 +224,8 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM subCategories WHERE subCatId = ?;");
         stmt.setInt(1, key);
         stmt.execute();
+        stmt.close();
+        connection.close();
     }
 
     /**
@@ -233,7 +235,7 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
      * @return true tai false
      * @throws SQLException
      */
-    public boolean add(SubCategory c) throws SQLException {
+    public void add(SubCategory c) throws SQLException {
         Connection connection = database.getConnection();
         int mainCatId = c.getCategoryId();
         String title = c.getName();
@@ -242,7 +244,9 @@ public class SubCategoryDao implements Dao<SubCategory, Integer> {
         stmt.setInt(1, mainCatId);
         stmt.setString(2, title);
         stmt.setString(3, desc);
-        return stmt.execute();
+        stmt.execute();
+        stmt.close();
+        connection.close();
     }
 
 }
