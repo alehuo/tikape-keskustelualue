@@ -67,7 +67,7 @@
 
                 <div class="replyBox" th:if="${user != null}">
                     <form method="POST" onSubmit="return canSubmit();" class="form-horizontal">
-                        <textarea id="tinymceTextarea" cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
+                        <textarea id="body" cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
                         <input type="submit" value="Lähetä"/>
                     </form>
                     <p>

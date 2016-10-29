@@ -97,7 +97,7 @@ public class Main {
             }
             //Uudelleenohjataan ensimmäiselle sivulle
             res.redirect("/thread/" + id + "/page/1");
-            return new ModelAndView(new HashMap<>(), "blank");
+            return new ModelAndView(map, "blank");
         });
         //Näytä viestiketju sivunumerolla
         get("/thread/:threadId/page/:pageId", (req, res) -> {
