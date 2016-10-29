@@ -74,7 +74,6 @@ public class Main {
             List<Category> categories = catDao.findAll();
             map.put("kategoriat", categories);
             map.put("user", req.session().attribute("user"));
-
             return new ModelAndView(map, "index");
         }, new ThymeleafTemplateEngine());
         //Uudelleenohjaa pois vääristä sivuista
@@ -131,6 +130,7 @@ public class Main {
         }, new ThymeleafTemplateEngine());
         //Lähetä viestiketjuun uusi vastaus
         post("/thread/:threadId/page/:pageId", (req, res) -> {
+            HashMap map = new HashMap<>();
             int id;
             int pageId;
             try {
@@ -153,9 +153,9 @@ public class Main {
                 msgDao.add(m);
                 //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
                 res.redirect("/thread/" + id + "/page/" + pageId);
-                return new ModelAndView(new HashMap<>(), "blank");
+                return new ModelAndView(map, "blank");
             } else {
-                return new ModelAndView(new HashMap<>().put("error", "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa."), "blank");
+                return new ModelAndView(map.put("error", "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa."), "unauthorized");
             }
 
         }, new ThymeleafTemplateEngine());
