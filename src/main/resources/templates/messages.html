@@ -66,29 +66,19 @@
 
 
                 <div class="replyBox" th:if="${user != null}">
-                    <form method="POST" class="form-horizontal">
-                        <textarea cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
+                    <form method="POST" onSubmit="return canSubmit();" class="form-horizontal">
+                        <textarea id="tinymceTextarea" cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
                         <input type="submit" value="Lähetä"/>
                     </form>
                     <p>
-                        <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
+                        Kirjainten lukumäärä: <small id="chrCount">0</small> / 4096 - <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
                     </p>
                 </div>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
             <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-            <script>
-                tinymce.init(
-                        {
-                            selector: 'textarea',
-                            menubar: false,
-                            plugins: ["bbcode", "autolink", "link", "image", "textcolor"],
-                            toolbar1: "undo redo | bold italic | forecolor | link image",
-                            entity_encoding: "raw"
-                        }
-                );
-            </script>
+            <script th:src="@{~/js/tinymceConfig.js}"></script>
         </div>
     </body>
 

@@ -156,12 +156,17 @@ public class Main {
             if (Auth.isLoggedIn(u)) {
                 String ts = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
                 String body = req.queryParams("message");
-                Message m = new Message(u.getId(), body, ts);
-                m.setThreadId(id);
-                msgDao.add(m);
-                //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
-                res.redirect("/thread/" + id + "/page/" + pageId);
-                return new ModelAndView(map, "blank");
+                if (!(body.trim().length() > 5000)) {
+                    Message m = new Message(u.getId(), body, ts);
+                    m.setThreadId(id);
+                    msgDao.add(m);
+                    //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
+                    res.redirect("/thread/" + id + "/page/" + pageId);
+                    return new ModelAndView(map, "blank");
+                } else {
+                    return new ModelAndView(map.put("error", "Viestisi on liian pitkä."), "unauthorized");
+                }
+
             } else {
                 return new ModelAndView(map.put("error", "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa."), "unauthorized");
             }

@@ -24,29 +24,22 @@
                     </ul>
                 </div>
             </nav>
-            <form method ="POST" class="form-horizontal" th:if="${user != null}">
+            <form method="POST" onSubmit="return canSubmit();" class="form-horizontal" th:if="${user != null}" >
                 <div class="form-group">
                     <label for="title">Otsikko</label>
                     <input type="text" class="form-control" id="title" name ="title" size="80" maxlength="80"/>
                     <label for="title">Viesti</label>
-                    <textarea cols="150" rows="10" class="form-control" id="body"  name="body" maxlength="4096"></textarea>
+                    <textarea id="tinymceTextarea" cols="150" rows="10" class="form-control" id="body"  name="body" maxlength="4096"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary" name="addTopic">Uusi viestiketju</button>
+                <p>
+                    Kirjainten lukumäärä: <small id="chrCount">0</small> / 4096
+                </p>
+                <button type="submit" class="btn btn-primary" name="addTopic" >Uusi viestiketju</button>
             </form>
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-        <script>
-                tinymce.init(
-                        {
-                            selector: 'textarea',
-                            menubar: false,
-                            plugins: ["bbcode", "autolink", "link", "image", "textcolor"],
-                            toolbar1: "undo redo | bold italic | forecolor | link image",
-                            entity_encoding: "raw"
-                        }
-                );
-        </script>
+        <script th:src="@{~/js/tinymceConfig.js}"></script>
     </body>
 
 </html>
