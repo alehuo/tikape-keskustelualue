@@ -172,6 +172,7 @@ public class MessageDao implements Dao<Message, Integer> {
         int messageCount = rs.getInt("postCount");
         rs.close();
         stmt.close();
+        connection.close();
         return messageCount;
 
     }
@@ -206,6 +207,7 @@ public class MessageDao implements Dao<Message, Integer> {
 
         stmt2.execute();
         stmt2.close();
+        connection.close();
     }
 
     /**
@@ -223,6 +225,7 @@ public class MessageDao implements Dao<Message, Integer> {
 
         stmt.execute();
         stmt.close();
+        connection.close();
     }
 
 }

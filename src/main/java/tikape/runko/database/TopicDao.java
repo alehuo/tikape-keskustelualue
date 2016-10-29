@@ -255,6 +255,7 @@ public class TopicDao implements Dao<Topic, Integer> {
         int topicCount = rs.getInt("topicCount");
         rs.close();
         stmt.close();
+        connection.close();
         return topicCount;
     }
 
@@ -303,6 +304,7 @@ public class TopicDao implements Dao<Topic, Integer> {
             }
         }
         stmt.close();
+        connection.close();
     }
 
     /**
@@ -317,6 +319,7 @@ public class TopicDao implements Dao<Topic, Integer> {
         stmt.setInt(1, id);
         stmt.execute();
         stmt.close();
+        connection.close();
     }
 
 }
