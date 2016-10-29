@@ -5,13 +5,13 @@ import java.util.List;
 import java.util.Scanner;
 import tikape.runko.database.CategoryDao;
 import tikape.runko.database.MessageDao;
-import tikape.runko.database.TopicDao;
 import tikape.runko.database.SubCategoryDao;
+import tikape.runko.database.TopicDao;
 import tikape.runko.database.UserDao;
 import tikape.runko.domain.Category;
 import tikape.runko.domain.Message;
-import tikape.runko.domain.MessageThread;
 import tikape.runko.domain.SubCategory;
+import tikape.runko.domain.Topic;
 import tikape.runko.domain.User;
 
 /**
@@ -80,14 +80,14 @@ public class TextUi {
             System.out.println("6) Kirjoita uusi viesti viestiketjuun");
             System.out.println("7) Lisää uusi käyttäjä tietokantaan");
             System.out.println("8) Listaa käyttäjät");
-            System.out.println("exit Poistu ja käynnistä Web-sovellus");
+            System.out.println("enter Poistu ja käynnistä Web-sovellus");
             System.out.println("");
             System.out.print("> ");
             //Poimitaan käyttäjän syöte
             String komento = sc.nextLine();
             //Tarkastetaan, löytyykö komennolle vastike
             switch (komento) {
-                case "exit":
+                case "":
                     break OUTER;
                 case "1":
                     System.out.println("Listataan kategoriat ja niiden alakategoriat: ");
@@ -107,9 +107,9 @@ public class TextUi {
                 case "2":
                     System.out.print("Anna alakategorian ID: ");
                     Integer subCategoryId = Integer.parseInt(sc.nextLine());
-                    List<MessageThread> msgThreads = msgThreadDao.findAllFromSubCategory(subCategoryId);
+                    List<Topic> msgThreads = msgThreadDao.findAllFromSubCategory(subCategoryId);
                     if (msgThreads.size() > 0) {
-                        for (MessageThread msgThread : msgThreads) {
+                        for (Topic msgThread : msgThreads) {
                             System.out.println(msgThread);
                         }
                     } else {
@@ -144,11 +144,12 @@ public class TextUi {
                     System.out.println("Kirjoita aloituspostaus: ");
                     String body = sc.nextLine();
                     String timeStamp = new java.sql.Timestamp(new java.util.Date().getTime()).toString();
-                    MessageThread tmpThread = new MessageThread(subCategoryId, userId, title, timeStamp);
+                    Topic tmpThread = new Topic(subCategoryId, userId, title, timeStamp);
                     tmpThread.addMessage(new Message(-1, userId, body, timeStamp));
                     msgThreadDao.add(tmpThread);
                     break;
                 case "6":
+                    //Viestiketjuun vastaus
                     System.out.println("Viestiketjun ID: ");
                     int threadId = Integer.parseInt(sc.nextLine());
                     System.out.println("Käyttäjätunnuksen ID: ");
@@ -161,6 +162,7 @@ public class TextUi {
                     msgDao.add(m);
                     break;
                 case "7":
+                    //Käyttäjätilin luonti
                     System.out.print("Anna käyttäjätunnus: ");
                     String userName = sc.nextLine();
                     System.out.print("Anna salasana: ");
@@ -174,6 +176,7 @@ public class TextUi {
 
                     break;
                 case "8":
+                    //Listaa kaikki käyttäjät
                     List<User> users = userDao.findAll();
                     for (User u : users) {
                         System.out.println(u);

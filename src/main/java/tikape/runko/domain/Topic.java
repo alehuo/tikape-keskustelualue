@@ -1,5 +1,6 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,17 +8,26 @@ import java.util.List;
  *
  * @author Aleksi Huotala
  */
-public class MessageThread {
+public class Topic {
+
+    /**
+     *
+     */
+    public static int messagesPerPage = 10;
 
     private List<Message> messages;
     private int subCatId;
     private int userId;
     private String latestPostUsername;
+    private String latestPostTimestamp;
+    private String formattedLatestPostTimestamp;
     private String title;
-    private String creationDate;
+    private String timestamp;
     private String creationUsername;
     private int threadId;
     private int messageCount = 0;
+    private int pageCount;
+    private int currentPage = 1;
 
     /**
      * Viestiketjujen käsittelyyn tarkoitettu luokka
@@ -26,15 +36,15 @@ public class MessageThread {
      * @param threadId
      * @param userId Käyttäjätunnuksen ID
      * @param title Viestiketjun otsikko
-     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
-    public MessageThread(int subCatId, int threadId, int userId, String title, String creationDate) {
+    public Topic(int subCatId, int threadId, int userId, String title, String timestamp) {
         messages = new ArrayList<>();
         this.threadId = threadId;
         this.subCatId = subCatId;
         this.userId = userId;
         this.title = title;
-        this.creationDate = creationDate;
+        this.timestamp = timestamp;
     }
 
     /**
@@ -43,11 +53,39 @@ public class MessageThread {
      * @param subCatId Alakategoria ID
      * @param userId Käyttäjätunnuksen ID
      * @param title Viestiketjun otsikko
-     * @param creationDate Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
      */
-    public MessageThread(int subCatId, int userId, String title, String creationDate) {
-        this(subCatId, -1, userId, title, creationDate);
+    public Topic(int subCatId, int userId, String title, String timestamp) {
+        this(subCatId, -1, userId, title, timestamp);
         messages = new ArrayList<>();
+    }
+
+    /**
+     * Viestiketjujen käsittelyyn tarkoitettu luokka
+     *
+     * @param threadId Viestiketjun ID
+     * @param creator Viestiketjun luojan nimi
+     * @param postCount Viestiketjun viestien lukumäärä
+     * @param title Viestiketjun otsikko
+     * @param timestamp Aikaleima muodossa YYYY-MM-DD HH:MM:SS
+     */
+    public Topic(int threadId, String title, String timestamp, String creator, int postCount) {
+        this(-1, -1, -1, title, timestamp);
+        this.threadId = threadId;
+        messageCount = postCount;
+        creationUsername = creator;
+    }
+
+    /**
+     * Viestiketjujen käsittelyyn tarkoitettu luokka
+     *
+     * @param threadId Viestiketjun ID
+     * @param title Viestiketjun otsikko
+     * @param messageCount Viestien lukumäärä viestiketjussa
+     */
+    public Topic(int threadId, String title, int messageCount) {
+        this(-1, threadId, -1, title, "");
+        this.messageCount = messageCount;
     }
 
     /**
@@ -131,7 +169,7 @@ public class MessageThread {
      * @return Viestiketjun aikaleima
      */
     public String getTimeStamp() {
-        return creationDate;
+        return timestamp;
     }
 
     /**
@@ -154,15 +192,6 @@ public class MessageThread {
     }
 
     /**
-     * Palauttaa viestiketjun luomispäiväyksen
-     *
-     * @return Luomispäiväys
-     */
-    public String getCreationDate() {
-        return creationDate;
-    }
-
-    /**
      * Palauttaa viestiketjun ID:n
      *
      * @return Viestiketjun ID
@@ -174,10 +203,10 @@ public class MessageThread {
     /**
      * Asettaa viestiketjun luomispäiväyksen
      *
-     * @param creationDate Luomispäiväys
+     * @param timestamp Luomispäiväys
      */
-    public void setCreationDate(String creationDate) {
-        this.creationDate = creationDate;
+    public void setTimeStamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     /**
@@ -187,6 +216,7 @@ public class MessageThread {
      */
     public void setMessageCount(int messageCount) {
         this.messageCount = messageCount;
+        pageCount = (int) Math.ceil(messageCount * 1.0 / messagesPerPage);
     }
 
     /**
@@ -263,13 +293,82 @@ public class MessageThread {
     }
 
     /**
+     * Palauttaa viestiketjun viimeisimmän postauksen aikaleiman
+     *
+     * @return Aikaleima
+     */
+    public String getLatestPostTimestamp() {
+        return latestPostTimestamp;
+    }
+
+    /**
+     * Palauttaa parsitun aikaleiman
+     *
+     * @return Aikaleima
+     */
+    public String getFormattedLatestPostTimestamp() {
+        return formattedLatestPostTimestamp;
+    }
+
+    /**
+     * Asettaa viestiketjun viimeisimmän postauksen aikaleiman
+     *
+     * @param latestPostTimestamp Aikaleima
+     */
+    public void setLatestPostTimestamp(String latestPostTimestamp) {
+        this.latestPostTimestamp = latestPostTimestamp;
+        setFormattedLatestPostTimestamp(latestPostTimestamp);
+    }
+
+    /**
+     * Asettaa viestiketjun viimeisimmän postauksen parsitun aikaleiman
+     *
+     * @param latestPostTimestamp Aikaleima
+     */
+    public void setFormattedLatestPostTimestamp(String latestPostTimestamp) {
+        formattedLatestPostTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(latestPostTimestamp));
+    }
+
+    /**
+     *
+     * @param pages
+     */
+    public void setPageCount(int pages) {
+        pageCount = pages;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getPageCount() {
+        return pageCount;
+    }
+
+    /**
+     *
+     * @param currentPage
+     */
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    /**
      * Palauttaa viestiketjun otsikon ja aikaleiman
      *
      * @return Viestiketjun otsikko ja aikaleima muodossa otsikko (aikaleima)
      */
     @Override
     public String toString() {
-        return title + " (" + creationDate + ")";
+        return title + " (" + timestamp + ")";
     }
 
 }

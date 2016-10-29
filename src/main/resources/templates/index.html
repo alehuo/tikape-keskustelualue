@@ -9,7 +9,7 @@
     </head>
 
     <body>
-        <div class="container">
+        <div class="container" style="margin-top: 20px;">
             <nav class="navbar navbar-default">
                 <div class="container-fluid">
                     <div class="navbar-header">
@@ -31,17 +31,17 @@
             <div class="category" th:each="kategoria : ${kategoriat}" th:unless="${#lists.isEmpty(kategoriat)}">
                 <div class="categoryheader">
                     <div class="categoryname" th:text="${kategoria.name}">Kategorian nimi</div>
-                    <div class="categorydeletebutton text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>    
+                    <div class="categorydeletebutton text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/category/delete/' + ${kategoria.categoryId}}" class="btn btn-danger btn-xs confirm" role="button">Poista</a></div>    
                 </div>
                 <div class="subcategory" th:each="alaKategoria : ${kategoria.subCategories}">
                     <div class="subcategoryheader borderbox">
-                        <div class="subcategorytitle"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}">Alakategorian otsikko</a></div>
+                        <div class="subcategorytitle"><a th:href="@{'~/subcategory/' + ${alaKategoria.subCategoryId}}" th:text="${alaKategoria.name}">Alakategorian otsikko</a></div>
                         <div class="subcategorydesc" th:text="${alaKategoria.description}">Alakategorian kuvaus</div>
-                        <div class="deletebtn text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger btn-xs" role="button">Poista</a></div>
+                        <div class="deletebtn text-right" th:if="${user != null and user.userLevel == 1}"><a th:href="@{'~/subcategory/delete/' + ${alaKategoria.subCategoryId}}" class="btn btn-danger btn-xs confirm" role="button">Poista</a></div>
                     </div>
                     <div class="latestmessage" th:if="${alaKategoria.hasMessages}">Viestien lukumäärä: <b><span th:text="${alaKategoria.messageCount}">0</span></b> Viimeisin viesti: <b><span th:text="${alaKategoria.latestMessageUsername}">käyttäjä</span>, 
                             <i><a th:href="@{'~/thread/' + ${alaKategoria.latestMessageThreadId}}"><span th:text="${alaKategoria.latestMessageThreadTitle}">Viestiketjun otsikko</span></a></i>
-                        </b>, <span th:text="'(' + ${alaKategoria.latestMessageTimestamp} + ')'">(Aikaleima)</span></div>
+                        </b>, <span th:text="'(' + ${alaKategoria.formattedLatestMessageTimestamp} + ')'">(Aikaleima)</span></div>
                     <div class="latestmessage" th:unless="${alaKategoria.hasMessages}">Viestien lukumäärä: <b>0</b></div>
                 </div>
                 <div th:if="${user != null and user.userLevel == 1}" class="newsubcategorybtn">
@@ -52,6 +52,12 @@
 
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+        <script type="text/javascript">
+            $('.confirm').on('click', function () {
+                return confirm('Oletko varma?');
+            });
+        </script>
+
     </body>
 
 </html>

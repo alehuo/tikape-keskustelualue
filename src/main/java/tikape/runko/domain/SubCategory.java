@@ -1,21 +1,32 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
+
 /**
  *
  * @author Aleksi Huotala
  */
 public class SubCategory {
 
+    /**
+     * Viestiketjujen määrä per sivu
+     */
+    public static int topicsPerPage = 10;
+
     private int subCategoryId;
     private int categoryId;
     private String name;
     private String description;
     private String latestMessageTimestamp;
+    private String formattedLatestMessageTimestamp;
     private int latestMessageThreadId;
     private String latestMessageThreadTitle;
     private String latestMessageUsername;
     private boolean hasMessages = false;
     private int messageCount = 0;
+    private int currentPage = 1;
+    private int topicCount;
+    private int pageCount;
 
     /**
      * Alakategoria -luokka
@@ -139,7 +150,26 @@ public class SubCategory {
      * @param latestMessageTimestamp Viestin aikaleima
      */
     public void setLatestMessageTimestamp(String latestMessageTimestamp) {
-        this.latestMessageTimestamp = latestMessageTimestamp.substring(0, 16);
+        this.latestMessageTimestamp = latestMessageTimestamp;
+        setFormattedLatestMessageTimestamp(latestMessageTimestamp);
+    }
+
+    /**
+     * Palauttaa viimeisimmän viestin aikaleiman nätimmässä muodossa
+     *
+     * @return Aikaleima
+     */
+    public String getFormattedLatestMessageTimestamp() {
+        return formattedLatestMessageTimestamp;
+    }
+
+    /**
+     * Asettaa viimeisimmän viestin aikaleiman nätimmässä muodossa
+     *
+     * @param formattedLatestMessageTimestamp Aikaleima
+     */
+    public void setFormattedLatestMessageTimestamp(String formattedLatestMessageTimestamp) {
+        this.formattedLatestMessageTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(formattedLatestMessageTimestamp));
     }
 
     /**
@@ -230,6 +260,65 @@ public class SubCategory {
      */
     public int getMessageCount() {
         return messageCount;
+    }
+
+    /**
+     * Asettaa viestien lukumäärän viestiketjussa
+     *
+     * @param topicCount Viestiketjujen lukumäärä
+     */
+    public void setTopicCount(int topicCount) {
+        this.topicCount = topicCount;
+        pageCount = (int) Math.ceil(messageCount * 1.0 / topicsPerPage);
+    }
+
+    /**
+     * Palauttaa nykyisen sivun
+     * @return Nykyinen sivu
+     */
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    /**
+     * Palauttaa viestiketjujen lukumäärän
+     * @return Viestiketjujen lukumäärä
+     */
+    public int getTopicCount() {
+        return topicCount;
+    }
+
+    /**
+     * Asettaa sivujen lukumäärän
+     * @param pageCount Sivujen lukumäärä
+     */
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+
+    /**
+     * Asettaa nykyisen sivun
+     * @param currentPage Nykyinen sivu
+     */
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
+    /**
+     * Palauttaa sivujen lukumäärän
+     * @return Sivujen lukumäärä
+     */
+    public int getPageCount() {
+        return pageCount;
+    }
+
+    /**
+     * Palauttaa viestiketjujen lukumäärän per sivu
+     *
+     * @return Viestiketjujen lukumäärä
+     */
+    public int getTopicsPerPage() {
+        return topicsPerPage;
     }
 
 }

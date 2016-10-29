@@ -19,9 +19,9 @@
             <form action="/register" method="POST" class="form-horizontal">
                 <div class="form-group">
                     <label for="username">Käyttäjätunnus</label>
-                    <input type="text" class="form-control" name="username" id="username" placeholder="Käyttäjätunnus" autofocus="true"/><br/>
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Käyttäjätunnus" autofocus="true" maxlength="16" size="20"/><br/>
                     <label for="passwd">Salasana</label>
-                    <input type="password" class="form-control" name="password" id="passwd" placeholder="Salasana"/>
+                    <input type="password" class="form-control" name="password" id="passwd" placeholder="Salasana" maxlength="64" size="66"/>
                 </div>
                 <button type="submit" class="btn btn-primary" name="register">Rekisteröidy</button>
             </form>

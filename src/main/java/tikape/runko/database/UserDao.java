@@ -72,7 +72,7 @@ public class UserDao implements Dao<User, Integer> {
      */
     public User findByUsername(String username) throws SQLException {
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE lower(username) = ?");
         stmt.setObject(1, username.trim().toLowerCase());
 
         ResultSet rs = stmt.executeQuery();
@@ -178,9 +178,11 @@ public class UserDao implements Dao<User, Integer> {
             stmt.setString(3, saltBase64);
             //Suorita kysely
             stmt.execute();
+            stmt.close();
+            con.close();
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException ex) {
-            ex.printStackTrace();
         }
+
     }
 
 }

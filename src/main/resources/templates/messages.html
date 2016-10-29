@@ -29,11 +29,11 @@
             <div class="alert alert-danger" th:if="${messageThread == null}">
                 <strong>Virhe: </strong> Viestiketjua ei löydy.
             </div>
-            <div th:if="${messageThread != null}">
+            <div th:if="${messageThread != null}" style="margin-bottom: 20px;">
                 <div class="messageThreadTitle" th:text="${messageThread.title}">Viestiketjun otsikko</div>
-
                 <div class="message" th:each="viesti : ${viestit}">
-                    <div class="timestamp" th:text="${viesti.timestamp}">16.06.2016 09:34</div>
+                    <!--Message start-->
+                    <div class="timestamp" th:text="${viesti.formattedTimestamp}">30.30.3030 30:30</div>
                     <div class="userinfo">
                         <p>
                             <b th:text="${viesti.username}">Käyttäjätunnus</b>
@@ -55,19 +55,30 @@
                         Sed augue orci, lacinia eu tincidunt et eleifend nec lacus. 
                         Donec ultricies nisl ut felis, suspendisse potenti. 
                     </div>
+                    <!--Message end-->
                 </div>
+                <div class="btn-group" th:if="${messageThread.pageCount > 1}" style="margin-top: 5px;">
+                    <span th:each="i : ${#numbers.sequence(1, messageThread.pageCount)}" th:switch="${i}">
+                        <a class="btn btn-primary" th:case="${messageThread.currentPage}" th:text="${i}">heihei</a>
+                        <a class="btn btn-default" th:case="*" th:text="${i}" th:href="@{'~/thread/' + ${messageThread.threadId} + '/page/' + ${i}}">heihei</a>
+                    </span> 
+                </div>
+
+
                 <div class="replyBox" th:if="${user != null}">
-                    <form method="POST" class="form-horizontal">
-                        <textarea cols="100" rows="7" name="message"></textarea><br/>
+                    <form method="POST" onSubmit="return canSubmit();" class="form-horizontal">
+                        <textarea id="body" cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
                         <input type="submit" value="Lähetä"/>
                     </form>
                     <p>
-                        <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
+                        Kirjainten lukumäärä: <small id="chrCount">0</small> / 4096 - <small th:text="'Julkaistaan nimellä ' + ${user.username}">Julkaistaan nimellä käyttäjänimi</small>
                     </p>
                 </div>
             </div>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
             <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+            <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+            <script th:src="@{~/js/tinymceConfig.js}"></script>
         </div>
     </body>
 

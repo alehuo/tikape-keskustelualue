@@ -1,5 +1,6 @@
 package tikape.runko.domain;
 
+import java.text.SimpleDateFormat;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.TextProcessor;
 
@@ -14,6 +15,7 @@ public class Message {
     private String username;
     private final int messageId;
     private final String timestamp;
+    private final String formattedTimestamp;
     private int threadId;
     private TextProcessor tp;
 
@@ -29,7 +31,10 @@ public class Message {
         this.messageId = messageId;
         this.userId = userId;
         this.body = body;
-        this.timestamp = timeStamp.substring(0, 16);
+        this.timestamp = timeStamp;
+        //Parsitaan aikaleiman lopusta sekunnit ja muu roska pois
+        formattedTimestamp = new SimpleDateFormat("dd.MM.yyyy HH:mm").format(java.sql.Timestamp.valueOf(timeStamp));
+        //Luodaan BBCoden parsija
         tp = BBProcessorFactory.getInstance().create();
     }
 
@@ -42,6 +47,20 @@ public class Message {
      */
     public Message(int userId, String body, String timeStamp) {
         this(-1, userId, body, timeStamp);
+    }
+
+    /**
+     * Viesti -luokka
+     *
+     * @param threadId Viestiketjun ID
+     * @param userId Käyttäjätunnuksen ID
+     * @param title Otsikko
+     * @param timeStamp Aikaleima
+     * @param username Käyttäjätunnus
+     */
+    public Message(int threadId, int userId, String title, String timeStamp, String username) {
+        this(-1, userId, "", timeStamp);
+        this.username = username;
     }
 
     /**
@@ -78,6 +97,7 @@ public class Message {
      * @return Viestin sisältö
      */
     public String getFormattedBody() {
+        //TextProcessor parsii tietokannan viestistä haitalliset tägit pois XSS -injektioiden varalta sekä muuntaa BBCoden luettavaan muotoon.
         String tmpBody = tp.process(body);
         return tmpBody;
     }
@@ -89,8 +109,9 @@ public class Message {
      * @return Viestin sisältö
      */
     public String getEscapedBody() {
-        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
-        return tmpBody;
+//        String tmpBody = body.replace("<", "&lt;").replace(">", "&gt;");
+//        return tmpBody;
+        return body;
     }
 
     /**
@@ -109,6 +130,14 @@ public class Message {
      */
     public String getTimestamp() {
         return timestamp;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getFormattedTimestamp() {
+        return formattedTimestamp;
     }
 
     /**

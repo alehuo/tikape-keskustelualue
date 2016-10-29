@@ -23,9 +23,9 @@
             <form action="/login" method="POST" id="loginform" class="form-horizontal">
                 <div class="form-group">
                     <label for="username">Käyttäjätunnus</label>
-                    <input type="text" class="form-control" id="username" name="username" placeholder="Käyttäjätunnus" autofocus="true"/><br/>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Käyttäjätunnus" autofocus="true" maxlength="16" size="20"/><br/>
                     <label for="passwd">Salasana</label>
-                    <input type="password" class="form-control" id="passwd" name="password" placeholder="Salasana"/>
+                    <input type="password" class="form-control" id="passwd" name="password" placeholder="Salasana"  maxlength="64" size="66"/>
                 </div>
                 <button type="submit" class="btn btn-primary" name="login">Kirjaudu sisään</button>
             </form>

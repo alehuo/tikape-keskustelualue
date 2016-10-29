@@ -30,16 +30,22 @@
             <div th:unless="${subcategory == null}">
                 <h3 th:if="${#lists.isEmpty(viestiketjut)}">Ei viestiketjuja.</h3>
                 <p th:if="${user != null}">
-                    <a th:href="@{'~/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
+                    <a th:href="@{'~/thread/new/' + ${subcategoryId}}" class="btn btn-primary" role="button">Uusi viestiketju</a>
                 </p>
                 <table class="table" th:unless="${#lists.isEmpty(viestiketjut)}">
                     <thead>
                         <tr><td>Otsikko</td><td>Luonut</td><td>Viestien lukumäärä</td><td>Viimeisin viesti</td></tr>
                     </thead>
                     <tr th:each="viestiketju : ${viestiketjut}">
-                        <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td th:text="${viestiketju.creationUsername}">Käyttäjätunnus</td><td th:text="${viestiketju.messageCount}">Viestien lukumäärä</td><td>Viimeisin viesti</td>
+                        <td><a th:text="${viestiketju.title}" th:href="@{'~/thread/' + ${viestiketju.threadId}}"></a></td><td th:text="${viestiketju.creationUsername}">Käyttäjätunnus</td><td th:text="${viestiketju.messageCount}">Viestien lukumäärä</td><td><span th:text="${viestiketju.latestPostUsername}">Käyttäjätunnus</span>, <span th:text="${viestiketju.formattedLatestPostTimestamp}"></span></td>
                     </tr>
                 </table>
+                <div class="btn-group" th:if="${subcategory.pageCount > 1}" style="margin-top: 5px;">
+                    <span th:each="i : ${#numbers.sequence(1, subcategory.pageCount)}" th:switch="${i}">
+                        <a class="btn btn-primary" th:case="${subcategory.currentPage}" th:text="${i}">heihei</a>
+                        <a class="btn btn-default" th:case="*" th:text="${i}" th:href="@{'~/subcategory/' + ${subcategory.subCategoryId} + '/page/' + ${i}}">heihei</a>
+                    </span> 
+                </div>
             </div>
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
