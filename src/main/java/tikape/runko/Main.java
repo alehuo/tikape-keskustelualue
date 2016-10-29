@@ -415,7 +415,9 @@ public class Main {
                     int id = Integer.parseInt(req.params(":id"));
                     String name = req.queryParams("subcategoryname");
                     if (name.isEmpty()) {
-                        return new ModelAndView(new HashMap<>().put("error", "Otsikko ei saa olla tyhjä!"), "unauthorized");
+                        HashMap map = new HashMap<>();
+                        map.put("error", "Otsikko ei saa olla tyhjä!");
+                        return new ModelAndView(map, "unauthorized");
                     } else {
                         String desc = req.queryParams("subcategorydesc");
                         SubCategory c = new SubCategory(id, name).setDescription(desc);
@@ -447,7 +449,9 @@ public class Main {
             if (Auth.isAdmin(u)) {
                 String name = req.queryParams("categoryname");
                 if (name.isEmpty()) {
-                    return new ModelAndView(new HashMap<>().put("error", "Otsikko ei saa olla tyhjä!"), "unauthorized");
+                    HashMap map = new HashMap<>();
+                    map.put("error", "Otsikko ei saa olla tyhjä!");
+                    return new ModelAndView(map, "unauthorized");
                 } else {
                     catDao.add(new Category(name));
                     res.redirect("/");
