@@ -64,7 +64,7 @@
                 
                 <div class="replyBox" th:if="${user != null}">
                     <form method="POST" class="form-horizontal">
-                        <textarea cols="100" rows="7" name="message"></textarea><br/>
+                        <textarea cols="100" rows="7" name="message" maxlength="4096"></textarea><br/>
                         <input type="submit" value="Lähetä"/>
                     </form>
                     <p>

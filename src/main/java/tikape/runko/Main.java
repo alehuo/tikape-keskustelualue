@@ -88,20 +88,17 @@ public class Main {
         });
         //Näytä viestiketju
         get("/thread/:threadId", (req, res) -> {
-//            HashMap map = new HashMap<>();
+            HashMap map = new HashMap<>();
             int id;
             try {
                 id = Integer.parseInt(req.params("threadId"));
             } catch (NumberFormatException e) {
-                return "Virheellinen viesti-ID!";
+                map.put("error", "Virheellinen viesti-ID!");
+                return new ModelAndView(map, "unauthorized");
             }
-//            map.put("messageThread", topicDao.findOne(id));
-//            map.put("viestit", msgDao.findAllFromTopic(id));
-//            map.put("user", req.session().attribute("user"));
-//            //Tähän näkymä, jossa näytetään viestiketju
-//            return new ModelAndView(map, "messages");
+            //Uudelleenohjataan ensimmäiselle sivulle
             res.redirect("/thread/" + id + "/page/1");
-            return "";
+            return new ModelAndView(new HashMap<>(), "blank");
         });
         //Näytä viestiketju sivunumerolla
         get("/thread/:threadId/page/:pageId", (req, res) -> {
@@ -156,12 +153,12 @@ public class Main {
                 msgDao.add(m);
                 //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
                 res.redirect("/thread/" + id + "/page/" + pageId);
-                return "Vastaus viestiketjuun, jolla id: " + id;
+                return new ModelAndView(new HashMap<>(), "blank");
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                return new ModelAndView(new HashMap<>().put("error", "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa."), "blank");
             }
 
-        });
+        }, new ThymeleafTemplateEngine());
         //Näytä alakategorian viestit:
         get("/subcategory/:subCategoryId", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -179,12 +176,6 @@ public class Main {
             //Tähän näkymä, jossa näytetään alakategorian viestit
             return new ModelAndView(map, "topics");
         }, new ThymeleafTemplateEngine());
-        //Uuden viestiketjun lähettäminen:
-//        post("/subcategory/:subCategoryId", (req, res) -> {
-//            int id = Integer.parseInt(req.params("subCategoryId"));
-//            //Käsitellään tässä POST-pyynnön data ja lisätään tietokantaan
-//            return "Tällä käsitellään viestiketjun data alakategoriaan " + id + ".";
-//        });
         //Uuden viestiketjun luominen:
         get("/thread/new/:subCategoryId", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -339,16 +330,15 @@ public class Main {
                     }
                     catDao.delete(id);
                     res.redirect("/");
-                    return "";
+                    return new ModelAndView(new HashMap<>(), "blank");
                 } catch (NumberFormatException e) {
-                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                    return new ModelAndView(new HashMap<>(), "unauthorized");
                 }
 
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                return new ModelAndView(new HashMap<>(), "unauthorized");
             }
-
-        });
+        }, new ThymeleafTemplateEngine());
         //Alakategorian poisto
         get("/subcategory/delete/:id", (req, res) -> {
             User u = req.session().attribute("user");
@@ -359,15 +349,15 @@ public class Main {
                     topicDao.deleteAllFromSubCategory(id);
                     subCatDao.delete(id);
                     res.redirect("/");
-                    return "";
+                    return new ModelAndView(new HashMap<>(), "blank");
                 } catch (NumberFormatException e) {
-                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                    return new ModelAndView(new HashMap<>(), "unauthorized");
                 }
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                return new ModelAndView(new HashMap<>(), "unauthorized");
             }
 
-        });
+        }, new ThymeleafTemplateEngine());
         //Uuden alakategorian lisäys
         get("/subcategory/new/:id", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -388,15 +378,15 @@ public class Main {
                     SubCategory c = new SubCategory(id, name).setDescription(desc);
                     subCatDao.add(c);
                     res.redirect("/");
-                    return "";
+                    return new ModelAndView(new HashMap<>(), "blank");
                 } catch (NumberFormatException e) {
-                    return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                    return new ModelAndView(new HashMap<>(), "unauthorized");
                 }
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                return new ModelAndView(new HashMap<>(), "unauthorized");
             }
 
-        });
+        }, new ThymeleafTemplateEngine());
         //Uuden kategorian lisäys
         get("/category/new", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -413,11 +403,11 @@ public class Main {
                 String name = req.queryParams("categoryname");
                 catDao.add(new Category(name));
                 res.redirect("/");
-                return "";
+                return new ModelAndView(new HashMap<>(), "blank");
             } else {
-                return "Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.";
+                return new ModelAndView(new HashMap<>(), "unauthorized");
             }
 
-        });
+        }, new ThymeleafTemplateEngine());
     }
 }
