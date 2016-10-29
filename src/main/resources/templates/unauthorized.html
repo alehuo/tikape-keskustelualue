@@ -9,10 +9,12 @@
 
     <body>
         <div class="container">
-            <div class="alert alert-danger">
+
+            <div class="alert alert-danger" style="margin-top: 20px;">
                 <strong>Virhe: </strong> <span th:text="${error}" th:unless="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
                 <span th:if="${error == null}">Sinulla ei ole oikeuksia suorittaa kyseistä toimintoa.</span>
             </div>
+
         </div>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </body>
