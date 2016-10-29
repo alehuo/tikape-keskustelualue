@@ -14,7 +14,7 @@ import tikape.runko.domain.Topic;
  * Viestiketju DAO
  */
 public class TopicDao implements Dao<Topic, Integer> {
-    
+
     private final Database database;
 
     /**
@@ -35,20 +35,20 @@ public class TopicDao implements Dao<Topic, Integer> {
      */
     @Override
     public Topic findOne(Integer key) throws SQLException {
-        
+
         Connection connection = database.getConnection();
 
         //1 Hae viestiketjun perustiedot
         PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.timestamp, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.threadId = ?");
-        
+
         stmt.setInt(1, key);
         ResultSet rs = stmt.executeQuery();
-        
+
         List<Topic> msgThreads = new ArrayList<>();
         if (!rs.next()) {
             return null;
         }
-        
+
         Integer threadId = rs.getInt("threadId");
         String title = rs.getString("title");
         String timestamp = rs.getString("timestamp");
@@ -57,22 +57,22 @@ public class TopicDao implements Dao<Topic, Integer> {
         //2 Hae viestien lukumäärä viestiketjussa
         PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
         stmt2.setInt(1, threadId);
-        
+
         ResultSet rs2 = stmt2.executeQuery();
-        
+
         if (!rs2.next()) {
             return null;
         }
-        
+
         int postCount = rs2.getInt("messageCount");
-        
+
         Topic mt = new Topic(threadId, title, timestamp, creationUsername, postCount);
-        
+
         PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
         stmt3.setInt(1, threadId);
-        
+
         ResultSet rs3 = stmt3.executeQuery();
-        
+
         if (rs3.next()) {
             mt.setLatestPostTimestamp(rs3.getString("latestPostTimestamp"));
             mt.setLatestPostUsername(rs3.getString("latestPostUsername"));
@@ -82,7 +82,7 @@ public class TopicDao implements Dao<Topic, Integer> {
         rs.close();
         stmt.close();
         connection.close();
-        
+
         return mt;
     }
 
@@ -106,17 +106,17 @@ public class TopicDao implements Dao<Topic, Integer> {
      * @throws SQLException
      */
     public List<Topic> findAllFromSubCategory(int subCategoryId) throws SQLException {
-        
+
         Connection connection = database.getConnection();
 
         //1 Hae viestiketjun perustiedot
         PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.timestamp, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY threads.timestamp DESC");
-        
+
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
-        
+
         List<Topic> msgThreads = new ArrayList<>();
-        
+
         while (rs.next()) {
 
             //1
@@ -128,27 +128,27 @@ public class TopicDao implements Dao<Topic, Integer> {
             //2 Hae viestien lukumäärä viestiketjussa
             PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
             stmt2.setInt(1, threadId);
-            
+
             ResultSet rs2 = stmt2.executeQuery();
-            
+
             if (!rs2.next()) {
                 return null;
             }
-            
+
             int postCount = rs2.getInt("messageCount");
-            
+
             Topic mt = new Topic(threadId, title, timestamp, creationUsername, postCount);
-            
+
             PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
             stmt3.setInt(1, threadId);
-            
+
             ResultSet rs3 = stmt3.executeQuery();
-            
+
             if (rs3.next()) {
                 mt.setLatestPostTimestamp(rs3.getString("latestPostTimestamp"));
                 mt.setLatestPostUsername(rs3.getString("latestPostUsername"));
             }
-            
+
             msgThreads.add(mt);
         }
 
@@ -156,7 +156,7 @@ public class TopicDao implements Dao<Topic, Integer> {
         rs.close();
         stmt.close();
         connection.close();
-        
+
         return msgThreads;
     }
 
@@ -164,16 +164,17 @@ public class TopicDao implements Dao<Topic, Integer> {
      * Hakee kaikki viestiketjut tietystä alakategoriasta, sivunumeron mukaan
      *
      * @param subCategoryId Alakategorian id
+     * @param pageNumber Sivunumero
      * @return Lista viestiketjuista
      * @throws SQLException
      */
     public List<Topic> findAllFromSubCategoryByPageNumber(int subCategoryId, int pageNumber) throws SQLException {
-        
+
         Connection connection = database.getConnection();
 
         //1 Hae viestiketjun perustiedot
         PreparedStatement stmt = connection.prepareStatement("SELECT threads.threadId, threads.title, threads.timestamp, users.username AS creator FROM threads INNER JOIN users ON threads.userId = users.userId WHERE threads.subCategoryId = ? ORDER BY threads.timestamp DESC");
-        
+
         stmt.setInt(1, subCategoryId);
         ResultSet rs = stmt.executeQuery();
 
@@ -181,9 +182,9 @@ public class TopicDao implements Dao<Topic, Integer> {
         int startingIndex = SubCategory.topicsPerPage * (pageNumber - 1) + 1;
         //Lopetusindeksi
         int endingIndex = SubCategory.topicsPerPage * pageNumber;
-        
+
         List<Topic> msgThreads = new ArrayList<>();
-        
+
         int index = 1;
         while (rs.next()) {
 
@@ -204,27 +205,27 @@ public class TopicDao implements Dao<Topic, Integer> {
             //2 Hae viestien lukumäärä viestiketjussa
             PreparedStatement stmt2 = connection.prepareStatement("SELECT COUNT(*) AS messageCount FROM posts INNER JOIN threads ON posts.threadId = threads.threadId WHERE threads.threadId = ?");
             stmt2.setInt(1, threadId);
-            
+
             ResultSet rs2 = stmt2.executeQuery();
-            
+
             if (!rs2.next()) {
                 return null;
             }
-            
+
             int postCount = rs2.getInt("messageCount");
-            
+
             Topic mt = new Topic(threadId, title, timestamp, creationUsername, postCount);
-            
+
             PreparedStatement stmt3 = connection.prepareStatement("SELECT users.username AS latestPostUsername, posts.timestamp AS latestPostTimestamp FROM posts INNER JOIN threads ON posts.threadId = threads.threadId INNER JOIN users ON posts.userId = users.userId WHERE threads.threadId = ? ORDER BY posts.postId DESC");
             stmt3.setInt(1, threadId);
-            
+
             ResultSet rs3 = stmt3.executeQuery();
-            
+
             if (rs3.next()) {
                 mt.setLatestPostTimestamp(rs3.getString("latestPostTimestamp"));
                 mt.setLatestPostUsername(rs3.getString("latestPostUsername"));
             }
-            
+
             msgThreads.add(mt);
         }
 
@@ -232,10 +233,17 @@ public class TopicDao implements Dao<Topic, Integer> {
         rs.close();
         stmt.close();
         connection.close();
-        
+
         return msgThreads;
     }
-    
+
+    /**
+     * Palauttaa aiheiden lukumäärän alakategoriasta
+     *
+     * @param subCategoryId Alakategorian ID
+     * @return Aiheiden lukumäärä
+     * @throws SQLException
+     */
     public int getTopicCountFromSubCategory(int subCategoryId) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(threadId) AS topicCount FROM threads WHERE subCategoryId = ?");
@@ -310,5 +318,5 @@ public class TopicDao implements Dao<Topic, Integer> {
         stmt.execute();
         stmt.close();
     }
-    
+
 }

@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
  */
 public class SubCategory {
 
+    /**
+     * Viestiketjujen määrä per sivu
+     */
     public static int topicsPerPage = 10;
 
     private int subCategoryId;
@@ -269,30 +272,53 @@ public class SubCategory {
         pageCount = (int) Math.ceil(messageCount * 1.0 / topicsPerPage);
     }
 
+    /**
+     * Palauttaa nykyisen sivun
+     * @return Nykyinen sivu
+     */
     public int getCurrentPage() {
         return currentPage;
     }
 
-    public static int getTopicsPerPage() {
-        return topicsPerPage;
-    }
-
+    /**
+     * Palauttaa viestiketjujen lukumäärän
+     * @return Viestiketjujen lukumäärä
+     */
     public int getTopicCount() {
         return topicCount;
     }
 
+    /**
+     * Asettaa sivujen lukumäärän
+     * @param pageCount Sivujen lukumäärä
+     */
     public void setPageCount(int pageCount) {
         this.pageCount = pageCount;
     }
 
+    /**
+     * Asettaa nykyisen sivun
+     * @param currentPage Nykyinen sivu
+     */
     public void setCurrentPage(int currentPage) {
         this.currentPage = currentPage;
     }
-    
-    
 
+    /**
+     * Palauttaa sivujen lukumäärän
+     * @return Sivujen lukumäärä
+     */
     public int getPageCount() {
         return pageCount;
+    }
+
+    /**
+     * Palauttaa viestiketjujen lukumäärän per sivu
+     *
+     * @return Viestiketjujen lukumäärä
+     */
+    public int getTopicsPerPage() {
+        return topicsPerPage;
     }
 
 }

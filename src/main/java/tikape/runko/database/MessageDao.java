@@ -155,6 +155,12 @@ public class MessageDao implements Dao<Message, Integer> {
         return msg;
     }
 
+    /**
+     * Palauttaa viestien lukumäärän viestiketjussa
+     * @param threadId Viestiketjun ID
+     * @return Viestien lukumäärä
+     * @throws SQLException
+     */
     public int getMessageCountFromTopic(int threadId) throws SQLException {
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(postId) AS postCount FROM posts WHERE threadId = ?");
