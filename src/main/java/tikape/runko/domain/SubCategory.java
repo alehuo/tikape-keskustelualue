@@ -8,6 +8,8 @@ import java.text.SimpleDateFormat;
  */
 public class SubCategory {
 
+    public static int topicsPerPage = 10;
+
     private int subCategoryId;
     private int categoryId;
     private String name;
@@ -19,6 +21,9 @@ public class SubCategory {
     private String latestMessageUsername;
     private boolean hasMessages = false;
     private int messageCount = 0;
+    private int currentPage = 1;
+    private int topicCount;
+    private int pageCount;
 
     /**
      * Alakategoria -luokka
@@ -252,6 +257,42 @@ public class SubCategory {
      */
     public int getMessageCount() {
         return messageCount;
+    }
+
+    /**
+     * Asettaa viestien lukumäärän viestiketjussa
+     *
+     * @param topicCount Viestiketjujen lukumäärä
+     */
+    public void setTopicCount(int topicCount) {
+        this.topicCount = topicCount;
+        pageCount = (int) Math.ceil(messageCount * 1.0 / topicsPerPage);
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public static int getTopicsPerPage() {
+        return topicsPerPage;
+    }
+
+    public int getTopicCount() {
+        return topicCount;
+    }
+
+    public void setPageCount(int pageCount) {
+        this.pageCount = pageCount;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+    
+    
+
+    public int getPageCount() {
+        return pageCount;
     }
 
 }

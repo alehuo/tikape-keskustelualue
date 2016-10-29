@@ -155,6 +155,21 @@ public class MessageDao implements Dao<Message, Integer> {
         return msg;
     }
 
+    public int getMessageCountFromTopic(int threadId) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(postId) AS postCount FROM posts WHERE threadId = ?");
+        stmt.setInt(1, threadId);
+        ResultSet rs = stmt.executeQuery();
+        if (!rs.next()) {
+            return 0;
+        }
+        int messageCount = rs.getInt("postCount");
+        rs.close();
+        stmt.close();
+        return messageCount;
+
+    }
+
     /**
      * Lisää uuden viestin tietokantaan
      *

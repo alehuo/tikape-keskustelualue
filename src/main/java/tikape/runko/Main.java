@@ -104,6 +104,7 @@ public class Main {
             HashMap map = new HashMap<>();
             int id;
             int pageId;
+            //Viestiketjun ID:n tarkistus
             try {
                 id = Integer.parseInt(req.params("threadId"));
             } catch (NumberFormatException e) {
@@ -116,12 +117,19 @@ public class Main {
                 pageId = 1;
             }
             Topic tmpThread = topicDao.findOne(id);
-            List<Message> tmpMessages2 = msgDao.findAllFromTopic(id);
-            List<Message> tmpMessages = msgDao.findAllFromTopicByPageNumber(id, pageId);
+            //Jos viestiketju löytyy ID:llä
             if (tmpThread != null) {
-                tmpThread.setMessageCount(tmpMessages2.size());
-                tmpThread.setCurrentPage(pageId);
+                //Asetetaan viestiketjun viestien määrä
+                tmpThread.setMessageCount(msgDao.getMessageCountFromTopic(id));
+                //Jos annettu sivunumero ylittää maksimisivumäärän, asetetaan nykyiseksi sivumääräksi maksimisivumääärä
+                if (pageId <= tmpThread.getPageCount()) {
+                    tmpThread.setCurrentPage(pageId);
+                } else {
+                    tmpThread.setCurrentPage(tmpThread.getPageCount());
+                    pageId = tmpThread.getPageCount();
+                }
             }
+            List<Message> tmpMessages = msgDao.findAllFromTopicByPageNumber(id, pageId);
             map.put("messageThread", tmpThread);
             map.put("viestit", tmpMessages);
             map.put("user", req.session().attribute("user"));
@@ -159,9 +167,8 @@ public class Main {
             }
 
         }, new ThymeleafTemplateEngine());
-        //Näytä alakategorian viestit:
+        //Uudelleenohjaa sivulle, jossa on mukana sivunumero
         get("/subcategory/:subCategoryId", (req, res) -> {
-            HashMap map = new HashMap<>();
             int id;
             try {
                 id = Integer.parseInt(req.params("subCategoryId"));
@@ -169,9 +176,42 @@ public class Main {
                 id = -1;
             }
 
+            res.redirect("/subcategory/" + id + "/page/1");
+            return "";
+        });
+        //Näytä alakategorian viestiketjut:
+        get("/subcategory/:subCategoryId/page/:pageNum", (req, res) -> {
+            HashMap map = new HashMap<>();
+            int id;
+            int pageNum;
+            //Alakategorian ID:n tarkistus
+            try {
+                id = Integer.parseInt(req.params("subCategoryId"));
+            } catch (NumberFormatException e) {
+                id = -1;
+            }
+            //Sivun ID:n tarkistus
+            try {
+                pageNum = Integer.parseInt(req.params("pageNum"));
+            } catch (NumberFormatException e) {
+                pageNum = 1;
+            }
+            SubCategory c = subCatDao.findOne(id);
+            if (c != null) {
+                //Asetetaan viestiketjujen lukumäärä alakategoriassa
+                c.setTopicCount(topicDao.getTopicCountFromSubCategory(id));
+                //Jos annettu sivunumero ylittää maksimisivumäärän, asetetaan nykyiseksi sivumääräksi maksimisivumääärä
+                if (pageNum <= c.getPageCount()) {
+                    c.setCurrentPage(pageNum);
+                } else {
+                    c.setCurrentPage(c.getPageCount());
+                    pageNum = c.getPageCount();
+                }
+
+            }
             map.put("subcategoryId", id);
-            map.put("subcategory", subCatDao.findOne(id));
-            map.put("viestiketjut", topicDao.findAllFromSubCategory(id));
+            map.put("subcategory", c);
+            map.put("viestiketjut", topicDao.findAllFromSubCategoryByPageNumber(id, pageNum));
             map.put("user", req.session().attribute("user"));
             //Tähän näkymä, jossa näytetään alakategorian viestit
             return new ModelAndView(map, "topics");
