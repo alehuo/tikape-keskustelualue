@@ -13,7 +13,7 @@ public class Topic {
     /**
      *
      */
-    public static int messagesPerPage = 5;
+    public static int messagesPerPage = 10;
 
     private List<Message> messages;
     private int subCatId;
