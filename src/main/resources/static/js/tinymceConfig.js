@@ -1,3 +1,5 @@
+/* global tinymce */
+
 tinymce.init(
         {
             selector: 'textarea',
