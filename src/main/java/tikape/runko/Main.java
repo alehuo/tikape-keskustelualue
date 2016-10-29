@@ -321,7 +321,7 @@ public class Main {
             User u = req.session().attribute("user");
             if (Auth.isAdmin(u)) {
                 try {
-                    int id = Integer.parseInt(req.params("subCategoryId"));
+                    int id = Integer.parseInt(req.params("id"));
                     List<SubCategory> subCategories = subCatDao.findAllByCategoryId(id);
                     for (SubCategory c : subCategories) {
                         msgDao.deleteAllFromSubCategory(c.getSubCategoryId());
